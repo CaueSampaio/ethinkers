@@ -11,17 +11,13 @@ import { ContainerQuery } from 'react-container-query';
 import { Helmet } from 'react-helmet';
 import { Layout } from 'antd';
 
-import { getBreadCrumb } from '../../../routes';
-
-// import { getAllDiscriminators } from '../../../../utils/constants';
+import { getBreadCrumb } from '../../../../routes';
 
 import {
   layoutActions,
   layoutSelectors,
   layoutUtils,
-} from '../../../state/ducks/layout';
-
-// import { userSelectors } from '../../../../state/ducks/user';
+} from '../../../../state/ducks/layout';
 
 // import logo from '../../../../assets/images/logo-ic.svg';
 import SiderMenu from './components/SiderMenu';
@@ -144,6 +140,7 @@ class PrivateLayout extends React.Component {
       component: Component,
       ...rest
     } = this.props;
+
     return (
       <ContainerQuery query={query}>
         {(params) => (

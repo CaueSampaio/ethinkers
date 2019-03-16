@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 
-class SalesProductsPage extends Component {
+class AvailableProductsPage extends Component {
   state = {};
 
   render() {
     return (
       <div>
-        <PrivatePageHeader title="Produtos a Venda" />
-        <span>produtos a venda</span>
+        <PrivatePageHeader title="Produtos Disponíveis" />
+        <span>Disponíveis</span>
       </div>
     );
   }
 }
 
-export default SalesProductsPage;
+export default AvailableProductsPage;

@@ -8,7 +8,15 @@ export const getBreadcrumbMap = () => {
   const result = {};
 
   routes.forEach((route) => {
-    if (!isEmpty(route.breadcrumb)) result[route.path] = route.breadcrumb;
+    if (!isEmpty(route.breadcrumb)) {
+      result[route.path] = route.breadcrumb;
+      if (route.children) {
+        route.children.map((item) => {
+          result[item.url] = item.breadcrumb;
+          return result;
+        });
+      }
+    }
   });
   return result;
 };
