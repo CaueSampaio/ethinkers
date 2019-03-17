@@ -30,7 +30,6 @@ class PrivateRoute extends React.Component {
 
   render() {
     const { component, location, children, ...rest } = this.props; // eslint-disable-line
-
     return (
       <Route
         render={(props) => (

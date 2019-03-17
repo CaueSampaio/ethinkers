@@ -6,6 +6,8 @@ import { Table } from 'antd';
 
 import { layoutSelectors, layoutUtils } from '../../../state/ducks/layout';
 
+import './style.less';
+
 const StandardTable = ({ breakpoint, minWidth, scroll, ...rest }) => {
   const { findBreakpoint, getBreakpointNumber } = layoutUtils;
 
@@ -16,7 +18,9 @@ const StandardTable = ({ breakpoint, minWidth, scroll, ...rest }) => {
     ...scroll,
     x: tableBreakpoint > windowBreakpoint ? minWidth : 0,
   };
-  return <Table {...rest} scroll={responsiveScroll} />;
+  return (
+    <Table {...rest} scroll={responsiveScroll} className="table-content" />
+  );
 };
 
 StandardTable.propTypes = {

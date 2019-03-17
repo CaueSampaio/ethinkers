@@ -1,0 +1,71 @@
+.content-client-data {
+  background-image: linear-gradient(#fff, #f2f9ff);
+  color: white;
+   h3 {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+  }
+}
+.card-order-data {
+  height: 200px;
+  margin-right: 20px;
+  background-image: -webkit-linear-gradient(#5ed4e0, #60bbea);
+  border-radius: 16px;
+  border: none;
+}
+.payment-data {
+  h3 {
+    color: #324d78;
+  }
+  h3::after {
+    content: '';
+    bottom: 10px;
+    display: block;
+    width: 62px;
+    border-radius: 50px;
+    border-bottom: 2px solid #232527;
+  }
+  .payment-status {
+    text-transform: uppercase;
+    font-size: 15px;
+    color: #72beb0;
+    font-weight: 600;
+  }
+  .payment-method {
+    > span,
+    > p {
+      text-transform: uppercase;
+      font-size: 13.4px;
+    }
+    > span {
+      color: #0d0d0d;
+      font-weight: 640;
+    }
+    > p {
+      color: #858283;
+    }
+    > p::after {
+      content: '';
+      padding: 8px;
+      display: block;
+      width: 50%;
+      border-bottom: 2px dashed #f2f4f7;
+    }
+  }
+  .prices {
+    .freight-label,
+    .total-label {
+      color: #0d0d0d;
+      font-weight: 640;
+      text-transform: uppercase;
+      font-size: 13.4px;
+    }
+  }
+  .total-value {
+    font-weight: 700;
+    font-size: 17px;
+    color: #0d0d0d;
+  }
+}

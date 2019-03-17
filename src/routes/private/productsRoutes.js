@@ -10,7 +10,7 @@ export default [
     breadcrumb: 'Produtos',
     layout: PrivateRoute,
     menu: {
-      icon: 'file-search',
+      icon: 'shop',
       name: 'Produtos',
     },
     children: [

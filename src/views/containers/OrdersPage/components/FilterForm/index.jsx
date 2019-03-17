@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Form, InputNumber } from 'antd';
+import { Form, Input, InputNumber, Button, Row } from 'antd';
 
-const FormItem = Form.Item;
+import StyledFormItem from '../../../../components/StyledFormItem';
+import StyledButtonFilter from '../../../../components/StyledButtonFilter';
+
+import './style.less';
 
 class FilterForm extends Component {
   state = {};
@@ -13,11 +16,34 @@ class FilterForm extends Component {
       form: { getFieldDecorator },
     } = this.props;
     return (
-      <Form layout="vertical">
-        <FormItem label="Código:">
-          {getFieldDecorator('number', {})(<InputNumber />)}
-        </FormItem>
-      </Form>
+      <div className="form-filter">
+        <Row type="flex" justify="space-between">
+          <h3>Filtros</h3>
+          <Button className="btn-clear">Limpar</Button>
+        </Row>
+        <Form layout="vertical">
+          <StyledFormItem label="Código:">
+            {getFieldDecorator('number', {})(
+              <InputNumber style={{ width: '100%' }} />,
+            )}
+          </StyledFormItem>
+          <StyledFormItem label="CPF:">
+            {getFieldDecorator('cpf', {})(<Input />)}
+          </StyledFormItem>
+          <StyledFormItem label="Nome do Cliente:">
+            {getFieldDecorator('name', {})(<Input />)}
+          </StyledFormItem>
+          <StyledFormItem label="Canal de venda:">
+            {getFieldDecorator('canal', {})(<Input />)}
+          </StyledFormItem>
+          <StyledFormItem label="Status:">
+            {getFieldDecorator('status', {})(<Input />)}
+          </StyledFormItem>
+          <Form.Item>
+            <StyledButtonFilter text="Buscar" />
+          </Form.Item>
+        </Form>
+      </div>
     );
   }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col } from 'antd';
 
 import PrivatePageHeader from '../../components/PrivatePageHeader';
@@ -7,6 +8,10 @@ import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 
 class OrdersPage extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   state = {};
 
   render() {
@@ -53,6 +58,16 @@ class OrdersPage extends Component {
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
             <PrivatePageSection>
               <StandardTable
+                onRow={(record) => { // eslint-disable-line
+                  return {
+                    onClick: () => {
+                      const {
+                        history: { push },
+                      } = this.props;
+                      push(`/orders/${record.codigo}`);
+                    }, // click row
+                  };
+                }}
                 columns={columns}
                 dataSource={data}
                 minWidth={1000}
