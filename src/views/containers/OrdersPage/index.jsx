@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Row, Col } from 'antd';
+
+import { ordersActions, ordersSelectors } from '../../../state/ducks/orders';
 
 import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
@@ -10,9 +15,19 @@ import FilterForm from './components/FilterForm';
 class OrdersPage extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
   };
 
   state = {};
+
+  componentDidMount() {
+    console.log(this.props);
+    const {
+      actions: { listOrders },
+    } = this.props;
+    const result = listOrders();
+    console.log(result);
+  }
 
   render() {
     const columns = [
@@ -86,4 +101,18 @@ class OrdersPage extends Component {
   }
 }
 
-export default OrdersPage;
+const mapStateToProps = createStructuredSelector({
+  data: ordersSelectors.makeSelectOrders(),
+  isLoading: ordersSelectors.makeSelectOrdersIsLoading(),
+  error: ordersSelectors.makeSelectOrdersError(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(ordersActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(OrdersPage);
