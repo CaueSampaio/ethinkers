@@ -14,15 +14,15 @@ const routes = [
   },
   {
     path: 'available',
-    name: 'Enviados por Sellers',
-    component: ShippedBySellersProductsPage,
+    name: 'Disponíveis',
+    component: AvailableProductsPage,
     layout: PrivateRoute,
     breadcrumb: 'Produtos disponíveis',
   },
   {
     path: 'shipped',
-    name: 'Disponíveis',
-    component: AvailableProductsPage,
+    name: 'Enviados por Sellers',
+    component: ShippedBySellersProductsPage,
     layout: PrivateRoute,
     breadcrumb: 'Produtos disponíveis',
   },
@@ -43,7 +43,7 @@ export default [
   {
     path: '/products/sales',
     component: SalesProductsPage,
-    breadcrumb: 'Produtos disponíveis',
+    breadcrumb: 'Produtos a venda',
     layout: PrivateRoute,
   },
   {
@@ -55,7 +55,7 @@ export default [
   {
     path: '/products/shipped',
     component: ShippedBySellersProductsPage,
-    breadcrumb: 'Produtos disponíveis',
+    breadcrumb: 'Produtos Enviados por Sellers',
     layout: PrivateRoute,
   },
 ];
