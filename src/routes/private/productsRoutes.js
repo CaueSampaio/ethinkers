@@ -4,40 +4,58 @@ import SalesProductsPage from '../../views/containers/ProductsPage/containers/Sa
 import AvailableProductsPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage';
 import ShippedBySellersProductsPage from '../../views/containers/ProductsPage/containers/ShippedBySellersProductsPage';
 
+const routes = [
+  {
+    path: 'sales',
+    name: 'A venda',
+    component: SalesProductsPage,
+    layout: PrivateRoute,
+    breadcrumb: 'Produtos disponíveis',
+  },
+  {
+    path: 'available',
+    name: 'Enviados por Sellers',
+    component: ShippedBySellersProductsPage,
+    layout: PrivateRoute,
+    breadcrumb: 'Produtos disponíveis',
+  },
+  {
+    path: 'shipped',
+    name: 'Disponíveis',
+    component: AvailableProductsPage,
+    layout: PrivateRoute,
+    breadcrumb: 'Produtos disponíveis',
+  },
+];
+
 export default [
   {
     path: '/products',
+    exact: true,
     breadcrumb: 'Produtos',
     layout: PrivateRoute,
     menu: {
       icon: 'shop',
       name: 'Produtos',
     },
-    children: [
-      {
-        path: 'sales-products',
-        url: '/products/sales-products',
-        name: 'A Venda',
-        component: SalesProductsPage,
-        breadcrumb: 'A Venda',
-        layout: PrivateRoute,
-      },
-      {
-        path: 'available-products',
-        url: '/products/available-products',
-        name: 'Disponíveis',
-        component: AvailableProductsPage,
-        breadcrumb: 'Disponíveis',
-        layout: PrivateRoute,
-      },
-      {
-        path: 'shipped-by-sellers',
-        url: '/products/shipped-by-sellers',
-        name: 'Enviados por Sellers',
-        component: ShippedBySellersProductsPage,
-        breadcrumb: 'Enviados por Sellers',
-        layout: PrivateRoute,
-      },
-    ],
+    children: routes,
+  },
+  {
+    path: '/products/sales',
+    component: SalesProductsPage,
+    breadcrumb: 'Produtos disponíveis',
+    layout: PrivateRoute,
+  },
+  {
+    path: '/products/available',
+    component: AvailableProductsPage,
+    breadcrumb: 'Produtos disponíveis',
+    layout: PrivateRoute,
+  },
+  {
+    path: '/products/shipped',
+    component: ShippedBySellersProductsPage,
+    breadcrumb: 'Produtos disponíveis',
+    layout: PrivateRoute,
   },
 ];

@@ -10,33 +10,23 @@ class PrivateRoute extends React.Component {
       PropTypes.instanceOf(React.Component),
       PropTypes.func,
     ]),
+    children: PropTypes.array,
   };
 
   state = {};
 
-  renderComponentChildren = () => {
-    const { location, children, component } = this.props; // eslint-disable-line
-    switch (location.pathname) {
-      case '/products/sales-products':
-        return children[0].component;
-      case '/products/available-products':
-        return children[1].component;
-      case '/products/shipped-by-sellers':
-        return children[2].component;
-      default:
-        return component;
-    }
-  };
-
   render() {
-    const { component, location, children, ...rest } = this.props; // eslint-disable-line
+    const { component, children, ...rest } = this.props;
+
     return (
       <Route
+        {...rest}
         render={(props) => (
           <PrivateLayout
-            component={component || this.renderComponentChildren()}
+            component={component}
             {...props}
             {...rest}
+            childrenItems={this.props.children ? children : []} // eslint-disable-line
           />
         )}
       />

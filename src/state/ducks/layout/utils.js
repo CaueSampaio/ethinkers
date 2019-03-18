@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash';
 
 import routes from '../../../routes';
+// import { getAllDiscriminators } from '../../../utils/constants';
 import constants from './constants';
 
 const menuData = routes
@@ -16,7 +17,7 @@ const menuData = routes
         name,
         icon,
         path: path.substring(1),
-        children,
+        children: route.children ? [...children] : [],
       };
     }
     return null;
@@ -46,7 +47,6 @@ function menuFormatter(data, parentPath = '/', parentAuthority) {
 }
 
 const getMenuData = () => menuFormatter(menuData);
-
 const urlToList = (url) => {
   const urllist = url.split('/').filter((i) => i);
   return urllist.map(

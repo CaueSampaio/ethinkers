@@ -21,12 +21,10 @@ class OrdersPage extends Component {
   state = {};
 
   componentDidMount() {
-    console.log(this.props);
     const {
       actions: { listOrders },
     } = this.props;
-    const result = listOrders();
-    console.log(result);
+    listOrders();
   }
 
   render() {
@@ -48,7 +46,7 @@ class OrdersPage extends Component {
       },
     ];
 
-    const data = [
+    const dataX = [
       {
         codigo: 12344,
         nome: 'Tenis Nike Flex',
@@ -84,7 +82,7 @@ class OrdersPage extends Component {
                   };
                 }}
                 columns={columns}
-                dataSource={data}
+                dataSource={dataX}
                 minWidth={1000}
                 rowKey={(record) => record.codigo}
               />

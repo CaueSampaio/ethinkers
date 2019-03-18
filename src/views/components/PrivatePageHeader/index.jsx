@@ -22,16 +22,16 @@ class PrivatePageHeader extends Component {
       }),
     ),
     match: PropTypes.object.isRequired,
-    history: PropTypes.object,
   };
 
   state = {};
 
   renderBreadcrumbs = () => {
-    const { resourceMap, match, history } = this.props;
+    const { resourceMap, match } = this.props;
     const breadcrumbMap = getBreadcrumbMap();
+
     const urlSnippets = match.url.split('/').filter((i) => i);
-    const pathSnippets = history.location.pathname.split('/').filter((i) => i);
+    const pathSnippets = match.path.split('/').filter((i) => i);
 
     const extraBreadcrumbItems = pathSnippets.map((_, index) => {
       const url = `/${urlSnippets.slice(0, index + 1).join('/')}`;
@@ -52,6 +52,7 @@ class PrivatePageHeader extends Component {
       } else {
         displayValue = breadcrumbMap[path];
       }
+
       return (
         url !== '/home' && (
           <Breadcrumb.Item key={url}>
@@ -74,7 +75,7 @@ class PrivatePageHeader extends Component {
     return (
       <div className="page-header">
         <Row className="header-section">
-          <Breadcrumb separator="/">{this.renderBreadcrumbs()}</Breadcrumb>
+          <Breadcrumb separator=">">{this.renderBreadcrumbs()}</Breadcrumb>
         </Row>
         <h1 className="header-section title">{title}</h1>
         <div className="header-section">{content}</div>
@@ -83,7 +84,7 @@ class PrivatePageHeader extends Component {
   }
 }
 
-const mapStateToProps = ({ location }) => ({ location });
+const mapStateToProps = ({ router: { location } }) => location;
 
 const withConnect = connect(mapStateToProps);
 

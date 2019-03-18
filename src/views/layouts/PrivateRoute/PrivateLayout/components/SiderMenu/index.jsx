@@ -1,27 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Drawer } from 'antd';
+import DrawerMenu from 'rc-drawer';
+import 'rc-drawer/assets/index.css';
 
 import ApplicationMenu from './ApplicationMenu';
 
 const Wrapper = (props) => {
   const { isMobile, isCollapsed, onCollapse } = props;
+
   return isMobile ? (
-    <Drawer
-      visible={!isCollapsed}
-      placement="left"
-      onClose={() => onCollapse(true)}
-      className="drawer-menu"
-      style={{
-        padding: 0,
-        height: '100vh',
+    <DrawerMenu
+      getContainer={null}
+      level={null}
+      open={!isCollapsed}
+      onHandleClick={() => {
+        onCollapse(!isCollapsed);
+      }}
+      onMaskClick={() => {
+        onCollapse(!isCollapsed);
       }}
     >
       <ApplicationMenu
         {...props}
         isCollapsed={isMobile ? false : isCollapsed}
       />
-    </Drawer>
+    </DrawerMenu>
   ) : (
     <ApplicationMenu {...props} />
   );

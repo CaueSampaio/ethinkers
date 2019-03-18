@@ -8,6 +8,7 @@ import { Layout, Menu, Icon } from 'antd';
 import { layoutUtils } from '../../../../../../state/ducks/layout';
 
 import './style.less';
+// import { getHomeRoute } from '../../../../../../utils';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -17,12 +18,13 @@ class ApplicationMenu extends Component {
     isMobile: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
     onCollapse: PropTypes.func.isRequired,
-    // logo: PropTypes.string.isRequired,
+    logo: PropTypes.string.isRequired,
     menuData: PropTypes.array.isRequired,
+    // userData: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
   };
 
-  getMenuMatchKeys = (flatMenuKeys, paths) => {
+  getMenuMatchKeys = (flatMenuKeys, paths) =>
     paths.reduce(
       (matchKeys, path) =>
         matchKeys.concat(
@@ -30,7 +32,6 @@ class ApplicationMenu extends Component {
         ),
       [],
     );
-  };
 
   getFlatMenuKeys = (menu) =>
     menu.reduce((keys, item) => {
@@ -53,7 +54,7 @@ class ApplicationMenu extends Component {
     );
   };
 
-  renderIcon = (iconName) => <Icon type={`${iconName}`} />;
+  renderIcon = (iconName) => <Icon type={iconName} />;
 
   renderMenuLink = (item) => {
     const { location, isMobile, onCollapse } = this.props;
@@ -79,32 +80,38 @@ class ApplicationMenu extends Component {
   };
 
   renderSubMenuOrItem = (item) => {
-    const childrenItems = this.renderMenuItems(item.children);
-    if (childrenItems && childrenItems.length > 0) {
-      return (
-        <SubMenu
-          key={item.path}
-          title={
-            item.icon ? (
-              <div>
-                {this.renderIcon(item.icon)}
-                <span>{item.name}</span>
-              </div>
-            ) : (
-              item.name
-            )
-          }
-        >
-          {childrenItems}
-        </SubMenu>
-      );
+    //    const { discriminators: menuDiscriminators } = item;
+
+    // if (!menuDiscriminators.includes(userDiscriminator)) return null;
+    if (item.children && item.children.some((child) => child.name)) {
+      const childrenItems = this.renderMenuItems(item.children);
+      if (childrenItems && childrenItems.length > 0) {
+        return (
+          <SubMenu
+            title={
+              item.icon ? (
+                <span>
+                  {this.renderIcon(item.icon)}
+                  <span>{item.name}</span>
+                </span>
+              ) : (
+                item.name
+              )
+            }
+          >
+            {childrenItems}
+          </SubMenu>
+        );
+      }
+
+      return null;
     }
     return <Menu.Item key={item.path}>{this.renderMenuLink(item)}</Menu.Item>;
   };
 
   renderMenuItems = (items) => {
     if (!items) return [];
-
+    console.log(items);
     return items
       .filter((item) => item.name && !item.hideInMenu)
       .map((item) => this.renderSubMenuOrItem(item))
@@ -112,9 +119,16 @@ class ApplicationMenu extends Component {
   };
 
   render() {
-    const { isCollapsed, onCollapse, menuData } = this.props;
+    const {
+      isCollapsed,
+      onCollapse,
+      logo,
+      menuData,
+      // userData: { discriminator },
+    } = this.props;
 
     const selectedKeys = this.getSelectedMenuKeys();
+
     return (
       <Sider
         theme="dark"
@@ -128,9 +142,8 @@ class ApplicationMenu extends Component {
       >
         <Link to="/home">
           <div className="logo">
-            {/*             <img src={logo} alt="Logo" />
-             */}
-            <h1>it4solution</h1>
+            <img src={logo} alt="Logo" />
+            <h1>Logo</h1>
           </div>
         </Link>
         <Menu
@@ -145,4 +158,5 @@ class ApplicationMenu extends Component {
     );
   }
 }
+
 export default ApplicationMenu;

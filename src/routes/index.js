@@ -8,25 +8,16 @@ export const getBreadcrumbMap = () => {
   const result = {};
 
   routes.forEach((route) => {
-    if (!isEmpty(route.breadcrumb)) {
-      result[route.path] = route.breadcrumb;
-      if (route.children) {
-        route.children.map((item) => {
-          result[item.url] = item.breadcrumb;
-          return result;
-        });
-      }
-    }
+    if (!isEmpty(route.breadcrumb)) result[route.path] = route.breadcrumb;
   });
+
   return result;
 };
 
-export const getBreadCrumb = (path) => {
+export const getBreadcrumb = (path) => {
   let currentPath = path;
   while (currentPath.length) {
-    const { breadcrumb = '' } = routes.find(
-      (item) => item.path === currentPath /* eslint-disable-line */,
-    );
+    const { breadcrumb = '' } = routes.find((item) => item.path === currentPath); // eslint-disable-line
     if (breadcrumb) return breadcrumb;
 
     currentPath = currentPath.substring(0, currentPath.lastIndexOf('/'));

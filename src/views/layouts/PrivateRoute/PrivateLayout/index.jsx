@@ -11,7 +11,7 @@ import { ContainerQuery } from 'react-container-query';
 import { Helmet } from 'react-helmet';
 import { Layout } from 'antd';
 
-import { getBreadCrumb } from '../../../../routes';
+import { getBreadcrumb } from '../../../../routes';
 
 import {
   layoutActions,
@@ -61,7 +61,7 @@ class PrivateLayout extends React.Component {
     isMobile: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
     path: PropTypes.string.isRequired,
-    discriminators: PropTypes.arrayOf(PropTypes.string),
+    // discriminators: PropTypes.arrayOf(PropTypes.string),
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
@@ -140,30 +140,27 @@ class PrivateLayout extends React.Component {
       component: Component,
       ...rest
     } = this.props;
-
+    console.log(this.props);
     return (
       <ContainerQuery query={query}>
         {(params) => (
           <div className={classNames(params)}>
-            <Helmet titleTemplate="%s | it4solution">
-              <title>{getBreadCrumb(path)}</title>
+            <Helmet titleTemplate="%s | it4Solution">
+              <title>{getBreadcrumb(path)}</title>
             </Helmet>
             <Layout>
               <SiderMenu
-                // logo={logo}
+                // logo={}
                 isMobile={isMobile}
                 isCollapsed={isCollapsed}
                 onCollapse={this.handleMenuCollapse}
                 menuData={layoutUtils.getMenuData()}
+                // userData={userData}
                 location={location}
               />
               <Layout>
                 <Header style={{ padding: 0 }}>
-                  <ApplicationHeader
-                    isMobile={isMobile}
-                    isCollapsed={isCollapsed}
-                    onCollapse={this.handleMenuCollapse}
-                  />
+                  <ApplicationHeader isMobile={isMobile} />
                 </Header>
                 <Content style={{ margin: '24px 24px 0', height: '100%' }}>
                   <Component {...rest} />
