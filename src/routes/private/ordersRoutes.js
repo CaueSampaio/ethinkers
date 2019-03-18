@@ -1,25 +1,25 @@
+import PrivateRoute from '../../views/layouts/PrivateRoute';
+
 import OrdersPage from '../../views/containers/OrdersPage';
-import PrivateLayout from '../../views/layouts/PrivateLayout';
-import SalesProductsPage from '../../views/containers/ProductsPage/containers/SalesProductsPage';
+import OrderDetailsPage from '../../views/containers/OrdersPage/containers/OrderDetailsPage';
 
 export default [
   {
     path: '/orders',
+    exact: true,
     component: OrdersPage,
     breadcrumb: 'Pedidos',
-    layout: PrivateLayout,
+    layout: PrivateRoute,
     menu: {
-      icon: 'home',
+      icon: 'file-search',
       name: 'Pedidos',
     },
-    children: [
-      {
-        path: 'sales-products',
-        component: SalesProductsPage,
-        breadcrumb: 'Pedidos teste',
-        layout: PrivateLayout,
-        name: 'Pedidos teste',
-      },
-    ],
+  },
+  {
+    path: '/orders/:id',
+    exact: true,
+    component: OrderDetailsPage,
+    breadcrumb: 'Detalhes do Pedido',
+    layout: PrivateRoute,
   },
 ];

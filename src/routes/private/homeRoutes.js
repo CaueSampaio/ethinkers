@@ -1,12 +1,12 @@
 import HomePage from '../../views/containers/HomePage';
-import PrivateLayout from '../../views/layouts/PrivateLayout';
+import PrivateRoute from '../../views/layouts/PrivateRoute';
 
 export default [
   {
     path: '/home',
     component: HomePage,
     breadcrumb: 'Home',
-    layout: PrivateLayout,
+    layout: PrivateRoute,
     menu: {
       icon: 'home',
       name: 'Home',

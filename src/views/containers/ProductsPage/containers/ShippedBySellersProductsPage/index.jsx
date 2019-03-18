@@ -1,15 +1,13 @@
-/*eslint-disable*/
-import React, { Component, Fragment } from 'react';
-import { Row, Col, Dropdown, Icon, Menu } from 'antd';
+/* eslint-disable */
+import React, { Component } from 'react';
+import { Row, Col, Menu, Dropdown, Icon } from 'antd';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
-import SummaryProducts from './components/SummaryProducts';
-import SynchronizeProducts from './components/SynchronizeProducts';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 
-class SalesProductsPage extends Component {
+class ShippedBySellersProductsPage extends Component {
   state = {};
 
   render() {
@@ -88,12 +86,10 @@ class SalesProductsPage extends Component {
     };
 
     return (
-      <Fragment>
-        <PrivatePageHeader title="Produtos a Venda" />
-        <Row type="flex" gutter={24}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
-            <SummaryProducts />
-            <SynchronizeProducts />
+      <div>
+        <PrivatePageHeader title="Produtos Enviados por Sellers" />
+        <Row gutter={24}>
+          <Col span={16}>
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
@@ -104,15 +100,15 @@ class SalesProductsPage extends Component {
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+          <Col span={8}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>
           </Col>
         </Row>
-      </Fragment>
+      </div>
     );
   }
 }
 
-export default SalesProductsPage;
+export default ShippedBySellersProductsPage;

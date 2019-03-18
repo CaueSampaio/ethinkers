@@ -5,7 +5,7 @@ import pathToRegexp from 'path-to-regexp';
 
 import { Layout, Menu, Icon } from 'antd';
 
-import { layoutUtils } from '../../../../../state/ducks/layout';
+import { layoutUtils } from '../../../../../../state/ducks/layout';
 
 import './style.less';
 
@@ -22,7 +22,7 @@ class ApplicationMenu extends Component {
     location: PropTypes.object.isRequired,
   };
 
-  getMenuMatchKeys = (flatMenuKeys, paths) =>
+  getMenuMatchKeys = (flatMenuKeys, paths) => {
     paths.reduce(
       (matchKeys, path) =>
         matchKeys.concat(
@@ -30,6 +30,7 @@ class ApplicationMenu extends Component {
         ),
       [],
     );
+  };
 
   getFlatMenuKeys = (menu) =>
     menu.reduce((keys, item) => {
