@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Layout, Row, Col, Form, Input } from 'antd';
+import { Layout, Row, Col, Form, Input, Button } from 'antd';
+
+import './style.less';
 
 class LoginPage extends Component {
   handleSubmit = (e) => {
@@ -15,9 +17,10 @@ class LoginPage extends Component {
   };
 
   render() {
-    const { form } = this.props;
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
     const { Content } = Layout;
-    const { getFieldDecorator } = form;
     return (
       <Layout>
         <Content>
@@ -34,6 +37,36 @@ class LoginPage extends Component {
                       },
                     ],
                   })(<Input placeholder="Email" />)}
+                </Form.Item>
+                <Form.Item>
+                  {getFieldDecorator('password', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Por favor insira sua senha!',
+                      },
+                    ],
+                  })(<Input type="password" placeholder="Senha" />)}
+                </Form.Item>
+                <Form.Item>
+                  <a className="login-form-forgot" href="forgot.html">
+                    Esqueceu sua senha?
+                  </a>
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="login-form-button"
+                  >
+                    LOGIN
+                  </Button>
+                </Form.Item>
+                <Form.Item>
+                  <p>
+                    Ainda não possui uma conta?
+                    <a href="new-user.html">Cadastre-se</a>
+                  </p>
                 </Form.Item>
               </Form>
             </Col>
