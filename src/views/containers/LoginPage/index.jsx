@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
@@ -22,23 +23,29 @@ class LoginPage extends Component {
     } = this.props;
     const { Content } = Layout;
     return (
-      <Layout>
-        <Content>
-          <Row>
-            <Col span={14}>Col 1</Col>
-            <Col span={10}>
+      <Layout style={{margin: "0px", background: "#fff"}}>
+        <Content style={{height:"100vh"}}>
+          <Row type="flex" justify="center" align="middle">
+            <Col type="flex" justify="center" align="middle" className="logo-container" span={14}>
+              <img src="src/assets/img/white-logo.png"></img>
+            </Col>
+            <Col type="flex" justify="center" className="login-container" span={10}>
               <Form onSubmit={this.handleSubmit} className="login-form">
-                <Form.Item>
+                <Form.Item className="login-form-field" label="Email">
                   {getFieldDecorator('userEmail', {
                     rules: [
                       {
-                        required: true,
-                        message: 'Por favor insira seu email!',
+                        type: 'email',
+                        message: 'Por favor insira um email válido.',
                       },
+                      {
+                        required: true,
+                        message: 'Por favor insira seu email.',
+                      }
                     ],
                   })(<Input placeholder="Email" />)}
                 </Form.Item>
-                <Form.Item>
+                <Form.Item className="login-form-field" label="Senha">
                   {getFieldDecorator('password', {
                     rules: [
                       {
