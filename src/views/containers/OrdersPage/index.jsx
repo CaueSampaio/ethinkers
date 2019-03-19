@@ -16,7 +16,6 @@ class OrdersPage extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    data: PropTypes.array,
   };
 
   state = {};
@@ -29,7 +28,6 @@ class OrdersPage extends Component {
   }
 
   render() {
-    const { data } = this.props;
     const columns = [
       {
         title: 'Código',
@@ -65,7 +63,7 @@ class OrdersPage extends Component {
         marca: 'Nike',
       },
     ];
-    console.log(data);
+
     return (
       <div>
         <PrivatePageHeader title="Pedidos" />

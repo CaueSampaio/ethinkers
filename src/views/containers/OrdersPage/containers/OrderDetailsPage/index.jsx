@@ -14,7 +14,7 @@ class OrderDetailsPage extends Component {
 
   renderResourceMap = () => {
     const consumer = { name: 'oi', id: '123' };
-    console.log(getHeaderResourceName(consumer, 'name', 'id'));
+
     return [getHeaderResourceName(consumer, 'name', 'id')];
   };
 

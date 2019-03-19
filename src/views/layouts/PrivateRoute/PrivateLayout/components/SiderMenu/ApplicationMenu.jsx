@@ -8,7 +8,6 @@ import { Layout, Menu, Icon } from 'antd';
 import { layoutUtils } from '../../../../../../state/ducks/layout';
 
 import './style.less';
-// import { getHomeRoute } from '../../../../../../utils';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -80,9 +79,6 @@ class ApplicationMenu extends Component {
   };
 
   renderSubMenuOrItem = (item) => {
-    //    const { discriminators: menuDiscriminators } = item;
-
-    // if (!menuDiscriminators.includes(userDiscriminator)) return null;
     if (item.children && item.children.some((child) => child.name)) {
       const childrenItems = this.renderMenuItems(item.children);
       if (childrenItems && childrenItems.length > 0) {
@@ -111,7 +107,7 @@ class ApplicationMenu extends Component {
 
   renderMenuItems = (items) => {
     if (!items) return [];
-    console.log(items);
+
     return items
       .filter((item) => item.name && !item.hideInMenu)
       .map((item) => this.renderSubMenuOrItem(item))
@@ -140,7 +136,7 @@ class ApplicationMenu extends Component {
         className="sider"
         width={272}
       >
-        <Link to="/home">
+        <Link to="/orders">
           <div className="logo">
             <img src={logo} alt="Logo" />
             <h1>Logo</h1>

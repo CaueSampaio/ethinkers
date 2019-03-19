@@ -54,7 +54,7 @@ class ApplicationHeader extends Component {
     return (
       <div className="header">
         {isMobile && [
-          <Link to="/home" className="header-logo" key="logo">
+          <Link to="/orders" className="header-logo" key="logo">
             {/*             <img src={logo} alt="Logo" width="32" />
              */}
           </Link>,

@@ -160,7 +160,11 @@ class PrivateLayout extends React.Component {
               />
               <Layout>
                 <Header style={{ padding: 0 }}>
-                  <ApplicationHeader isMobile={isMobile} />
+                  <ApplicationHeader
+                    isMobile={isMobile}
+                    isCollapsed={isCollapsed}
+                    onCollapse={this.handleMenuCollapse}
+                  />
                 </Header>
                 <Content style={{ margin: '24px 24px 0', height: '100%' }}>
                   <Component {...rest} />

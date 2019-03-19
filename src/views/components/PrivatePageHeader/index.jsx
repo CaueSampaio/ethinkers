@@ -54,18 +54,16 @@ class PrivatePageHeader extends Component {
       }
 
       return (
-        url !== '/home' && (
-          <Breadcrumb.Item key={url}>
-            <Link to={url}>{displayValue}</Link>
-          </Breadcrumb.Item>
-        )
+        <Breadcrumb.Item key={url}>
+          <Link to={url}>{displayValue}</Link>
+        </Breadcrumb.Item>
       );
     });
 
     return [
-      <Breadcrumb.Item key="home">
+      /*  <Breadcrumb.Item key="home">
         <Link to="/home">home</Link>
-      </Breadcrumb.Item>,
+      </Breadcrumb.Item>, */
     ].concat(extraBreadcrumbItems);
   };
 
