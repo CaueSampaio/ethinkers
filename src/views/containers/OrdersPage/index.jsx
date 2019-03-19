@@ -11,11 +11,14 @@ import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
+import { spinnerAtrr } from '../../components/MySpinner';
 
 class OrdersPage extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    data: PropTypes.array.isRequired,
+    isLoading: PropTypes.bool.isRequired,
   };
 
   state = {};
@@ -28,39 +31,43 @@ class OrdersPage extends Component {
   }
 
   render() {
+    const { data, isLoading } = this.props;
+
     const columns = [
       {
         title: 'Código',
-        dataIndex: 'codigo',
+        dataIndex: 'orderNumber',
         key: 'codigo',
       },
       {
-        title: 'Nome',
-        dataIndex: 'nome',
-        key: 'nome',
+        title: 'Data',
+        dataIndex: 'date',
+        key: 'date',
       },
       {
-        title: 'Marca',
-        dataIndex: 'marca',
-        key: 'marca',
-      },
-    ];
-
-    const dataX = [
-      {
-        codigo: 12344,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
+        title: 'Cliente',
+        dataIndex: 'customer.firstName',
+        key: 'customer',
       },
       {
-        codigo: 1444,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
+        title: 'Canal',
+        dataIndex: 'channel.name',
+        key: 'channel',
       },
       {
-        codigo: 1944,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
+        title: 'Valor',
+        dataIndex: 'totalNetValue',
+        key: 'totalNetValue',
+      },
+      {
+        title: 'Pagamento',
+        dataIndex: 'paymentType',
+        key: 'paymentType',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
       },
     ];
 
@@ -68,7 +75,7 @@ class OrdersPage extends Component {
       <div>
         <PrivatePageHeader title="Pedidos" />
         <Row type="flex" gutter={16}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
             <PrivatePageSection>
               <StandardTable
                 onRow={(record) => { // eslint-disable-line
@@ -77,18 +84,19 @@ class OrdersPage extends Component {
                       const {
                         history: { push },
                       } = this.props;
-                      push(`/orders/${record.codigo}`);
+                      push(`/orders/${record.OrderNumber}`);
                     }, // click row
                   };
                 }}
                 columns={columns}
-                dataSource={dataX}
+                dataSource={data}
                 minWidth={1000}
-                rowKey={(record) => record.codigo}
+                rowKey={(record) => record.orderNumber}
+                loading={isLoading && spinnerAtrr}
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>

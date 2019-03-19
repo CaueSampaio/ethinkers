@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 
 import { Divider, Dropdown, Avatar, Menu, Icon } from 'antd';
 
+import logo from '../../../../../../assets/images/logo/colorful-logo.svg';
+
 import './style.less';
 
 class ApplicationHeader extends Component {
@@ -49,14 +51,13 @@ class ApplicationHeader extends Component {
   };
 
   render() {
-    const { logo, isMobile, isCollapsed } = this.props;
+    const { isMobile, isCollapsed } = this.props;
 
     return (
       <div className="header">
         {isMobile && [
           <Link to="/orders" className="header-logo" key="logo">
-            {/*             <img src={logo} alt="Logo" width="32" />
-             */}
+            <img src={logo} alt="Logo" width="25" />
           </Link>,
           <Divider type="vertical" key="divider" />,
         ]}

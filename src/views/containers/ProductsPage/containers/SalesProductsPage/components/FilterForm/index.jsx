@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Row, Form, Input, Button, Select } from 'antd';
+import { Row, Form, Input, Button, Select, Col } from 'antd';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import StyledButtonFilter from '../../../../../../components/StyledButtonFilter';
@@ -36,78 +36,100 @@ class FilterForm extends Component {
           <Button className="btn-clear">Limpar</Button>
         </Row>
         <Form className="form-filters" layout="vertical">
-          <StyledFormItem label="Nome:">
-            {getFieldDecorator('name', {})(<Input />)}
-          </StyledFormItem>
-          <StyledFormItem label="Marcas:">
-            {getFieldDecorator('brand', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Categorias:">
-            {getFieldDecorator('categories', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Canal de Venda:">
-            {getFieldDecorator('categories', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Ref do Produto:">
-            {getFieldDecorator('categories', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Código do produto:">
-            {getFieldDecorator('categories', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Empresa fornecedora:">
-            {getFieldDecorator('categories', {})(
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                // onChange={handleChange}
-              >
-                {children}
-              </Select>,
-            )}
-          </StyledFormItem>
-          <StyledFormItem label="Status:">
-            {getFieldDecorator('status', {})(<Input />)}
-          </StyledFormItem>
+          <Row gutter={24}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Nome:">
+                {getFieldDecorator('name', {})(<Input />)}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Marcas:">
+                {getFieldDecorator('brand', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Categorias:">
+                {getFieldDecorator('categories', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Canal de Venda:">
+                {getFieldDecorator('categories', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Ref do Produto:">
+                {getFieldDecorator('categories', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Código do produto:">
+                {getFieldDecorator('categories', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+              <StyledFormItem label="Empresa fornecedora:">
+                {getFieldDecorator('categories', {})(
+                  <Select
+                    mode="multiple"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+              <StyledFormItem label="Status:">
+                {getFieldDecorator('status', {})(<Input />)}
+              </StyledFormItem>
+            </Col>
+          </Row>
           <Form.Item>
             <StyledButtonFilter text="Buscar" />
           </Form.Item>

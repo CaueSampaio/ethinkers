@@ -19,7 +19,7 @@ import {
   layoutUtils,
 } from '../../../../state/ducks/layout';
 
-// import logo from '../../../../assets/images/logo-ic.svg';
+import logo from '../../../../assets/images/logo/it4-ic.svg';
 import SiderMenu from './components/SiderMenu';
 import ApplicationHeader from './components/ApplicationHeader';
 // import ApplicationFooter from './components/ApplicationFooter';
@@ -140,7 +140,7 @@ class PrivateLayout extends React.Component {
       component: Component,
       ...rest
     } = this.props;
-    console.log(this.props);
+
     return (
       <ContainerQuery query={query}>
         {(params) => (
@@ -150,7 +150,7 @@ class PrivateLayout extends React.Component {
             </Helmet>
             <Layout>
               <SiderMenu
-                // logo={}
+                logo={logo}
                 isMobile={isMobile}
                 isCollapsed={isCollapsed}
                 onCollapse={this.handleMenuCollapse}

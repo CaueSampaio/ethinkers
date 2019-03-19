@@ -1,10 +1,10 @@
 import types from './types';
-import { get } from '../../../utils/request';
+import { get, getQueryParams } from '../../../utils/request';
 
-function listOrders() {
+function listOrders(data) {
   return {
     type: types.LIST_ORDERS,
-    promise: get('/orders'),
+    promise: get(`/orders${getQueryParams(data)}`),
   };
 }
 

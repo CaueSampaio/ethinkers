@@ -92,7 +92,7 @@ class AvailableProductsPage extends Component {
         <PrivatePageHeader title="Produtos Disponíveis" />
         <SendProductToChannelCard />
         <Row type="flex" gutter={24}>
-          <Col span={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
@@ -103,7 +103,7 @@ class AvailableProductsPage extends Component {
               />
             </PrivatePageSection>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>

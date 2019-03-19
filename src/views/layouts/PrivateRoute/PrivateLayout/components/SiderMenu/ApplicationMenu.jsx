@@ -53,7 +53,7 @@ class ApplicationMenu extends Component {
     );
   };
 
-  renderIcon = (iconName) => <Icon type={iconName} />;
+  renderIcon = (iconName) => <Icon type={`${iconName}`} />;
 
   renderMenuLink = (item) => {
     const { location, isMobile, onCollapse } = this.props;
@@ -84,6 +84,7 @@ class ApplicationMenu extends Component {
       if (childrenItems && childrenItems.length > 0) {
         return (
           <SubMenu
+            key={item.path}
             title={
               item.icon ? (
                 <span>
@@ -139,7 +140,7 @@ class ApplicationMenu extends Component {
         <Link to="/orders">
           <div className="logo">
             <img src={logo} alt="Logo" />
-            <h1>Logo</h1>
+            <h1>SOLUTION</h1>
           </div>
         </Link>
         <Menu
