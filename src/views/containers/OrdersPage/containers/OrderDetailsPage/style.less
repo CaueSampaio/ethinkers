@@ -1,11 +1,20 @@
 .content-client-data {
+  margin-bottom: 0;
   background-image: linear-gradient(#fff, #f2f9ff);
-  color: white;
-   h3 {
+  h3 {
     text-transform: uppercase;
     font-weight: 700;
     font-size: 18px;
+    color: #324d81;
+  }
+  .personal-info,
+  .address-info {
     color: white;
+  }
+  .label-info {
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 600;
   }
 }
 .card-order-data {
@@ -29,9 +38,9 @@
   }
   .payment-status {
     text-transform: uppercase;
-    font-size: 15px;
-    color: #72beb0;
-    font-weight: 600;
+    font-size: 14px;
+    color: #6cbaab;
+    font-weight: 400;
   }
   .payment-method {
     > span,
@@ -44,14 +53,15 @@
       font-weight: 640;
     }
     > p {
-      color: #858283;
+      color: #7e7b7b;
+      font-weight: 200;
     }
     > p::after {
       content: '';
       padding: 8px;
       display: block;
       width: 50%;
-      border-bottom: 2px dashed #f2f4f7;
+      border-bottom: 2px dashed #e7e8e9;
     }
   }
   .prices {
@@ -68,4 +78,12 @@
     font-size: 17px;
     color: #0d0d0d;
   }
+}
+.btn-prev {
+  margin-left: -26px;
+  box-shadow: 0 2px 4px rgba(0, 21, 41, 0.08);
+}
+.btn-next {
+  margin-right: -26px;
+  box-shadow: 0 2px 4px rgba(0, 21, 41, 0.08);
 }

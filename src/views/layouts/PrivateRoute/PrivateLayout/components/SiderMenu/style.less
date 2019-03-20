@@ -25,14 +25,12 @@
     vertical-align: middle;
   }
 }
-.drawer-menu {
-  padding: 0;
-}
+
 .sider {
-  position: relative;
-  z-index: 10;
   min-height: 100vh;
   box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+  position: relative;
+  z-index: 10;
   &.fixSiderBar {
     position: fixed;
     top: 0;
@@ -42,13 +40,6 @@
       .ant-menu-root {
         height: ~'calc(100vh - @{nav-header-height})';
         overflow-y: auto;
-      }
-      .ant-menu-inline {
-        border-right: 0;
-        .ant-menu-item,
-        .ant-menu-submenu-title {
-          width: 100%;
-        }
       }
     }
   }
@@ -101,8 +92,8 @@
   }
   .ant-menu-item .sider-menu-item-img + span,
   .ant-menu-submenu-title .sider-menu-item-img + span {
-    opacity: 1;
     transition: opacity 0.3s @ease-in-out, width 0.3s @ease-in-out;
+    opacity: 1;
   }
 }
 .ant-drawer-body {

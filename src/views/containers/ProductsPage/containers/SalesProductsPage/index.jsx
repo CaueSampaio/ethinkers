@@ -91,7 +91,7 @@ class SalesProductsPage extends Component {
       <Fragment>
         <PrivatePageHeader title="Produtos a Venda" />
         <Row type="flex" gutter={24}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <SummaryProducts />
             <SynchronizeProducts />
             <PrivatePageSection>
@@ -104,7 +104,7 @@ class SalesProductsPage extends Component {
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={7}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>

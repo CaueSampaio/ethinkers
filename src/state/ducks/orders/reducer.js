@@ -24,6 +24,27 @@ function listOrdersReducer(state = listOrdersInitialState, action) {
   }
 }
 
+const findOrderInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+function findOrderReducer(state = findOrderInitialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.FIND_ORDER:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listOrders: listOrdersReducer,
+  findOrder: findOrderReducer,
 });

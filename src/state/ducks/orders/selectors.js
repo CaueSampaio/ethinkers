@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+// LIST
 const selectOrders = ({ orders: { listOrders } }) => listOrders;
 const makeSelectOrders = () =>
   createSelector(
@@ -17,10 +18,34 @@ const makeSelectOrdersError = () =>
     ({ error }) => error,
   );
 
+// FIND
+const selectFindOrder = ({ orders: { findOrder } }) => findOrder;
+const makeSelectFindOrder = () =>
+  createSelector(
+    selectFindOrder,
+    ({ data }) => data,
+  );
+const makeSelectFindOrderIsLoading = () =>
+  createSelector(
+    selectFindOrder,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectFindOrderError = () =>
+  createSelector(
+    selectFindOrder,
+    ({ error }) => error,
+  );
+
 export default {
-  // List
+  // LIST
   selectOrders,
   makeSelectOrders,
   makeSelectOrdersIsLoading,
   makeSelectOrdersError,
+
+  // FIND
+  selectFindOrder,
+  makeSelectFindOrder,
+  makeSelectFindOrderIsLoading,
+  makeSelectFindOrderError,
 };

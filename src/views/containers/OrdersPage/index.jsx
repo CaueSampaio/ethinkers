@@ -75,7 +75,7 @@ class OrdersPage extends Component {
       <div>
         <PrivatePageHeader title="Pedidos" />
         <Row type="flex" gutter={16}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <PrivatePageSection>
               <StandardTable
                 onRow={(record) => { // eslint-disable-line
@@ -84,19 +84,19 @@ class OrdersPage extends Component {
                       const {
                         history: { push },
                       } = this.props;
-                      push(`/orders/${record.OrderNumber}`);
+                      push(`/orders/${record.orderNumber}`);
                     }, // click row
                   };
                 }}
                 columns={columns}
-                dataSource={data}
+                dataSource={data.results}
                 minWidth={1000}
                 rowKey={(record) => record.orderNumber}
                 loading={isLoading && spinnerAtrr}
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={7}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>

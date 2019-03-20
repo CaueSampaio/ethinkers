@@ -128,14 +128,14 @@ class ApplicationMenu extends Component {
 
     return (
       <Sider
-        theme="dark"
         trigger={null}
         collapsible
         collapsed={isCollapsed}
-        onCollapse={onCollapse}
         breakpoint="lg"
-        className="sider"
-        width={272}
+        onCollapse={onCollapse}
+        width={256}
+        theme="dark"
+        className="sider fixSiderbar"
       >
         <Link to="/orders">
           <div className="logo">

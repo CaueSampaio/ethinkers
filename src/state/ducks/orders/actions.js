@@ -8,6 +8,14 @@ function listOrders(data) {
   };
 }
 
+function findOrder(id) {
+  return {
+    type: types.FIND_ORDER,
+    promise: get(`/orders/${id}`),
+  };
+}
+
 export default {
   listOrders,
+  findOrder,
 };

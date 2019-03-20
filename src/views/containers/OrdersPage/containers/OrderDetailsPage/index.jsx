@@ -1,7 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import { Card, Row, Col } from 'antd';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { Card, Row, Col, Button, Icon } from 'antd';
 
 import { getHeaderResourceName } from '../../../../../utils';
+import {
+  ordersActions,
+  ordersSelectors,
+} from '../../../../../state/ducks/orders';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
@@ -9,8 +17,32 @@ import ProductsList from './components/ProductsList';
 
 import './style.less';
 
+let i = 0;
+const products = [
+  { name: 'oi 1', id: '1' },
+  { name: 'oi 2', id: '2' },
+  { name: 'oi 3', id: '3' },
+];
+
 class OrderDetailsPage extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+  };
+
   state = {};
+
+  componentDidMount() {
+    const {
+      match: {
+        params: { id },
+      },
+      actions: { findOrder },
+    } = this.props;
+    findOrder(id);
+    console.log(this.props);
+  }
 
   renderResourceMap = () => {
     const consumer = { name: 'oi', id: '123' };
@@ -18,27 +50,84 @@ class OrderDetailsPage extends Component {
     return [getHeaderResourceName(consumer, 'name', 'id')];
   };
 
+  prevItem() {
+    if (i === 0) {
+      i = products.length;
+    }
+    i -= 1;
+    return products[i];
+  }
+
+  nextItem() {
+    const {
+      history: { push },
+    } = this.props;
+    i += 1; // increase i by one
+    i %= products.length; // if we've gone too high, start from `0` again
+    console.log(products[i]);
+    push(`./${products[i].id}`);
+
+    return products[i]; // give us back the item of where we are now
+  }
+
   render() {
+    console.log(this.props);
     return (
       <Fragment>
         <PrivatePageHeader
           title="Detalhes do Pedido"
           resourceMap={this.renderResourceMap()}
         />
+
         <PrivatePageSection className="content-client-data">
           <Row type="flex" gutter={24} justify="space-around">
             <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Card className="card-order-data">
                 <h3>Cliente</h3>
-                <span>oioi</span>
+                <Row gutter={24} className="personal-info">
+                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                    <span className="label-info">Nome: </span>
+                    <span>Gustavo de Gois</span>
+                  </Col>
+                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                    <span className="label-info">CPF: </span>
+                    <span>72355420041</span>
+                  </Col>
+                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                    <span className="label-info">Telefone: </span>
+                    <span>12345-6789</span>
+                  </Col>
+                </Row>
               </Card>
             </Col>
             <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Card className="card-order-data">
                 <h3>Endereço</h3>
+                <Row type="flex" className="address-info" gutter={5}>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                    <span className="label-info">Logradouro: </span>
+                    <span>Alameda dos Maracatins</span>
+                  </Col>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                    <span className="label-info">Número: </span>
+                    <span>123456789</span>
+                  </Col>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                    <span className="label-info">Complemento: </span>
+                    <span>Prédio, Bloco A</span>
+                  </Col>
+                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                    <span className="label-info">Cidade: </span>
+                    <span>São Paulo</span>
+                  </Col>
+                  <Col span={24}>
+                    <span className="label-info">Estado: </span>
+                    <span>SP</span>
+                  </Col>
+                </Row>
               </Card>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={16} xl={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <article className="payment-data">
                 <h3>Pagamento</h3>
                 <p className="payment-status">Aprovado</p>
@@ -58,10 +147,39 @@ class OrderDetailsPage extends Component {
             </Col>
           </Row>
         </PrivatePageSection>
+        <Row
+          type="flex"
+          gutter={16}
+          justify="space-between"
+          className="antd-pro-components-setting-drawer-index-handle btn-paginate"
+          align="middle"
+          style={{ top: 400, width: '100%', marginLeft: 1 }}
+        >
+          <Button className="btn-prev" onClick={() => this.prevItem()}>
+            <Icon type="left" />
+          </Button>
+          <Button className="btn-next" onClick={() => this.nextItem()}>
+            <Icon type="right" />
+          </Button>
+        </Row>
         <ProductsList />
       </Fragment>
     );
   }
 }
 
-export default OrderDetailsPage;
+const mapStateToProps = createStructuredSelector({
+  data: ordersSelectors.makeSelectFindOrder(),
+  isLoading: ordersSelectors.makeSelectFindOrderIsLoading(),
+  error: ordersSelectors.makeSelectOrdersError(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(ordersActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(OrderDetailsPage);

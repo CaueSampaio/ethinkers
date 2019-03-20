@@ -89,7 +89,7 @@ class ShippedBySellersProductsPage extends Component {
       <div>
         <PrivatePageHeader title="Produtos Enviados por Sellers" />
         <Row gutter={24}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
@@ -100,7 +100,7 @@ class ShippedBySellersProductsPage extends Component {
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={7}>
             <PrivatePageSection>
               <FilterForm />
             </PrivatePageSection>
