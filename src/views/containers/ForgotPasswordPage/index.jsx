@@ -6,7 +6,7 @@ import { Form, Input, Button } from 'antd';
 
 import './style.less';
 
-class LoginPage extends Component {
+class ForgotPasswordPage extends Component {
   handleSubmit = (e) => {
     const { validateFields } = this.props;
     e.preventDefault();
@@ -23,7 +23,7 @@ class LoginPage extends Component {
     } = this.props;
     return (
       <div>
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form onSubmit={this.handleSubmit} className="forgot-password-form">
           <Form.Item className="form-field" label="Email">
             {getFieldDecorator('userEmail', {
               rules: [
@@ -38,31 +38,12 @@ class LoginPage extends Component {
               ],
             })(<Input placeholder="Email" />)}
           </Form.Item>
-          <Form.Item className="form-field" label="Senha">
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Por favor insira sua senha!',
-                },
-              ],
-            })(<Input type="password" placeholder="Senha" />)}
-          </Form.Item>
-          <Form.Item className="login-form-forgot">
-            <Link to="/forgot-password">Esqueceu sua senha?</Link>
-          </Form.Item>
           <Form.Item>
             <Link to="/home">
               <Button type="primary" htmlType="submit" className="form-button">
-                LOGIN
+                RECUPERAR SENHA
               </Button>
             </Link>
-          </Form.Item>
-          <Form.Item>
-            <p>
-              Ainda não possui uma conta?
-              <Link to="/register"> Cadastre-se</Link>
-            </p>
           </Form.Item>
         </Form>
       </div>
@@ -70,7 +51,7 @@ class LoginPage extends Component {
   }
 }
 
-LoginPage.propTypes = {
+ForgotPasswordPage.propTypes = {
   form: PropTypes.object,
   validateFields: PropTypes.func,
   // getFieldDecorator: PropTypes.func,
@@ -78,4 +59,4 @@ LoginPage.propTypes = {
 
 const withForm = Form.create();
 
-export default compose(withForm)(LoginPage);
+export default compose(withForm)(ForgotPasswordPage);

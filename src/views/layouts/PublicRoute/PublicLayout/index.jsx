@@ -9,18 +9,20 @@ import { isUndefined } from 'lodash';
 import classNames from 'classnames';
 import { ContainerQuery } from 'react-container-query';
 import { Helmet } from 'react-helmet';
-import { Layout } from 'antd';
+import { Layout, Form, Row, Col } from 'antd';
 
-import { getBreadCrumb } from '../../../routes';
+import { getBreadCrumb } from '../../../../routes';
 
 // import { getAllDiscriminators } from '../../../../utils/constants';
 
-import { layoutActions, layoutSelectors } from '../../../state/ducks/layout';
+import { layoutActions, layoutSelectors } from '../../../../state/ducks/layout';
 
 // import { userSelectors } from '../../../../state/ducks/user';
 
-// import logo from '../../../../assets/images/logo-ic.svg';
+import logo from '../../../../assets/img/white-logo.png';
 // import ApplicationFooter from './components/ApplicationFooter';
+
+import './style.less';
 
 const { Content, Footer } = Layout;
 
@@ -49,7 +51,7 @@ const query = {
   },
 };
 
-class PrivateLayout extends React.Component {
+class PublicLayout extends React.Component {
   static propTypes = {
     component: PropTypes.oneOfType([
       PropTypes.instanceOf(React.Component),
@@ -147,9 +149,41 @@ class PrivateLayout extends React.Component {
             </Helmet>
             <Layout>
               <Layout>
-                <Content style={{ margin: '24px 24px 0', height: '100%' }}>
-                  <Component {...rest} />
-                </Content>
+                <div className="public-page">
+                  <Layout>
+                    <Content style={{ height: '100vh' }}>
+                      <Row
+                        type="flex"
+                        justify="center"
+                        align="middle"
+                        style={{ width: '100%' }}
+                      >
+                        <Col
+                          xs={24}
+                          sm={24}
+                          md={12}
+                          lg={12}
+                          xxl={14}
+                          className="logo-container"
+                        >
+                          <img className="public-logo" src={logo} alt="logo" />
+                        </Col>
+                        <Col
+                          xs={24}
+                          sm={24}
+                          md={12}
+                          lg={12}
+                          xxl={10}
+                          className="form-container"
+                        >
+                          <Content>
+                            <Component {...rest} />
+                          </Content>
+                        </Col>
+                      </Row>
+                    </Content>
+                  </Layout>
+                </div>
                 <Footer style={{ padding: 0 }}>
                   {/*                   <ApplicationFooter />
                    */}
@@ -162,6 +196,13 @@ class PrivateLayout extends React.Component {
     );
   }
 }
+
+PublicLayout.propTypes = {
+  form: PropTypes.object,
+  validateFields: PropTypes.func,
+};
+
+const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   isMobile: layoutSelectors.makeSelectIsMobile(),
@@ -179,6 +220,7 @@ const withConnect = connect(
 );
 
 export default compose(
+  withForm,
   withConnect,
   withRouter,
-)(PrivateLayout);
+)(PublicLayout);

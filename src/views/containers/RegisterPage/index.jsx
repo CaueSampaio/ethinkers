@@ -6,7 +6,11 @@ import { Form, Input, Button } from 'antd';
 
 import './style.less';
 
-class LoginPage extends Component {
+class RegisterPage extends Component {
+  state = {
+    confirmDirty: false,
+  };
+
   handleSubmit = (e) => {
     const { validateFields } = this.props;
     e.preventDefault();
@@ -17,13 +21,41 @@ class LoginPage extends Component {
     });
   };
 
+  compareToFirstPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('As senhas precisam ser iguais!');
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    const { confirmDirty } = this.state;
+    if (value && confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
     } = this.props;
     return (
       <div>
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form onSubmit={this.handleSubmit} className="register-form">
+          <Form.Item className="form-field" label="Nome">
+            {getFieldDecorator('userName', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Por favor insira seu nome.',
+                },
+              ],
+            })(<Input placeholder="Nome" />)}
+          </Form.Item>
           <Form.Item className="form-field" label="Email">
             {getFieldDecorator('userEmail', {
               rules: [
@@ -45,24 +77,31 @@ class LoginPage extends Component {
                   required: true,
                   message: 'Por favor insira sua senha!',
                 },
+                {
+                  validator: this.validateToNextPassword,
+                },
               ],
             })(<Input type="password" placeholder="Senha" />)}
           </Form.Item>
-          <Form.Item className="login-form-forgot">
-            <Link to="/forgot-password">Esqueceu sua senha?</Link>
+          <Form.Item className="form-field" label="Confirmar senha">
+            {getFieldDecorator('confirm', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Por favor, confirme sua senha',
+                },
+                {
+                  validator: this.compareToFirstPassword,
+                },
+              ],
+            })(<Input type="password" placeholder="Confirmar senha" />)}
           </Form.Item>
           <Form.Item>
             <Link to="/home">
               <Button type="primary" htmlType="submit" className="form-button">
-                LOGIN
+                CRIAR CONTA
               </Button>
             </Link>
-          </Form.Item>
-          <Form.Item>
-            <p>
-              Ainda não possui uma conta?
-              <Link to="/register"> Cadastre-se</Link>
-            </p>
           </Form.Item>
         </Form>
       </div>
@@ -70,7 +109,7 @@ class LoginPage extends Component {
   }
 }
 
-LoginPage.propTypes = {
+RegisterPage.propTypes = {
   form: PropTypes.object,
   validateFields: PropTypes.func,
   // getFieldDecorator: PropTypes.func,
@@ -78,4 +117,4 @@ LoginPage.propTypes = {
 
 const withForm = Form.create();
 
-export default compose(withForm)(LoginPage);
+export default compose(withForm)(RegisterPage);
