@@ -56,8 +56,10 @@ class ApplicationMenu extends Component {
   renderIcon = (iconName) => <Icon type={`${iconName}`} />;
 
   renderMenuLink = (item) => {
-    const { location, isMobile, onCollapse } = this.props;
+    const icon = this.renderIcon(item.icon);
     const { path, target, name } = item;
+
+    const { location, isMobile, onCollapse } = this.props;
 
     return (
       <Link
@@ -72,37 +74,35 @@ class ApplicationMenu extends Component {
             : undefined
         }
       >
-        {this.renderIcon(item.icon)}
+        {icon}
         <span>{name}</span>
       </Link>
     );
   };
 
   renderSubMenuOrItem = (item) => {
-    if (item.children && item.children.some((child) => child.name)) {
-      const childrenItems = this.renderMenuItems(item.children);
-      if (childrenItems && childrenItems.length > 0) {
-        return (
-          <SubMenu
-            key={item.path}
-            title={
-              item.icon ? (
-                <span>
-                  {this.renderIcon(item.icon)}
-                  <span>{item.name}</span>
-                </span>
-              ) : (
-                item.name
-              )
-            }
-          >
-            {childrenItems}
-          </SubMenu>
-        );
-      }
+    const childrenItems = this.renderMenuItems(item.children);
 
-      return null;
+    if (item.children && item.children.some((child) => child.name)) {
+      return (
+        <SubMenu
+          key={item.path}
+          title={
+            item.icon ? (
+              <span>
+                {this.renderIcon(item.icon)}
+                <span>{item.name}</span>
+              </span>
+            ) : (
+              item.name
+            )
+          }
+        >
+          {childrenItems}
+        </SubMenu>
+      );
     }
+
     return <Menu.Item key={item.path}>{this.renderMenuLink(item)}</Menu.Item>;
   };
 
@@ -137,12 +137,13 @@ class ApplicationMenu extends Component {
         theme="dark"
         className="sider fixSiderbar"
       >
-        <Link to="/orders">
-          <div className="logo">
+        <div className="logo">
+          <Link to="/orders">
             <img src={logo} alt="Logo" />
             <h1>SOLUTION</h1>
-          </div>
-        </Link>
+          </Link>
+        </div>
+
         <Menu
           theme="dark"
           mode="inline"

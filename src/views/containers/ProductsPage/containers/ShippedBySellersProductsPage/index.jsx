@@ -51,7 +51,7 @@ class ShippedBySellersProductsPage extends Component {
         key: 'actions',
         render: () => (
           <Dropdown overlay={itemMenu}>
-            <Icon type="ellipsis" />
+            <Icon className="ic-config" type="ellipsis" />
           </Dropdown>
         ),
       },

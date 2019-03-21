@@ -1,6 +1,8 @@
 import React from 'react';
 import { Switch, withRouter } from 'react-router-dom';
 
+import './App.less';
+
 import routes from './routes';
 
 const App = () => (

@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Form, Input, InputNumber, Select, Button, Row, Col } from 'antd';
+import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd';
+import { isEmpty } from 'lodash';
 import MaskedInput from 'react-text-mask';
 
 import { ordersActions } from '../../../../../state/ducks/orders';
@@ -13,7 +14,7 @@ import {
   brandsSelectors,
 } from '../../../../../state/ducks/brands';
 
-import { cpfValidator } from '../../../../../utils/validators/maskedInput';
+// import { cpfValidator } from '../../../../../utils/validators/maskedInput';
 import { mask, removeFieldMaskFromEvent } from '../../../../../utils/masks';
 
 import StyledFormItem from '../../../../components/StyledFormItem';
@@ -41,21 +42,10 @@ class FilterForm extends Component {
     setFieldsValue({ cpf: '' });
   };
 
-  handleFilterOrders = () => {
-    const {
-      actions: { listOrders },
-      form: { validateFields },
-    } = this.props;
-    validateFields(async (err, values) => {
-      if (err) return;
-      const result = listOrders(values);
-      console.log(result);
-    });
-  };
-
   render() {
     const {
       form: { getFieldDecorator },
+      handleSubmit,
       brands,
     } = this.props;
 
@@ -71,18 +61,18 @@ class FilterForm extends Component {
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="Código:">
-                {getFieldDecorator('orderNumber', {})(
-                  <InputNumber style={{ width: '100%' }} />,
-                )}
+                {getFieldDecorator('orderNumber', {
+                  initialValue: '',
+                })(<InputNumber style={{ width: '100%' }} />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="CPF:">
                 {getFieldDecorator('cpf', {
+                  initialValue: '',
                   rules: [
                     {
                       message: 'Preencha o campo CPF corretamente.',
-                      validator: cpfValidator,
                     },
                   ],
                   getValueFromEvent: removeFieldMaskFromEvent,
@@ -90,8 +80,10 @@ class FilterForm extends Component {
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Primeiro nome do Cliente:">
-                {getFieldDecorator('firstName', {})(<Input />)}
+              <StyledFormItem label="Nome do Cliente:">
+                {getFieldDecorator('firstName', {
+                  initialValue: '',
+                })(<Input />)}
               </StyledFormItem>
             </Col>
           </Row>
@@ -100,24 +92,24 @@ class FilterForm extends Component {
               <StyledFormItem label="Canal de venda:">
                 {getFieldDecorator('channel', {})(
                   <Select>
-                    {brands.map((brand) => (
-                      <Option key={brand.Id}>{brand.Name}</Option>
-                    ))}
+                    {!isEmpty(brands) &&
+                      brands.results.map((brand) => (
+                        <Option key={brand.Id}>{brand.Name}</Option>
+                      ))}
                   </Select>,
                 )}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={24}>
               <StyledFormItem label="Status:">
-                {getFieldDecorator('status', {})(<Input />)}
+                {getFieldDecorator('status', {
+                  initialValue: '',
+                })(<Input />)}
               </StyledFormItem>
             </Col>
           </Row>
           <Form.Item>
-            <StyledButtonFilter
-              text="Buscar"
-              onClick={this.handleFilterOrders}
-            />
+            <StyledButtonFilter text="Buscar" onClick={handleSubmit} />
           </Form.Item>
         </Form>
       </div>
@@ -128,7 +120,7 @@ class FilterForm extends Component {
 FilterForm.propTypes = {
   form: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
-
+  handleSubmit: PropTypes.func,
   brands: PropTypes.array.isRequired,
 };
 

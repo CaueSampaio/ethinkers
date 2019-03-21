@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { Divider, Dropdown, Avatar, Menu, Icon } from 'antd';
 
 import logo from '../../../../../../assets/images/logo/colorful-logo.svg';
+import NotificationsPopover from './components/NotificationsPopover';
 
 import './style.less';
 
@@ -61,12 +62,13 @@ class ApplicationHeader extends Component {
           </Link>,
           <Divider type="vertical" key="divider" />,
         ]}
-        <span className="trigger" onClick={this.toggle}>
-          <Icon type={isCollapsed ? 'menu-unfold' : 'menu-fold'} />
-        </span>
+        <Icon
+          className="trigger"
+          type={isCollapsed ? 'menu-unfold' : 'menu-fold'}
+          onClick={this.toggle}
+        />
         <div className="right">
-          {/*  <NotificationsPopover /> */}
-
+          <NotificationsPopover />
           <Dropdown overlay={this.renderCurrentUserMenu()}>
             <span className="action account">
               <Avatar size="small" className="avatar" icon="user" />

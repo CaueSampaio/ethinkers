@@ -1,0 +1,82 @@
+@import '~antd/lib/style/themes/default.less';
+
+.ant-popover-inner-content {
+  padding: 0;
+}
+
+.ant-list-empty-text {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.description {
+  span,
+  p {
+    font-size: 13px;
+  }
+}
+
+.ic-mail {
+  border-radius: 5px;
+  color: #a8a8a8;
+}
+
+.notifications {
+  .ant-list-item-meta-title {
+    font-size: 13px;
+  }
+  .ant-list-item-meta-description {
+    line-height: 15px;
+  }
+
+  .footer {
+    text-align: center;
+  }
+  .anticon-mail,
+  .ic-mail {
+    font-size: 12px;
+  }
+  .item {
+    margin-top: 2px;
+  }
+  @media (min-width: 600px) {
+    .ant-spin-container {
+      overflow-y: none;
+    }
+    .ant-spin-container {
+      max-height: 460px;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+    .item {
+      padding: 5px 4px;
+      border-left: 1.5px solid #ffc388;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .item {
+      padding: 3px 5px;
+      border-left: 1.5px solid #ffc388;
+    }
+  }
+
+  .item {
+    .ant-list-item-content {
+      flex-direction: column;
+    }
+
+    .date-time {
+      margin: 7px 0 0 0;
+      font-size: 11px;
+      color: #b1b1b1;
+    }
+  }
+
+  .item:hover {
+    background-color: @item-hover-bg;
+  }
+
+  width: 350px;
+  padding: -12px -16px;
+}

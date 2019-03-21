@@ -41,7 +41,6 @@ class OrderDetailsPage extends Component {
       actions: { findOrder },
     } = this.props;
     findOrder(id);
-    console.log(this.props);
   }
 
   renderResourceMap = () => {
@@ -62,16 +61,15 @@ class OrderDetailsPage extends Component {
     const {
       history: { push },
     } = this.props;
-    i += 1; // increase i by one
-    i %= products.length; // if we've gone too high, start from `0` again
+    i += 1;
+    i %= products.length;
     console.log(products[i]);
     push(`./${products[i].id}`);
 
-    return products[i]; // give us back the item of where we are now
+    return products[i];
   }
 
   render() {
-    console.log(this.props);
     return (
       <Fragment>
         <PrivatePageHeader

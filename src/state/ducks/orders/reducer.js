@@ -6,7 +6,7 @@ import types from './types';
 const listOrdersInitialState = {
   error: null,
   isLoading: false,
-  data: [],
+  data: {},
 };
 function listOrdersReducer(state = listOrdersInitialState, action) {
   const { type, payload } = action;

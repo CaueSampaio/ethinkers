@@ -8,6 +8,8 @@ import SendProductToChannelCard from './components/SendProductToChannelCard';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 
+import './style.less';
+
 class AvailableProductsPage extends Component {
   state = {};
 
@@ -53,7 +55,7 @@ class AvailableProductsPage extends Component {
         key: 'actions',
         render: () => (
           <Dropdown overlay={itemMenu}>
-            <Icon type="ellipsis" />
+            <Icon className="ic-config" type="ellipsis" />
           </Dropdown>
         ),
       },

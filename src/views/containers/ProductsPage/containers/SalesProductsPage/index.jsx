@@ -10,7 +10,9 @@ import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 
 class SalesProductsPage extends Component {
-  state = {};
+  state = {
+    selectedProducts: [],
+  };
 
   render() {
     const itemMenu = (
@@ -53,7 +55,7 @@ class SalesProductsPage extends Component {
         key: 'actions',
         render: () => (
           <Dropdown overlay={itemMenu}>
-            <Icon type="ellipsis" />
+            <Icon className="ic-config" type="ellipsis" />
           </Dropdown>
         ),
       },
@@ -79,13 +81,13 @@ class SalesProductsPage extends Component {
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(
-          `selectedRowKeys: ${selectedRowKeys}`,
-          'selectedRows: ',
-          selectedRows,
-        );
+        this.setState({
+          selectedProducts: selectedRows,
+        });
       },
     };
+    
+    const { selectedProducts } = this.state;
 
     return (
       <Fragment>
@@ -93,7 +95,7 @@ class SalesProductsPage extends Component {
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <SummaryProducts />
-            <SynchronizeProducts />
+            <SynchronizeProducts selectedProducts={selectedProducts} />
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}

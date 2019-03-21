@@ -1,19 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Drawer } from 'antd';
-import 'rc-drawer/assets/index.css';
 
 import ApplicationMenu from './ApplicationMenu';
 
+const getFlatMenuKeys = (menuData) => {
+  let keys = [];
+  menuData.forEach((item) => {
+    if (item.children) {
+      keys = keys.concat(getFlatMenuKeys(item.children));
+    }
+    keys.push(item.path);
+  });
+  return keys;
+};
+
 const Wrapper = (props) => {
-  const { isMobile, isCollapsed, onCollapse } = props;
+  const { isMobile, menuData, isCollapsed, onCollapse } = props;
 
   return isMobile ? (
     <Drawer
       visible={!isCollapsed}
       placement="left"
       onClose={() => onCollapse(true)}
-      className="drawer-menu"
       style={{
         padding: 0,
         height: '100vh',
@@ -21,6 +30,7 @@ const Wrapper = (props) => {
     >
       <ApplicationMenu
         {...props}
+        flatMenuKeys={getFlatMenuKeys(menuData)}
         isCollapsed={isMobile ? false : isCollapsed}
       />
     </Drawer>
@@ -33,6 +43,7 @@ Wrapper.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   isCollapsed: PropTypes.bool.isRequired,
   onCollapse: PropTypes.func.isRequired,
+  menuData: PropTypes.array,
 };
 
 export default Wrapper;
