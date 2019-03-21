@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { compose } from 'redux';
 import { Form, Input, Button } from 'antd';
 
+import hasErrors from '../../../utils/hasErrorsForm';
+
 import './style.less';
 
 class LoginPage extends Component {
@@ -19,7 +21,7 @@ class LoginPage extends Component {
 
   render() {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldsError, isFieldTouched },
     } = this.props;
     return (
       <div>
@@ -53,7 +55,16 @@ class LoginPage extends Component {
           </Form.Item>
           <Form.Item>
             <Link to="/home">
-              <Button type="primary" htmlType="submit" className="form-button">
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={
+                  hasErrors(getFieldsError()) ||
+                  !isFieldTouched('userEmail') ||
+                  !isFieldTouched('password')
+                }
+                className="form-button"
+              >
                 LOGIN
               </Button>
             </Link>
