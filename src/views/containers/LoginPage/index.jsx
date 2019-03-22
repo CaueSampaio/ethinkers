@@ -69,12 +69,6 @@ class LoginPage extends Component {
               </Button>
             </Link>
           </Form.Item>
-          <Form.Item>
-            <p>
-              Ainda não possui uma conta?
-              <Link to="/register"> Cadastre-se</Link>
-            </p>
-          </Form.Item>
         </Form>
       </div>
     );
