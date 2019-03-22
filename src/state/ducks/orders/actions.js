@@ -15,7 +15,16 @@ function findOrder(id) {
   };
 }
 
+function listOrderStatus() {
+  return {
+    type: types.LIST_ORDER_STATUS,
+    promise: get(`/orders/status`),
+  };
+}
+
 export default {
   listOrders,
   findOrder,
+
+  listOrderStatus,
 };

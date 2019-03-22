@@ -4,15 +4,17 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd';
-import { isEmpty } from 'lodash';
+// import { isEmpty } from 'lodash';
 import MaskedInput from 'react-text-mask';
-
-import { ordersActions } from '../../../../../state/ducks/orders';
 
 import {
   brandsActions,
   brandsSelectors,
 } from '../../../../../state/ducks/brands';
+import {
+  ordersActions,
+  ordersSelectors,
+} from '../../../../../state/ducks/orders';
 
 // import { cpfValidator } from '../../../../../utils/validators/maskedInput';
 import { mask, removeFieldMaskFromEvent } from '../../../../../utils/masks';
@@ -27,12 +29,13 @@ const { Option } = Select;
 class FilterForm extends Component {
   state = {};
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const {
-      actions: { listBrands },
+      actions: { listBrands, listOrderStatus },
     } = this.props;
     listBrands();
-  }
+    listOrderStatus();
+  };
 
   clearAllFields = () => {
     const {
@@ -46,9 +49,9 @@ class FilterForm extends Component {
     const {
       form: { getFieldDecorator },
       handleSubmit,
-      brands,
+      status,
     } = this.props;
-
+    console.log(this.props);
     return (
       <div className="form-filter">
         <Row type="flex" justify="space-between">
@@ -89,22 +92,27 @@ class FilterForm extends Component {
           </Row>
           <Row gutter={24}>
             <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-              <StyledFormItem label="Canal de venda:">
-                {getFieldDecorator('channel', {})(
-                  <Select>
-                    {!isEmpty(brands) &&
-                      brands.results.map((brand) => (
-                        <Option key={brand.Id}>{brand.Name}</Option>
-                      ))}
-                  </Select>,
-                )}
-              </StyledFormItem>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
               <StyledFormItem label="Status:">
                 {getFieldDecorator('status', {
                   initialValue: '',
-                })(<Input />)}
+                })(
+                  <Select
+                    showSearch
+                    placeholder="Select a person"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {status.map((item) => (
+                      <Option key={item.Id} value={item.Description}>
+                        {item.Description}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
               </StyledFormItem>
             </Col>
           </Row>
@@ -121,7 +129,7 @@ FilterForm.propTypes = {
   form: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
   handleSubmit: PropTypes.func,
-  brands: PropTypes.array.isRequired,
+  status: PropTypes.array.isRequired,
 };
 
 const withForm = Form.create();
@@ -130,6 +138,8 @@ const mapStateToProps = createStructuredSelector({
   brands: brandsSelectors.makeSelectBrands(),
   brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
   brandsError: brandsSelectors.makeSelectBrandsError(),
+
+  status: ordersSelectors.makeSelectListOrderStatus(),
 });
 
 const mapDispatchToProps = (dispatch) => ({

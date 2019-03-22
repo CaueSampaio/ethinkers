@@ -18,17 +18,14 @@ import ProductsList from './components/ProductsList';
 import './style.less';
 
 let i = 0;
-const products = [
-  { name: 'oi 1', id: '1' },
-  { name: 'oi 2', id: '2' },
-  { name: 'oi 3', id: '3' },
-];
 
 class OrderDetailsPage extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    order: PropTypes.object.isRequired,
+    orders: PropTypes.object,
   };
 
   state = {};
@@ -38,9 +35,10 @@ class OrderDetailsPage extends Component {
       match: {
         params: { id },
       },
-      actions: { findOrder },
+      actions: { findOrder, listOrders },
     } = this.props;
     findOrder(id);
+    listOrders();
   }
 
   renderResourceMap = () => {
@@ -50,26 +48,35 @@ class OrderDetailsPage extends Component {
   };
 
   prevItem() {
+    const {
+      orders,
+      history: { push },
+    } = this.props;
     if (i === 0) {
-      i = products.length;
+      i = orders.results.length;
     }
     i -= 1;
-    return products[i];
+    console.log(orders.results[i]);
+    push(`./${orders.results[i].orderNumber}`);
+    return orders.results[i];
   }
 
   nextItem() {
     const {
+      orders,
       history: { push },
     } = this.props;
     i += 1;
-    i %= products.length;
-    console.log(products[i]);
-    push(`./${products[i].id}`);
-
-    return products[i];
+    i %= orders.results.length;
+    console.log(orders.results[i]);
+    push(`./${orders.results[i].orderNumber}`);
+    return orders.results[i];
   }
 
   render() {
+    const { order } = this.props;
+    console.log(this.props);
+    console.log(order);
     return (
       <Fragment>
         <PrivatePageHeader
@@ -167,7 +174,9 @@ class OrderDetailsPage extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  data: ordersSelectors.makeSelectFindOrder(),
+  orders: ordersSelectors.makeSelectOrders(),
+
+  order: ordersSelectors.makeSelectFindOrder(),
   isLoading: ordersSelectors.makeSelectFindOrderIsLoading(),
   error: ordersSelectors.makeSelectOrdersError(),
 });

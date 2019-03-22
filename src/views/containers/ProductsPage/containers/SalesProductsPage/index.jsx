@@ -1,6 +1,14 @@
 /*eslint-disable*/
 import React, { Component, Fragment } from 'react';
-import { Row, Col, Dropdown, Icon, Menu } from 'antd';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { Row, Col, Dropdown, Icon, Menu, Avatar } from 'antd';
+
+import {
+  channelProductsActions,
+  channelProductsSelectors,
+} from '../../../../../state/ducks/channelProducts';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
@@ -13,6 +21,14 @@ class SalesProductsPage extends Component {
   state = {
     selectedProducts: [],
   };
+
+  componentDidMount() {
+    const {
+      actions: { listChannelProducts },
+    } = this.props;
+    const result = listChannelProducts();
+    console.log(result);
+  }
 
   render() {
     const itemMenu = (
@@ -36,19 +52,34 @@ class SalesProductsPage extends Component {
     );
     const columns = [
       {
+        title: 'Imagem',
+        dataIndex: 'imagem',
+        key: 'image',
+      },
+      {
         title: 'Código',
-        dataIndex: 'codigo',
-        key: 'codigo',
+        dataIndex: 'idProduct',
+        key: 'id',
       },
       {
         title: 'Nome',
-        dataIndex: 'nome',
-        key: 'nome',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
         title: 'Marca',
-        dataIndex: 'marca',
-        key: 'marca',
+        dataIndex: 'brand.name',
+        key: 'brand',
+      },
+      {
+        title: 'Categoria',
+        dataIndex: 'category.name',
+        key: 'category',
+      },
+      {
+        title: 'Canal',
+        dataIndex: 'channel.name',
+        key: 'channel',
       },
       {
         dataIndex: 'actions',
@@ -86,9 +117,10 @@ class SalesProductsPage extends Component {
         });
       },
     };
-    
-    const { selectedProducts } = this.state;
 
+    const { selectedProducts } = this.state;
+    const { channelProducts } = this.props;
+    console.log(this.props);
     return (
       <Fragment>
         <PrivatePageHeader title="Produtos a Venda" />
@@ -100,9 +132,9 @@ class SalesProductsPage extends Component {
               <StandardTable
                 minWidth={1000}
                 rowSelection={rowSelection}
-                dataSource={data}
+                dataSource={channelProducts.results}
                 columns={columns}
-                rowKey={(record) => record.codigo}
+                rowKey={(record) => record.idProduct}
               />
             </PrivatePageSection>
           </Col>
@@ -117,4 +149,16 @@ class SalesProductsPage extends Component {
   }
 }
 
-export default SalesProductsPage;
+const mapStateToProps = createStructuredSelector({
+  channelProducts: channelProductsSelectors.makeSelectChannelProducts(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(channelProductsActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(SalesProductsPage);

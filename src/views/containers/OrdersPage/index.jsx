@@ -19,7 +19,7 @@ class OrdersPage extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired,
+    orders: PropTypes.object.isRequired,
     isLoading: PropTypes.bool.isRequired,
   };
 
@@ -40,8 +40,8 @@ class OrdersPage extends Component {
 
   handleTableChange = async (pagination) => {
     const { pagination: paging } = this.state;
-    const { data } = this.props;
-    const lastId = data.results[data.results.length - 1].orderNumber;
+    const { orders } = this.props;
+    const lastId = orders.results[orders.results.length - 1].orderNumber;
 
     const currentPagination = { ...paging };
     currentPagination.current = pagination.current;
@@ -85,19 +85,23 @@ class OrdersPage extends Component {
 
     await listOrders(params);
     const {
-      data: { total },
+      orders,
+      orders: { total },
     } = this.props;
 
     const currentPagination = { ...pagination };
     currentPagination.total = total;
     currentPagination.pageSize = 30;
 
-    await this.setState({ pagination: currentPagination });
+    await this.setState({
+      pagination: currentPagination,
+      lastId: orders.results[orders.results.length - 1].orderNumber,
+    });
   };
 
   render() {
-    const { data, isLoading } = this.props;
-    const { pagination } = this.state;
+    const { orders, isLoading } = this.props;
+    const { pagination, lastId } = this.state;
 
     const columns = [
       {
@@ -151,12 +155,15 @@ class OrdersPage extends Component {
                       const {
                         history: { push },
                       } = this.props;
-                      push(`/orders/${record.orderNumber}`);
+                      push({
+                        state: { lastItem: lastId },
+                        pathname: `/orders/${record.orderNumber}`,
+                      });
                     }, // click row
                   };
                 }}
                 columns={columns}
-                dataSource={data.results}
+                dataSource={orders.results}
                 minWidth={1000}
                 rowKey={(record) => record.orderNumber}
                 pagination={pagination}
@@ -182,7 +189,7 @@ class OrdersPage extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  data: ordersSelectors.makeSelectOrders(),
+  orders: ordersSelectors.makeSelectOrders(),
   isLoading: ordersSelectors.makeSelectOrdersIsLoading(),
   error: ordersSelectors.makeSelectOrdersError(),
 });

@@ -36,6 +36,24 @@ const makeSelectFindOrderError = () =>
     ({ error }) => error,
   );
 
+// LIST STATUS
+const selectListOrderStatus = ({ orders: { listStatus } }) => listStatus;
+const makeSelectListOrderStatus = () =>
+  createSelector(
+    selectListOrderStatus,
+    ({ data }) => data,
+  );
+const makeSelectListOrderStatusIsLoading = () =>
+  createSelector(
+    selectListOrderStatus,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectListOrderStatusError = () =>
+  createSelector(
+    selectListOrderStatus,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST
   selectOrders,
@@ -48,4 +66,10 @@ export default {
   makeSelectFindOrder,
   makeSelectFindOrderIsLoading,
   makeSelectFindOrderError,
+
+  // LIST STATUS
+  selectListOrderStatus,
+  makeSelectListOrderStatus,
+  makeSelectListOrderStatusIsLoading,
+  makeSelectListOrderStatusError,
 };
