@@ -53,8 +53,11 @@ class SalesProductsPage extends Component {
     const columns = [
       {
         title: 'Imagem',
-        dataIndex: 'imagem',
+        dataIndex: 'image',
         key: 'image',
+        render: (text) => (
+          <Avatar size="large" shape="square" src={text} />
+        ),
       },
       {
         title: 'Código',
