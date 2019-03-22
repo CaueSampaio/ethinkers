@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Card, Row, Col, Button, Icon } from 'antd';
-
+import { isEmpty } from 'lodash';
 import { getHeaderResourceName } from '../../../../../utils';
+import { formatCurrency } from '../../../../../utils/masks/formatCurrency';
 import {
   ordersActions,
   ordersSelectors,
@@ -74,16 +75,16 @@ class OrderDetailsPage extends Component {
   }
 
   render() {
-    const { order } = this.props;
+    const {
+      order: { customer, delivery, payment },
+    } = this.props;
     console.log(this.props);
-    console.log(order);
     return (
       <Fragment>
         <PrivatePageHeader
           title="Detalhes do Pedido"
           resourceMap={this.renderResourceMap()}
         />
-
         <PrivatePageSection className="content-client-data">
           <Row type="flex" gutter={24} justify="space-around">
             <Col xs={24} sm={24} md={24} lg={24} xl={8}>
@@ -92,15 +93,17 @@ class OrderDetailsPage extends Component {
                 <Row gutter={24} className="personal-info">
                   <Col xs={24} sm={24} md={8} lg={8} xl={24}>
                     <span className="label-info">Nome: </span>
-                    <span>Gustavo de Gois</span>
+                    <span>{!isEmpty(customer) && customer.firstName}</span>
+                    <span> </span>
+                    <span>{!isEmpty(customer) && customer.lastName}</span>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={8} xl={24}>
                     <span className="label-info">CPF: </span>
-                    <span>72355420041</span>
+                    <span>{!isEmpty(customer) && customer.cpf}</span>
                   </Col>
                   <Col xs={24} sm={24} md={8} lg={8} xl={24}>
                     <span className="label-info">Telefone: </span>
-                    <span>12345-6789</span>
+                    <span>{!isEmpty(customer) && customer.firstPhone}</span>
                   </Col>
                 </Row>
               </Card>
@@ -111,23 +114,25 @@ class OrderDetailsPage extends Component {
                 <Row type="flex" className="address-info" gutter={5}>
                   <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                     <span className="label-info">Logradouro: </span>
-                    <span>Alameda dos Maracatins</span>
+                    <span>{!isEmpty(delivery) && delivery.address.street}</span>
                   </Col>
                   <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                     <span className="label-info">Número: </span>
-                    <span>123456789</span>
+                    <span>{!isEmpty(delivery) && delivery.address.number}</span>
                   </Col>
                   <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                     <span className="label-info">Complemento: </span>
-                    <span>Prédio, Bloco A</span>
+                    <span>
+                      {!isEmpty(delivery) && delivery.address.complement}
+                    </span>
                   </Col>
                   <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                     <span className="label-info">Cidade: </span>
-                    <span>São Paulo</span>
+                    <span>{!isEmpty(delivery) && delivery.address.city}</span>
                   </Col>
                   <Col span={24}>
                     <span className="label-info">Estado: </span>
-                    <span>SP</span>
+                    <span>{!isEmpty(delivery) && delivery.address.state}</span>
                   </Col>
                 </Row>
               </Card>
@@ -138,15 +143,24 @@ class OrderDetailsPage extends Component {
                 <p className="payment-status">Aprovado</p>
                 <Row className="payment-method">
                   <span>Método de Pagamento</span>
-                  <p>Cartão de Crédito</p>
+                  <p>
+                    Cartão de
+                    <span> </span>
+                    {!isEmpty(payment) && payment.paymentType}
+                  </p>
                 </Row>
                 <Row className="prices">
                   <Col>
                     <span className="freight-label">Frete:</span>
-                    <span> R$7,00</span>
+                    <span>
+                      {' '}
+                      {!isEmpty(payment) && formatCurrency(payment.paidValue)}
+                    </span>
                   </Col>
                   <span className="total-label">Valor total: </span>
-                  <span className="total-value">R$ 857,00</span>
+                  <span className="total-value">
+                    {!isEmpty(payment) && formatCurrency(payment.paidValue)}
+                  </span>
                 </Row>
               </article>
             </Col>
