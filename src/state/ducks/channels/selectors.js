@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 
-const selectChannels = ({ categories: { listChannels } }) => listChannels;
+const selectChannels = ({ channels: { listChannels } }) => listChannels;
 const makeSelectChannels = () =>
   createSelector(
     selectChannels,

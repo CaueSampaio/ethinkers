@@ -1,5 +1,7 @@
 const LIST_CATEGORIES = 'categories/LIST_CATEGORIES';
+const CLEAR_CATEGORIES = 'categories/CLEAR_CATEGORIES';
 
 export default {
   LIST_CATEGORIES,
+  CLEAR_CATEGORIES,
 };

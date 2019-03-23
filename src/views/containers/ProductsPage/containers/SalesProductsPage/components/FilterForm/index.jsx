@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { compose } from 'redux';
-import { Row, Form, Input, Button, Select, Col } from 'antd';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { isEmpty, debounce } from 'lodash';
+import { Row, Form, Input, Button, Select, Col, Spin } from 'antd';
+
+import {
+  brandsActions,
+  brandsSelectors,
+} from '../../../../../../../state/ducks/brands';
+import { categoriesActions } from '../../../../../../../state/ducks/categories';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import StyledButtonFilter from '../../../../../../components/StyledButtonFilter';
@@ -13,21 +22,48 @@ const { Option } = Select;
 class FilterForm extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+
+    brands: PropTypes.array.isRequired,
+    brandsIsLoading: PropTypes.bool.isRequired,
   };
 
-  state = {};
+  constructor(props) {
+    super(props);
+    this.handleBrandSelectSearch = debounce(this.handleBrandSelectSearch, 800);
+  }
+
+  state = {
+    brandSearch: null,
+  };
+
+  componentDidMount() {
+    this.fetchBrands();
+  }
+
+  componentWillUnmount() {
+    const {
+      actions: { clearBrands },
+    } = this.props;
+    clearBrands();
+  }
+
+  fetchBrands = async () => {
+    const {
+      actions: { listBrands, clearBrands },
+    } = this.props;
+    const { brandSearch } = this.state;
+    await clearBrands();
+    await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
+  };
 
   render() {
     const {
+      brands,
+      brandsIsLoading,
       form: { getFieldDecorator },
     } = this.props;
-
     const children = [];
-    for (let i = 10; i < 36; i += 1) {
-      children.push(
-        <Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>,
-      );
-    }
 
     return (
       <div className="form-filter">
@@ -38,13 +74,8 @@ class FilterForm extends Component {
         <Form className="form-filters" layout="vertical">
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Nome:">
-                {getFieldDecorator('name', {})(<Input />)}
-              </StyledFormItem>
-            </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Marcas:">
-                {getFieldDecorator('brand', {})(
+              <StyledFormItem label="Código do produto:">
+                {getFieldDecorator('orderNumber', {})(
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -56,8 +87,34 @@ class FilterForm extends Component {
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Nome:">
+                {getFieldDecorator('name', {})(<Input />)}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+              <StyledFormItem label="Marcas:">
+                {getFieldDecorator('idsBrand', {})(
+                  <Select
+                    mode="multiple"
+                    filterOption={false}
+                    notFoundContent={
+                      brandsIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleBrandSelectSearch}
+                    style={{ width: '100%' }}
+                  >
+                    {brands.map((brand) => (
+                      <Option key={brand.id} title={brand.name}>
+                        {brand.name}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="Categorias:">
-                {getFieldDecorator('categories', {})(
+                {getFieldDecorator('idsCategories', {})(
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -72,7 +129,7 @@ class FilterForm extends Component {
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="Canal de Venda:">
-                {getFieldDecorator('categories', {})(
+                {getFieldDecorator('idsChannels', {})(
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -85,20 +142,7 @@ class FilterForm extends Component {
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="Ref do Produto:">
-                {getFieldDecorator('categories', {})(
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    // onChange={handleChange}
-                  >
-                    {children}
-                  </Select>,
-                )}
-              </StyledFormItem>
-            </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Código do produto:">
-                {getFieldDecorator('categories', {})(
+                {getFieldDecorator('refsProducts', {})(
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -113,7 +157,7 @@ class FilterForm extends Component {
           <Row gutter={24}>
             <Col xs={24} sm={24} md={12} lg={12} xl={24}>
               <StyledFormItem label="Empresa fornecedora:">
-                {getFieldDecorator('categories', {})(
+                {getFieldDecorator('idsCompanies', {})(
                   <Select
                     mode="multiple"
                     style={{ width: '100%' }}
@@ -141,4 +185,25 @@ class FilterForm extends Component {
 
 const withForm = Form.create();
 
-export default compose(withForm)(FilterForm);
+const mapStateToProps = createStructuredSelector({
+  brands: brandsSelectors.makeSelectBrands(),
+  brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
+  brandsError: brandsSelectors.makeSelectBrandsError(),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(
+    { ...brandsActions, ...categoriesActions },
+    dispatch,
+  ),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withForm,
+  withConnect,
+)(FilterForm);

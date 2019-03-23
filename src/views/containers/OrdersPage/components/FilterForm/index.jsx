@@ -1,22 +1,21 @@
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd';
-// import { isEmpty } from 'lodash';
 import MaskedInput from 'react-text-mask';
 
-import {
-  brandsActions,
-  brandsSelectors,
-} from '../../../../../state/ducks/brands';
 import {
   ordersActions,
   ordersSelectors,
 } from '../../../../../state/ducks/orders';
+import {
+  channelsActions,
+  channelsSelectors,
+} from '../../../../../state/ducks/channels';
 
-// import { cpfValidator } from '../../../../../utils/validators/maskedInput';
 import { mask, removeFieldMaskFromEvent } from '../../../../../utils/masks';
 
 import StyledFormItem from '../../../../components/StyledFormItem';
@@ -31,11 +30,16 @@ class FilterForm extends Component {
 
   componentDidMount = async () => {
     const {
-      actions: { listBrands, listOrderStatus },
+      actions: { listOrderStatus },
     } = this.props;
-    listBrands();
     listOrderStatus();
+    this.fetchChannels();
   };
+
+  fetchChannels = () => {
+    const { actions: { listChannels } } = this.props;
+    listChannels();
+  }
 
   clearAllFields = () => {
     const {
@@ -50,8 +54,10 @@ class FilterForm extends Component {
       form: { getFieldDecorator },
       handleSubmit,
       status,
+      channels,
+      loadingSubmit
     } = this.props;
-    console.log(this.props);
+
     return (
       <div className="form-filter">
         <Row type="flex" justify="space-between">
@@ -91,6 +97,29 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+              <StyledFormItem label="Origem (Canal de venda):">
+                {getFieldDecorator('idChannel', {
+                  initialValue: '',
+                })(
+                  <Select
+                    showSearch
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {channels.map((item) => (
+                      <Option key={item.id} value={item.id}>
+                        {item.description}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={24}>
               <StyledFormItem label="Status:">
                 {getFieldDecorator('status', {
@@ -117,7 +146,7 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Form.Item>
-            <StyledButtonFilter text="Buscar" onClick={handleSubmit} />
+            <StyledButtonFilter loading={loadingSubmit} text="Buscar" onClick={handleSubmit} />
           </Form.Item>
         </Form>
       </div>
@@ -135,15 +164,17 @@ FilterForm.propTypes = {
 const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
-  brands: brandsSelectors.makeSelectBrands(),
-  brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
-  brandsError: brandsSelectors.makeSelectBrandsError(),
-
   status: ordersSelectors.makeSelectListOrderStatus(),
+  statusIsLoading: ordersSelectors.makeSelectFindOrderIsLoading(),
+  statusError: ordersSelectors.makeSelectListOrderStatusError(),
+
+  channels: channelsSelectors.makeSelectChannels(),
+  channelsIsLoading: channelsSelectors.makeSelectChannelsIsLoading(),
+  channelsError: channelsSelectors.makeSelectChannelsError(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ ...brandsActions, ...ordersActions }, dispatch),
+  actions: bindActionCreators({ ...ordersActions, ...channelsActions }, dispatch),
 });
 
 const withConnect = connect(

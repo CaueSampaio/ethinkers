@@ -1,10 +1,10 @@
 import types from './types';
-import { get } from '../../../utils/request';
+import { get, getQueryParams } from '../../../utils/request';
 
-function listChannels() {
+function listChannels(params) {
   return {
     type: types.LIST_CHANNELS,
-    promise: get(`channels`),
+    promise: get(`channels${getQueryParams(params)}`),
   };
 }
 

@@ -8,6 +8,13 @@ function listCategories() {
   };
 }
 
+function clearCategories() {
+  return {
+    type: types.CLEAR_CATEGORIES,
+  };
+}
+
 export default {
   listCategories,
+  clearCategories,
 };

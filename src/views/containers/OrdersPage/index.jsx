@@ -6,14 +6,13 @@ import { createStructuredSelector } from 'reselect';
 import { Row, Col } from 'antd';
 
 import { ordersActions, ordersSelectors } from '../../../state/ducks/orders';
+import { formatCurrency } from '../../../utils/masks/formatCurrency';
 
 import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../components/MySpinner';
-
-import { formatCurrency } from '../../../utils/masks/formatCurrency';
 
 class OrdersPage extends Component {
   static propTypes = {
@@ -32,6 +31,7 @@ class OrdersPage extends Component {
       firstName: '',
       status: '',
     },
+    loadingSubmit: false,
   };
 
   componentDidMount() {
@@ -58,12 +58,16 @@ class OrdersPage extends Component {
       if (err) return;
       await this.setState({
         search: { ...values },
+        loadingSubmit: true,
       });
       const params = {
         lastId,
         ...values,
       };
       await this.fetchOrders(params);
+      await this.setState({
+        loadingSubmit: false,
+      });
     });
   };
 
@@ -91,7 +95,7 @@ class OrdersPage extends Component {
 
     const currentPagination = { ...pagination };
     currentPagination.total = total;
-    currentPagination.pageSize = 30;
+    currentPagination.pageSize = 15;
 
     await this.setState({
       pagination: currentPagination,
@@ -101,7 +105,7 @@ class OrdersPage extends Component {
 
   render() {
     const { orders, isLoading } = this.props;
-    const { pagination, lastId } = this.state;
+    const { pagination, lastId, loadingSubmit } = this.state;
 
     const columns = [
       {
@@ -179,6 +183,7 @@ class OrdersPage extends Component {
                   this.filterForm = ref;
                 }}
                 handleSubmit={this.handleSubmitFilters}
+                loadingSubmit={loadingSubmit}
               />
             </PrivatePageSection>
           </Col>
