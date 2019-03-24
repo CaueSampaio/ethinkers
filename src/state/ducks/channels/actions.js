@@ -8,6 +8,29 @@ function listChannels(params) {
   };
 }
 
+function clearChannels() {
+  return {
+    type: types.CLEAR_CHANNELS,
+  };
+}
+
+function listChannelsStatus() {
+  return {
+    type: types.LIST_CHANNELS_STATUS,
+    promise: get(`channels/status`),
+  };
+}
+
+function clearChannelsStatus() {
+  return {
+    type: types.CLEAR_CHANNELS_STATUS,
+  };
+}
+
 export default {
   listChannels,
+  clearChannels,
+
+  listChannelsStatus,
+  clearChannelsStatus,
 };

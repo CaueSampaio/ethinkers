@@ -1,54 +1,189 @@
-/*eslint-disable*/
 import React, { Component } from 'react';
-import { Row, Col, Dropdown, Icon, Menu } from 'antd';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { debounce } from 'lodash';
+import { Row, Col, Dropdown, Icon, Menu, Avatar } from 'antd';
+
+import {
+  productsActions,
+  productsSelectors,
+} from '../../../../../state/ducks/products';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
 import SendProductToChannelCard from './components/SendProductToChannelCard';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
+import { spinnerAtrr } from '../../../../components/MySpinner';
 
 import './style.less';
 
 class AvailableProductsPage extends Component {
-  state = {};
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    products: PropTypes.object.isRequired,
+    productsIsLoading: PropTypes.bool.isRequired,
+  };
 
-  render() {
+  state = {
+    lastId: '',
+    // selectedProducts: [],
+    // idsProducts: [],
+    idsBrands: [],
+    idsCategories: [],
+    idsChannels: [],
+    // refsProducts: [],
+    status: [],
+    name: '',
+    loadingSubmit: false,
+    pagination: {},
+  };
+
+  constructor(props) {
+    super(props);
+    this.filterProducts = debounce(this.fetchProducts);
+  }
+
+  componentDidMount() {
+    this.fetchProducts();
+  }
+
+  onTableChange = async (pagination) => {
+    const { products } = this.props;
+    const { pagination: page } = this.state;
+    const currentPagination = { ...page };
+    currentPagination.current = pagination.current;
+    const lastItem = products.results.pop();
+
+    await this.setState({
+      pagination: currentPagination,
+      lastId: lastItem.idProduct,
+    });
+    this.filterChannelProducts();
+  };
+
+  fetchProducts = async () => {
+    const {
+      actions: { listProducts },
+    } = this.props;
+    const {
+      lastId,
+      name,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      // idsProducts,
+      // refsProducts,
+      status,
+      pagination,
+    } = this.state;
+    const params = {
+      lastId,
+      name,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      // idsProducts,
+      // refsProducts,
+      status,
+    };
+    await listProducts(params);
+
+    const {
+      products: { total },
+    } = this.props;
+
+    const currentPagination = { ...pagination };
+    currentPagination.total = total;
+    currentPagination.pageSize = 15;
+
+    await this.setState({ pagination: currentPagination });
+  };
+
+  handleSubmitFilters = (e) => {
+    e.preventDefault();
+    const {
+      actions: { listProducts },
+    } = this.props;
+    const { validateFields } = this.filterForm;
+    validateFields(async (err, values) => {
+      if (err) return;
+
+      await this.setState({
+        ...values,
+        loadingSubmit: true,
+      });
+      const params = { ...values };
+      await listProducts(params);
+      await this.setState({
+        loadingSubmit: false,
+      });
+    });
+  };
+
+  getFormRef = (ref) => {
+    this.filterForm = ref;
+  };
+
+  getTableColumns = () => {
     const itemMenu = (
       <Menu>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            1st menu item
-          </a>
+          <span>1st menu item</span>
         </Menu.Item>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            2nd menu item
-          </a>
+          <span>2nd menu item</span>
         </Menu.Item>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            3d menu item
-          </a>
+          <span>3d menu item</span>
         </Menu.Item>
       </Menu>
     );
 
-    const columns = [
+    return [
+      {
+        title: 'Imagem',
+        dataIndex: 'image',
+        key: 'imagem',
+        render: (text) => <Avatar size="large" shape="square" src={text} />,
+      },
       {
         title: 'Código',
-        dataIndex: 'codigo',
+        dataIndex: 'idProduct',
         key: 'codigo',
       },
       {
         title: 'Nome',
-        dataIndex: 'nome',
+        dataIndex: 'name',
         key: 'nome',
       },
       {
         title: 'Marca',
-        dataIndex: 'marca',
+        dataIndex: 'brand.name',
         key: 'marca',
+      },
+      {
+        title: 'Categoria',
+        dataIndex: 'category.name',
+        key: 'categoria',
+      },
+      {
+        title: 'Qtd. SKUS',
+        dataIndex: 'amountSkus',
+        key: 'skus',
+      },
+      {
+        title: 'Canais',
+        dataIndex: 'channels',
+        key: 'channels',
+        render: (channels) => channels.map((item) => item.name),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
       },
       {
         dataIndex: 'actions',
@@ -60,24 +195,14 @@ class AvailableProductsPage extends Component {
         ),
       },
     ];
+  };
 
-    const data = [
-      {
-        codigo: 12344,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-      {
-        codigo: 1444,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-      {
-        codigo: 1944,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-    ];
+  render() {
+    const { loadingSubmit, pagination } = this.state;
+    const {
+      products: { results },
+      productsIsLoading,
+    } = this.props;
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
@@ -93,21 +218,27 @@ class AvailableProductsPage extends Component {
       <div>
         <PrivatePageHeader title="Produtos Disponíveis" />
         <Row type="flex" gutter={24}>
-          <Col xs={24} sm={24} md={24} lg={24} xl={16}>
-          <SendProductToChannelCard />
+          <Col xs={24} sm={24} md={24} lg={24} xl={17}>
+            <SendProductToChannelCard />
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
                 rowSelection={rowSelection}
-                dataSource={data}
-                columns={columns}
-                rowKey={(record) => record.codigo}
+                dataSource={results}
+                columns={this.getTableColumns()}
+                rowKey={(record) => record.idProduct}
+                pagination={pagination}
+                loading={productsIsLoading && spinnerAtrr}
               />
             </PrivatePageSection>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+          <Col xs={24} sm={24} md={24} lg={24} xl={7}>
             <PrivatePageSection>
-              <FilterForm />
+              <FilterForm
+                onSubmit={this.handleSubmitFilters}
+                loading={loadingSubmit}
+                ref={this.getFormRef}
+              />
             </PrivatePageSection>
           </Col>
         </Row>
@@ -116,4 +247,17 @@ class AvailableProductsPage extends Component {
   }
 }
 
-export default AvailableProductsPage;
+const mapStateToProps = createStructuredSelector({
+  products: productsSelectors.makeSelectProducts(),
+  productsIsLoading: productsSelectors.makeSelectProductsIsLoading(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(productsActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(AvailableProductsPage);

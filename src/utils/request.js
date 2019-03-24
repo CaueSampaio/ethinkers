@@ -137,10 +137,10 @@ export const getQueryParams = (params) => {
 
 export const defaultUploadProps = () => ({
   name: 'file',
-  action: `${API}/files`,
-  headers: {
-    authorization: `Bearer ${localStorage.getItem('token')}`,
-  },
+  action: `${API}/products/import`,
+  // headers: {
+  //  authorization: `Bearer ${localStorage.getItem('token')}`,
+  // },
 });
 
 /**
