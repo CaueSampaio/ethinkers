@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -21,6 +22,13 @@ import './style.less';
 let i = 0;
 
 class OrderDetailsPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: props.order,
+    };
+  }
+
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -31,6 +39,20 @@ class OrderDetailsPage extends Component {
 
   state = {};
 
+  componentWillMount() {
+    const {
+      match: {
+        params: { id },
+      },
+      actions: { findOrder },
+    } = this.props;
+    findOrder(id).then((response) => {
+      this.setState({
+        order: response.payload,
+      });
+    });
+  }
+
   componentDidMount() {
     const {
       match: {
@@ -38,7 +60,7 @@ class OrderDetailsPage extends Component {
       },
       actions: { findOrder, listOrders },
     } = this.props;
-    findOrder(id);
+    // findOrder(id);
     listOrders();
   }
 
@@ -51,12 +73,18 @@ class OrderDetailsPage extends Component {
   prevItem() {
     const {
       orders,
+      actions: { findOrder },
       history: { push },
     } = this.props;
     if (i === 0) {
       i = orders.results.length;
     }
     i -= 1;
+    findOrder(orders.results[i].orderNumber).then((response) => {
+      this.setState({
+        order: response.payload,
+      });
+    });
     console.log(orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
@@ -65,20 +93,26 @@ class OrderDetailsPage extends Component {
   nextItem() {
     const {
       orders,
+      actions: { findOrder },
       history: { push },
     } = this.props;
     i += 1;
     i %= orders.results.length;
-    console.log(orders.results[i]);
+    findOrder(orders.results[i].orderNumber).then((response) => {
+      this.setState({
+        order: response.payload,
+      });
+    });
+    console.log('order-resukts', orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
 
   render() {
-    const {
+    let {
       order: { customer, delivery, payment },
-    } = this.props;
-    console.log(this.props);
+    } = this.state;
+    console.log(this.state);
     return (
       <Fragment>
         <PrivatePageHeader
