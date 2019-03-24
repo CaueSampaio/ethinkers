@@ -17,6 +17,8 @@ import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
 import ProductsList from './components/ProductsList';
 
+import { Animated } from 'react-animated-css';
+
 import './style.less';
 
 let i = 0;
@@ -26,6 +28,7 @@ class OrderDetailsPage extends Component {
     super(props);
     this.state = {
       order: props.order,
+      slide: true,
     };
   }
 
@@ -71,6 +74,9 @@ class OrderDetailsPage extends Component {
   };
 
   prevItem() {
+    this.setState({
+      slide: false,
+    });
     const {
       orders,
       actions: { findOrder },
@@ -82,6 +88,7 @@ class OrderDetailsPage extends Component {
     i -= 1;
     findOrder(orders.results[i].orderNumber).then((response) => {
       this.setState({
+        slide: true,
         order: response.payload,
       });
     });
@@ -91,6 +98,9 @@ class OrderDetailsPage extends Component {
   }
 
   nextItem() {
+    this.setState({
+      slide: false,
+    });
     const {
       orders,
       actions: { findOrder },
@@ -100,6 +110,7 @@ class OrderDetailsPage extends Component {
     i %= orders.results.length;
     findOrder(orders.results[i].orderNumber).then((response) => {
       this.setState({
+        slide: true,
         order: response.payload,
       });
     });
@@ -110,6 +121,7 @@ class OrderDetailsPage extends Component {
 
   render() {
     let {
+      slide,
       order: { customer, delivery, payment },
     } = this.state;
     console.log(this.state);
@@ -119,87 +131,99 @@ class OrderDetailsPage extends Component {
           title="Detalhes do Pedido"
           resourceMap={this.renderResourceMap()}
         />
-        <PrivatePageSection className="content-client-data">
-          <Row type="flex" gutter={24} justify="space-around">
-            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-              <Card className="card-order-data">
-                <h3>Cliente</h3>
-                <Row gutter={24} className="personal-info">
-                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-                    <span className="label-info">Nome: </span>
-                    <span>{!isEmpty(customer) && customer.firstName}</span>
-                    <span> </span>
-                    <span>{!isEmpty(customer) && customer.lastName}</span>
-                  </Col>
-                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-                    <span className="label-info">CPF: </span>
-                    <span>{!isEmpty(customer) && customer.cpf}</span>
-                  </Col>
-                  <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-                    <span className="label-info">Telefone: </span>
-                    <span>{!isEmpty(customer) && customer.firstPhone}</span>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-              <Card className="card-order-data">
-                <h3>Endereço</h3>
-                <Row type="flex" className="address-info" gutter={5}>
-                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-                    <span className="label-info">Logradouro: </span>
-                    <span>{!isEmpty(delivery) && delivery.address.street}</span>
-                  </Col>
-                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-                    <span className="label-info">Número: </span>
-                    <span>{!isEmpty(delivery) && delivery.address.number}</span>
-                  </Col>
-                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-                    <span className="label-info">Complemento: </span>
-                    <span>
-                      {!isEmpty(delivery) && delivery.address.complement}
-                    </span>
-                  </Col>
-                  <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-                    <span className="label-info">Cidade: </span>
-                    <span>{!isEmpty(delivery) && delivery.address.city}</span>
-                  </Col>
-                  <Col span={24}>
-                    <span className="label-info">Estado: </span>
-                    <span>{!isEmpty(delivery) && delivery.address.state}</span>
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
-              <article className="payment-data">
-                <h3>Pagamento</h3>
-                <p className="payment-status">Aprovado</p>
-                <Row className="payment-method">
-                  <span>Método de Pagamento</span>
-                  <p>
-                    Cartão de
-                    <span> </span>
-                    {!isEmpty(payment) && payment.paymentType}
-                  </p>
-                </Row>
-                <Row className="prices">
-                  <Col>
-                    <span className="freight-label">Frete:</span>
-                    <span>
-                      {' '}
+        <Animated
+          animationIn="zoomIn"
+          animationOut="zoomOut"
+          isVisible={slide}
+        >
+          <PrivatePageSection className="content-client-data">
+            <Row type="flex" gutter={24} justify="space-around">
+              <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                <Card className="card-order-data">
+                  <h3>Cliente</h3>
+                  <Row gutter={24} className="personal-info">
+                    <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                      <span className="label-info">Nome: </span>
+                      <span>{!isEmpty(customer) && customer.firstName}</span>
+                      <span> </span>
+                      <span>{!isEmpty(customer) && customer.lastName}</span>
+                    </Col>
+                    <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                      <span className="label-info">CPF: </span>
+                      <span>{!isEmpty(customer) && customer.cpf}</span>
+                    </Col>
+                    <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+                      <span className="label-info">Telefone: </span>
+                      <span>{!isEmpty(customer) && customer.firstPhone}</span>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                <Card className="card-order-data">
+                  <h3>Endereço</h3>
+                  <Row type="flex" className="address-info" gutter={5}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                      <span className="label-info">Logradouro: </span>
+                      <span>
+                        {!isEmpty(delivery) && delivery.address.street}
+                      </span>
+                    </Col>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                      <span className="label-info">Número: </span>
+                      <span>
+                        {!isEmpty(delivery) && delivery.address.number}
+                      </span>
+                    </Col>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                      <span className="label-info">Complemento: </span>
+                      <span>
+                        {!isEmpty(delivery) && delivery.address.complement}
+                      </span>
+                    </Col>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+                      <span className="label-info">Cidade: </span>
+                      <span>{!isEmpty(delivery) && delivery.address.city}</span>
+                    </Col>
+                    <Col span={24}>
+                      <span className="label-info">Estado: </span>
+                      <span>
+                        {!isEmpty(delivery) && delivery.address.state}
+                      </span>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                <article className="payment-data">
+                  <h3>Pagamento</h3>
+                  <p className="payment-status">Aprovado</p>
+                  <Row className="payment-method">
+                    <span>Método de Pagamento</span>
+                    <p>
+                      Cartão de
+                      <span> </span>
+                      {!isEmpty(payment) && payment.paymentType}
+                    </p>
+                  </Row>
+                  <Row className="prices">
+                    <Col>
+                      <span className="freight-label">Frete:</span>
+                      <span>
+                        {' '}
+                        {!isEmpty(payment) && formatCurrency(payment.paidValue)}
+                      </span>
+                    </Col>
+                    <span className="total-label">Valor total: </span>
+                    <span className="total-value">
                       {!isEmpty(payment) && formatCurrency(payment.paidValue)}
                     </span>
-                  </Col>
-                  <span className="total-label">Valor total: </span>
-                  <span className="total-value">
-                    {!isEmpty(payment) && formatCurrency(payment.paidValue)}
-                  </span>
-                </Row>
-              </article>
-            </Col>
-          </Row>
-        </PrivatePageSection>
+                  </Row>
+                </article>
+              </Col>
+            </Row>
+          </PrivatePageSection>
+        </Animated>
         <Row
           type="flex"
           gutter={16}
@@ -215,7 +239,13 @@ class OrderDetailsPage extends Component {
             <Icon type="right" />
           </Button>
         </Row>
-        <ProductsList />
+        <Animated
+          animationIn="zoomIn"
+          animationOut="zoomOut"
+          isVisible={slide}
+        >
+          <ProductsList />
+        </Animated>
       </Fragment>
     );
   }
