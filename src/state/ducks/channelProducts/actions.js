@@ -1,5 +1,5 @@
 import types from './types';
-import { get, getQueryParams, remove } from '../../../utils/request';
+import { get, getQueryParams, remove, put } from '../../../utils/request';
 
 function listChannelProducts(params) {
   return {
@@ -29,9 +29,18 @@ function listChannelProductsSummary() {
   };
 }
 
+function enableOrDisableChannelProduct(id) {
+  // TODO: validar se precisa passar o status do produto como query param
+  return {
+    type: types.ENABLE_OR_DISABLE_CHANNEL_PRODUCT,
+    promise: put(`channelproducts/${id}/status`),
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
   removeChannelProduct,
   listChannelProductsSummary,
+  enableOrDisableChannelProduct,
 };

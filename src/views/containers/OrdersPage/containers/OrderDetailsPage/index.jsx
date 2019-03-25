@@ -24,7 +24,6 @@ class OrderDetailsPage extends Component {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    order: PropTypes.object.isRequired,
     orders: PropTypes.object,
   };
 
@@ -72,8 +71,6 @@ class OrderDetailsPage extends Component {
   }
 
   render() {
-    const { order } = this.props;
-    console.log(order);
     return (
       <Fragment>
         <PrivatePageHeader

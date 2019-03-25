@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-dom';
-import { debounce } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import {
   Row,
   Col,
@@ -13,8 +13,6 @@ import {
   Icon,
   Menu,
   Avatar,
-  Button,
-  Upload,
   Modal,
   notification,
 } from 'antd';
@@ -30,8 +28,10 @@ import SummaryProducts from './components/SummaryProducts';
 import SynchronizeProducts from './components/SynchronizeProducts';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
-import UploadButton from '../../../../components/UploadButton';
+import UploadButton from './components/UploadButton';
 import { spinnerAtrr } from '../../../../components/MySpinner';
+import DetailsProductModal from './components/DetailsProductModal';
+import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
 
 const { confirm } = Modal;
 
@@ -53,6 +53,8 @@ class SalesProductsPage extends Component {
     name: '',
     loadingSubmit: false,
     pagination: {},
+    visibleModal: false,
+    idProduct: '',
   };
 
   constructor(props) {
@@ -100,6 +102,7 @@ class SalesProductsPage extends Component {
       refsProducts,
       status,
     } = this.state;
+
     const params = {
       lastId,
       name,
@@ -122,10 +125,12 @@ class SalesProductsPage extends Component {
     await this.setState({ pagination: currentPagination });
   };
 
-  showConfirmRemoveProduct = (id) => {
+  showConfirmRemoveProduct = async (e, id) => {
     const {
       actions: { removeChannelProduct, removeChannelProductIsLoading },
     } = this.props;
+
+    e.domEvent.stopPropagation();
 
     confirm({
       title: 'Deseja realmente recusar este produto?',
@@ -141,6 +146,44 @@ class SalesProductsPage extends Component {
             description: 'Produto recusado com sucesso!',
           });
           this.fetchChannelProducts();
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  showConfirmDesableProduct = (e, idProduct, status) => {
+    const {
+      actions: { enableOrDisableChannelProduct },
+      disableIsLoading,
+      disableOrEnableError
+    } = this.props;
+
+    e.domEvent.stopPropagation();
+
+    confirm({
+      title: 'Deseja realmente desabilitar este produto?',
+      okText: 'Confirmar',
+      confirmLoading: disableIsLoading,
+      content: 'Ao desabilitar, você não terá mais disponível.',
+      onOk: async () => {
+        const result = await enableOrDisableChannelProduct(idProduct);
+        if (!result.error) {
+          notification.success({
+            message: 'Sucesso',
+            description: 'Produto desabilitado com sucesso!',
+          });
+          this.fetchChannelProducts();
+        } else {
+          const {
+            message: errorMessage,
+            errors,
+          } = this.props.disableOrEnableError;
+    
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
         }
       },
       onCancel() {},
@@ -167,6 +210,27 @@ class SalesProductsPage extends Component {
     });
   };
 
+  handleOk = (e) => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = (e) => {
+    this.setState({
+      visibleModal: false,
+    });
+  };
+
+  clickRowTable = async (record) => {
+    await this.setState({
+      idProduct: record.idProduct,
+    });
+    await this.setState({
+      visibleModal: true,
+    });
+  };
+
   getItemMenu = (record) => {
     const { idProduct, status } = record;
 
@@ -176,12 +240,18 @@ class SalesProductsPage extends Component {
           <Link to={`/products/sales/${idProduct}/edit`}>Editar</Link>
         </Menu.Item>
         {(status === 12 || status === 3) && (
-          <Menu.Item onClick={() => this.showConfirmRemoveProduct(idProduct)}>
-            <span>Remover</span>
+          <Menu.Item
+            onClick={(e) => this.showConfirmRemoveProduct(e, idProduct)}
+          >
+            <span style={{ width: '100%' }}>Remover</span>
           </Menu.Item>
         )}
         {(status === 19 || status === 17) && (
-          <Menu.Item>
+          <Menu.Item
+            onClick={(e) =>
+              this.showConfirmDesableProduct(e, idProduct, status)
+            }
+          >
             <span>Desabilitar</span>
           </Menu.Item>
         )}
@@ -233,9 +303,18 @@ class SalesProductsPage extends Component {
     ];
   };
 
-  renderHeaderContent = () => <UploadButton />;
+  renderHeaderContent = () => (
+    <UploadButton textChildren="Atualizar Produtos via Planilha" />
+  );
 
   render() {
+    const { selectedProducts } = this.state;
+    const {
+      channelProducts,
+      channelsProductsIsLoading,
+      productsSummary,
+    } = this.props;
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
@@ -243,10 +322,6 @@ class SalesProductsPage extends Component {
         });
       },
     };
-
-    const { selectedProducts } = this.state;
-    const { channelProducts, channelsProductsIsLoading, productsSummary } = this.props;
-    console.log(this.props.removeChannelProductIsLoading);
 
     return (
       <Fragment>
@@ -261,6 +336,11 @@ class SalesProductsPage extends Component {
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
+                onRow={(record) => {
+                  return {
+                    onClick: () => this.clickRowTable(record),
+                  };
+                }}
                 rowSelection={rowSelection}
                 dataSource={channelProducts.results}
                 columns={this.getTableColumns()}
@@ -281,6 +361,13 @@ class SalesProductsPage extends Component {
             </PrivatePageSection>
           </Col>
         </Row>
+        {!isEmpty(this.state.idProduct) && (
+          <DetailsProductModal
+            onCancel={this.handleCancel}
+            visible={this.state.visibleModal}
+            idProduct={this.state.idProduct}
+          />
+        )}
       </Fragment>
     );
   }
@@ -292,6 +379,9 @@ const mapStateToProps = createStructuredSelector({
 
   removeChannelProductIsLoading: channelProductsSelectors.makeSelectRemoveChannelProductIsLoading(),
   removeChannelProductError: channelProductsSelectors.makeSelectRemoveChannelProductError(),
+
+  disableIsLoading: channelProductsSelectors.makeSelectEnableOrDisableProductIsLoading(),
+  disableOrEnableError: channelProductsSelectors.makeSelectEnableOrDisableProductError(),
 
   productsSummary: channelProductsSelectors.makeSelectListChannelProductSummary(),
 });

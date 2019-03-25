@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 
+// LIST PRODUCTS
 const selectChannelProducts = ({ channelProducts: { listChannelProducts } }) =>
   listChannelProducts;
 const makeSelectChannelProducts = () =>
@@ -18,6 +19,7 @@ const makeSelectChannelProductsError = () =>
     ({ error }) => error,
   );
 
+// FIND PRODUCT
 const selectFindChannelProduct = ({
   channelProducts: { findChannelProduct },
 }) => findChannelProduct;
@@ -37,6 +39,7 @@ const makeSelectFindChannelProductError = () =>
     ({ error }) => error,
   );
 
+// REMOVE PRODUCT
 const selectRemoveChannelProduct = ({
   channelProducts: { removeChannelProduct },
 }) => removeChannelProduct;
@@ -56,6 +59,7 @@ const makeSelectRemoveChannelProductError = () =>
     ({ error }) => error,
   );
 
+// LIST SUMMARY
 const selectListChannelProductSummary = ({
   channelProducts: { listSummary },
 }) => listSummary;
@@ -72,6 +76,26 @@ const makeSelectListChannelProductSummaryIsLoading = () =>
 const makeSelectListChannelProductSummaryError = () =>
   createSelector(
     selectListChannelProductSummary,
+    ({ error }) => error,
+  );
+
+// ENABLE OR DISABLE PRODUCT
+const selectEnableOrDisableProduct = ({
+  channelProducts: { enableOrDisableProduct },
+}) => enableOrDisableProduct;
+const makeSelectEnableOrDisableProduct = () =>
+  createSelector(
+    selectEnableOrDisableProduct,
+    ({ data }) => data,
+  );
+const makeSelectEnableOrDisableProductIsLoading = () =>
+  createSelector(
+    selectEnableOrDisableProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectEnableOrDisableProductError = () =>
+  createSelector(
+    selectEnableOrDisableProduct,
     ({ error }) => error,
   );
 
@@ -98,4 +122,10 @@ export default {
   makeSelectListChannelProductSummary,
   makeSelectListChannelProductSummaryIsLoading,
   makeSelectListChannelProductSummaryError,
+
+  // ENABLE OR DISABLE PRODUCT
+  selectEnableOrDisableProduct,
+  makeSelectEnableOrDisableProduct,
+  makeSelectEnableOrDisableProductIsLoading,
+  makeSelectEnableOrDisableProductError,
 };

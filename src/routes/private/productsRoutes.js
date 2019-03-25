@@ -3,7 +3,8 @@ import PrivateRoute from '../../views/layouts/PrivateRoute';
 import SalesProductsPage from '../../views/containers/ProductsPage/containers/SalesProductsPage';
 import AvailableProductsPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage';
 import ShippedBySellersProductsPage from '../../views/containers/ProductsPage/containers/ShippedBySellersProductsPage';
-import EditProductPage from '../../views/containers/ProductsPage/containers/EditProductPage';
+import EditProductPage from '../../views/containers/ProductsPage/containers/SalesProductsPage/containers/EditProductPage';
+import CreateProductPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage/containers/CreateProductPage';
 
 const routes = [
   {
@@ -65,6 +66,13 @@ export default [
     exact: true,
     component: AvailableProductsPage,
     breadcrumb: 'Produtos disponíveis',
+    layout: PrivateRoute,
+  },
+  {
+    path: '/products/available/create',
+    exact: true,
+    component: CreateProductPage,
+    breadcrumb: 'Cadastrar Produto',
     layout: PrivateRoute,
   },
   {

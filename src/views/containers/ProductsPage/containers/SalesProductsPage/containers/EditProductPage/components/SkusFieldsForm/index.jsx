@@ -27,12 +27,7 @@ class SkusFieldsForm extends Component {
 
   state = {};
 
-  callback = (key) => {
-    console.log(key);
-  };
-
   addImage = () => {
-    console.log('aq');
     const { form } = this.props;
     // can use data-binding to get
     const keys = form.getFieldValue('keysImage');
@@ -68,7 +63,6 @@ class SkusFieldsForm extends Component {
       product: { skus = [] },
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
-    console.log(skus);
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
 
@@ -118,7 +112,7 @@ class SkusFieldsForm extends Component {
     const formItems = keys.map((k) => (
       <Row type="flex" align="middle" gutter={10} style={{ marginTop: 10 }}>
         <Col span={24}>
-          <Collapse key={k} onChange={this.callback}>
+          <Collapse key={k}>
             <Panel
               header="sku"
               key={k}

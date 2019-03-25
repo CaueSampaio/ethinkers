@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty, debounce } from 'lodash';
@@ -12,7 +13,9 @@ import {
 } from '../../../../../state/ducks/products';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
+import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
+import UploadButton from './components/UploadButton';
 import SendProductToChannelCard from './components/SendProductToChannelCard';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
@@ -123,31 +126,28 @@ class AvailableProductsPage extends Component {
     });
   };
 
-  renderItemsMenu = (product) => {
-    console.log(product);
-    return (
-      <Menu>
+  renderItemsMenu = (product) => (
+    <Menu>
+      <Menu.Item>
+        <span>Editar</span>
+      </Menu.Item>
+      {isEmpty(product.channels) && (
         <Menu.Item>
-          <span>Editar</span>
+          <span>Remover</span>
         </Menu.Item>
-        {isEmpty(product.channels) && (
-          <Menu.Item>
-            <span>Remover</span>
-          </Menu.Item>
-        )}
-        {product.status === 0 && (
-          <Menu.Item>
-            <span>Habilitar</span>
-          </Menu.Item>
-        )}
-        {!isEmpty(product.channels) && (
-          <Menu.Item>
-            <span>Desabilitar</span>
-          </Menu.Item>
-        )}
-      </Menu>
-    );
-  };
+      )}
+      {product.status === 0 && (
+        <Menu.Item>
+          <span>Habilitar</span>
+        </Menu.Item>
+      )}
+      {!isEmpty(product.channels) && (
+        <Menu.Item>
+          <span>Desabilitar</span>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
 
   getFormRef = (ref) => {
     this.filterForm = ref;
@@ -206,6 +206,18 @@ class AvailableProductsPage extends Component {
     },
   ];
 
+  renderHeaderContent = () => (
+    <Row type="flex">
+      <Link to="available/create">
+        <PrivatePageHeaderButton icon="plus-circle">
+          Cadastrar Produto
+        </PrivatePageHeaderButton>
+      </Link>
+      <UploadButton textChildren="Atualizar Estoque via Planilha" />
+      <UploadButton textChildren="Atualizar Produtos via Planilha" />
+    </Row>
+  );
+
   render() {
     const { loadingSubmit, pagination } = this.state;
     const {
@@ -225,7 +237,10 @@ class AvailableProductsPage extends Component {
 
     return (
       <div>
-        <PrivatePageHeader title="Produtos Disponíveis" />
+        <PrivatePageHeader
+          title="Produtos Disponíveis"
+          content={this.renderHeaderContent()}
+        />
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <SendProductToChannelCard />

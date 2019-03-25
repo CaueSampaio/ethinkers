@@ -143,6 +143,14 @@ export const defaultUploadProps = () => ({
   // },
 });
 
+export const uploadChannelProduct = () => ({
+  name: 'file',
+  action: `${API}/channelproducst/import`,
+  // headers: {
+  //  authorization: `Bearer ${localStorage.getItem('token')}`,
+  // },
+});
+
 /**
  * Gets full URL from the specified URI that is comming from the back end
  *

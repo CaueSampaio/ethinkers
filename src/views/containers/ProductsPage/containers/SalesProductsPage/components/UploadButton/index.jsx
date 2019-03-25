@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Form, Button, Icon, Upload, message } from 'antd';
+import { Form, Icon, Upload, message } from 'antd';
 
-import { defaultUploadProps } from '../../../utils/request';
+import { uploadChannelProduct } from '../../../../../../../utils/request';
+
+import './style.less';
 
 class UploadButton extends Component {
   state = {
@@ -26,9 +28,10 @@ class UploadButton extends Component {
 
   render() {
     const { uploadingFile } = this.state;
+    const { textChildren } = this.props;
 
     const props = {
-      ...defaultUploadProps(),
+      ...uploadChannelProduct(),
       accept: '.xls, .xlsx',
       multiple: false,
       onChange: async (info) => {
@@ -55,10 +58,14 @@ class UploadButton extends Component {
 
     return (
       <Upload {...props}>
-        <Button disabled={uploadingFile}>
+        <button
+          type="submit"
+          className="private-page-header-button"
+          disabled={uploadingFile}
+        >
           <Icon type="upload" />
-          <span>Atualizar Produtos via Planilha</span>
-        </Button>
+          <span style={{ marginLeft: 5 }}>{textChildren}</span>
+        </button>
       </Upload>
     );
   }
@@ -66,6 +73,7 @@ class UploadButton extends Component {
 
 UploadButton.propTypes = {
   form: PropTypes.object.isRequired,
+  textChildren: PropTypes.string.isRequired,
 };
 
 const withForm = Form.create();

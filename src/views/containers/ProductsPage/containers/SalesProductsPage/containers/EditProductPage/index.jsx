@@ -8,16 +8,17 @@ import { Form, Button, Row, Col } from 'antd';
 import {
   channelProductsActions,
   channelProductsSelectors,
-} from '../../../../../state/ducks/channelProducts';
+} from '../../../../../../../state/ducks/channelProducts';
 
-import PrivatePageHeader from '../../../../components/PrivatePageHeader';
-import PrivatePageSection from '../../../../components/PrivatePageSection';
+import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
+import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import ProductDataFieldsForm from './components/ProductDataFieldsForm';
 
 class EditProductPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
 
     product: PropTypes.object.isRequired,
   };
@@ -32,6 +33,19 @@ class EditProductPage extends Component {
       },
     } = this.props;
     findChannelProduct(id);
+  };
+
+  handleSubmit = () => {
+    const {
+      form: { validateFields },
+    } = this.props;
+    validateFields(async (err, values) => {
+      console.log(values);
+    });
+  };
+
+  getFormRef = (ref) => {
+    this.formRef = ref;
   };
 
   render() {
@@ -58,8 +72,12 @@ class EditProductPage extends Component {
               </Col>
               <Col>
                 <Form.Item>
-                  <Button style={{ borderRadius: 50 }} type="primary">
-                    <span>Atualizar</span>
+                  <Button
+                    onClick={this.handleSubmit}
+                    style={{ borderRadius: 50 }}
+                    type="primary"
+                  >
+                    Atualizar
                   </Button>
                 </Form.Item>
               </Col>
