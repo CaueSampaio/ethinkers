@@ -122,13 +122,10 @@ class ShippedBySellersProductsPage extends Component {
     const itemMenu = (
       <Menu>
         <Menu.Item>
-          <span>1st menu item</span>
+          <span>Aceitar</span>
         </Menu.Item>
         <Menu.Item>
-          <span>2nd menu item</span>
-        </Menu.Item>
-        <Menu.Item>
-          <span>3d menu item</span>
+          <span>Recusar</span>
         </Menu.Item>
       </Menu>
     );

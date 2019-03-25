@@ -79,13 +79,11 @@ class OrdersPage extends Component {
     const {
       actions: { listOrders },
     } = this.props;
-    console.log(this.filterForm);
     const { pagination, lastId, search } = this.state;
     const params = {
       lastId,
       ...search,
     };
-    console.log(params);
 
     await listOrders(params);
     const {

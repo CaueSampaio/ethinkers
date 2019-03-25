@@ -4,8 +4,20 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { Link } from 'react-router-dom';
 import { debounce } from 'lodash';
-import { Row, Col, Dropdown, Icon, Menu, Avatar, Button, Upload } from 'antd';
+import {
+  Row,
+  Col,
+  Dropdown,
+  Icon,
+  Menu,
+  Avatar,
+  Button,
+  Upload,
+  Modal,
+  notification,
+} from 'antd';
 
 import {
   channelProductsActions,
@@ -20,6 +32,8 @@ import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import UploadButton from '../../../../components/UploadButton';
 import { spinnerAtrr } from '../../../../components/MySpinner';
+
+const { confirm } = Modal;
 
 class SalesProductsPage extends Component {
   static propTypes = {
@@ -47,6 +61,10 @@ class SalesProductsPage extends Component {
   }
 
   componentDidMount() {
+    const {
+      actions: { listChannelProductsSummary },
+    } = this.props;
+    listChannelProductsSummary();
     this.fetchChannelProducts();
   }
 
@@ -59,7 +77,7 @@ class SalesProductsPage extends Component {
     const currentPagination = { ...this.state.pagination };
     currentPagination.current = pagination.current;
     const lastItem = channelProducts.results.pop();
-    console.log(lastItem);
+
     await this.setState({
       pagination: currentPagination,
       lastId: lastItem.idProduct,
@@ -104,6 +122,31 @@ class SalesProductsPage extends Component {
     await this.setState({ pagination: currentPagination });
   };
 
+  showConfirmRemoveProduct = (id) => {
+    const {
+      actions: { removeChannelProduct, removeChannelProductIsLoading },
+    } = this.props;
+
+    confirm({
+      title: 'Deseja realmente recusar este produto?',
+      okText: 'Confirmar',
+      confirmLoading: removeChannelProductIsLoading,
+      content:
+        'Ao recusá-lo, você não terá mais acesso às informações do mesmo.',
+      onOk: async () => {
+        const result = await removeChannelProduct(id);
+        if (!result.error) {
+          notification.success({
+            message: 'Sucesso',
+            description: 'Produto recusado com sucesso!',
+          });
+          this.fetchChannelProducts();
+        }
+      },
+      onCancel() {},
+    });
+  };
+
   handleSubmitFilters = (e) => {
     e.preventDefault();
     const {
@@ -124,27 +167,29 @@ class SalesProductsPage extends Component {
     });
   };
 
-  getTableColumns = () => {
-    const itemMenu = (
+  getItemMenu = (record) => {
+    const { idProduct, status } = record;
+
+    return (
       <Menu>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            1st menu item
-          </a>
+          <Link to={`/products/sales/${idProduct}/edit`}>Editar</Link>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            2nd menu item
-          </a>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            3d menu item
-          </a>
-        </Menu.Item>
+        {(status === 12 || status === 3) && (
+          <Menu.Item onClick={() => this.showConfirmRemoveProduct(idProduct)}>
+            <span>Remover</span>
+          </Menu.Item>
+        )}
+        {(status === 19 || status === 17) && (
+          <Menu.Item>
+            <span>Desabilitar</span>
+          </Menu.Item>
+        )}
       </Menu>
     );
+  };
 
+  getTableColumns = () => {
     return [
       {
         title: 'Imagem',
@@ -178,10 +223,9 @@ class SalesProductsPage extends Component {
         key: 'channel',
       },
       {
-        dataIndex: 'actions',
         key: 'actions',
-        render: () => (
-          <Dropdown overlay={itemMenu}>
+        render: (record) => (
+          <Dropdown overlay={this.getItemMenu(record)}>
             <Icon className="ic-config" type="ellipsis" />
           </Dropdown>
         ),
@@ -201,7 +245,8 @@ class SalesProductsPage extends Component {
     };
 
     const { selectedProducts } = this.state;
-    const { channelProducts, channelsProductsIsLoading } = this.props;
+    const { channelProducts, channelsProductsIsLoading, productsSummary } = this.props;
+    console.log(this.props.removeChannelProductIsLoading);
 
     return (
       <Fragment>
@@ -211,7 +256,7 @@ class SalesProductsPage extends Component {
         />
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
-            <SummaryProducts />
+            <SummaryProducts productsSummary={productsSummary} />
             <SynchronizeProducts selectedProducts={selectedProducts} />
             <PrivatePageSection>
               <StandardTable
@@ -244,6 +289,11 @@ class SalesProductsPage extends Component {
 const mapStateToProps = createStructuredSelector({
   channelProducts: channelProductsSelectors.makeSelectChannelProducts(),
   channelsProductsIsLoading: channelProductsSelectors.makeSelectChannelProductsIsLoading(),
+
+  removeChannelProductIsLoading: channelProductsSelectors.makeSelectRemoveChannelProductIsLoading(),
+  removeChannelProductError: channelProductsSelectors.makeSelectRemoveChannelProductError(),
+
+  productsSummary: channelProductsSelectors.makeSelectListChannelProductSummary(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

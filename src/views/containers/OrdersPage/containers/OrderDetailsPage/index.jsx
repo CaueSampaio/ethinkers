@@ -56,7 +56,6 @@ class OrderDetailsPage extends Component {
       i = orders.results.length;
     }
     i -= 1;
-    console.log(orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
@@ -68,14 +67,12 @@ class OrderDetailsPage extends Component {
     } = this.props;
     i += 1;
     i %= orders.results.length;
-    console.log(orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
 
   render() {
     const { order } = this.props;
-    console.log(this.props);
     console.log(order);
     return (
       <Fragment>

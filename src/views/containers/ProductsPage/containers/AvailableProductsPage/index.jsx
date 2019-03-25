@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { debounce } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import { Row, Col, Dropdown, Icon, Menu, Avatar } from 'antd';
 
 import {
@@ -123,79 +123,88 @@ class AvailableProductsPage extends Component {
     });
   };
 
+  renderItemsMenu = (product) => {
+    console.log(product);
+    return (
+      <Menu>
+        <Menu.Item>
+          <span>Editar</span>
+        </Menu.Item>
+        {isEmpty(product.channels) && (
+          <Menu.Item>
+            <span>Remover</span>
+          </Menu.Item>
+        )}
+        {product.status === 0 && (
+          <Menu.Item>
+            <span>Habilitar</span>
+          </Menu.Item>
+        )}
+        {!isEmpty(product.channels) && (
+          <Menu.Item>
+            <span>Desabilitar</span>
+          </Menu.Item>
+        )}
+      </Menu>
+    );
+  };
+
   getFormRef = (ref) => {
     this.filterForm = ref;
   };
 
-  getTableColumns = () => {
-    const itemMenu = (
-      <Menu>
-        <Menu.Item>
-          <span>1st menu item</span>
-        </Menu.Item>
-        <Menu.Item>
-          <span>2nd menu item</span>
-        </Menu.Item>
-        <Menu.Item>
-          <span>3d menu item</span>
-        </Menu.Item>
-      </Menu>
-    );
-
-    return [
-      {
-        title: 'Imagem',
-        dataIndex: 'image',
-        key: 'imagem',
-        render: (text) => <Avatar size="large" shape="square" src={text} />,
-      },
-      {
-        title: 'Código',
-        dataIndex: 'idProduct',
-        key: 'codigo',
-      },
-      {
-        title: 'Nome',
-        dataIndex: 'name',
-        key: 'nome',
-      },
-      {
-        title: 'Marca',
-        dataIndex: 'brand.name',
-        key: 'marca',
-      },
-      {
-        title: 'Categoria',
-        dataIndex: 'category.name',
-        key: 'categoria',
-      },
-      {
-        title: 'Qtd. SKUS',
-        dataIndex: 'amountSkus',
-        key: 'skus',
-      },
-      {
-        title: 'Canais',
-        dataIndex: 'channels',
-        key: 'channels',
-        render: (channels) => channels.map((item) => item.name),
-      },
-      {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-      },
-      {
-        dataIndex: 'actions',
-        key: 'actions',
-        render: () => (
-          <Dropdown overlay={itemMenu}>
-            <Icon className="ic-config" type="ellipsis" />
-          </Dropdown>
-        ),
-      },
-    ];
-  };
+  getTableColumns = () => [
+    {
+      title: 'Imagem',
+      dataIndex: 'image',
+      key: 'imagem',
+      render: (text) => <Avatar size="large" shape="square" src={text} />,
+    },
+    {
+      title: 'Código',
+      dataIndex: 'idProduct',
+      key: 'codigo',
+    },
+    {
+      title: 'Nome',
+      dataIndex: 'name',
+      key: 'nome',
+    },
+    {
+      title: 'Marca',
+      dataIndex: 'brand.name',
+      key: 'marca',
+    },
+    {
+      title: 'Categoria',
+      dataIndex: 'category.name',
+      key: 'categoria',
+    },
+    {
+      title: 'Qtd. SKUS',
+      dataIndex: 'amountSkus',
+      key: 'skus',
+    },
+    {
+      title: 'Canais',
+      dataIndex: 'channels',
+      key: 'channels',
+      render: (channels) => channels.map((item) => item.name),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      key: 'actions',
+      render: (record) => (
+        <Dropdown overlay={this.renderItemsMenu(record)}>
+          <Icon className="ic-config" type="ellipsis" />
+        </Dropdown>
+      ),
+    },
+  ];
 
   render() {
     const { loadingSubmit, pagination } = this.state;

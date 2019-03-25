@@ -18,10 +18,84 @@ const makeSelectChannelProductsError = () =>
     ({ error }) => error,
   );
 
+const selectFindChannelProduct = ({
+  channelProducts: { findChannelProduct },
+}) => findChannelProduct;
+const makeSelectFindChannelProduct = () =>
+  createSelector(
+    selectFindChannelProduct,
+    ({ data }) => data,
+  );
+const makeSelectFindChannelProductIsLoading = () =>
+  createSelector(
+    selectFindChannelProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectFindChannelProductError = () =>
+  createSelector(
+    selectFindChannelProduct,
+    ({ error }) => error,
+  );
+
+const selectRemoveChannelProduct = ({
+  channelProducts: { removeChannelProduct },
+}) => removeChannelProduct;
+const makeSelectRemoveChannelProduct = () =>
+  createSelector(
+    selectRemoveChannelProduct,
+    ({ data }) => data,
+  );
+const makeSelectRemoveChannelProductIsLoading = () =>
+  createSelector(
+    selectRemoveChannelProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectRemoveChannelProductError = () =>
+  createSelector(
+    selectRemoveChannelProduct,
+    ({ error }) => error,
+  );
+
+const selectListChannelProductSummary = ({
+  channelProducts: { listSummary },
+}) => listSummary;
+const makeSelectListChannelProductSummary = () =>
+  createSelector(
+    selectListChannelProductSummary,
+    ({ data }) => data,
+  );
+const makeSelectListChannelProductSummaryIsLoading = () =>
+  createSelector(
+    selectListChannelProductSummary,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectListChannelProductSummaryError = () =>
+  createSelector(
+    selectListChannelProductSummary,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
   makeSelectChannelProducts,
   makeSelectChannelProductsIsLoading,
   makeSelectChannelProductsError,
+
+  // FIND PRODUCT
+  selectFindChannelProduct,
+  makeSelectFindChannelProduct,
+  makeSelectFindChannelProductIsLoading,
+  makeSelectFindChannelProductError,
+
+  // REMOVE PRODUCT
+  makeSelectRemoveChannelProduct,
+  makeSelectRemoveChannelProductIsLoading,
+  makeSelectRemoveChannelProductError,
+
+  // LIST PRODUCTS SUMMARY
+  selectListChannelProductSummary,
+  makeSelectListChannelProductSummary,
+  makeSelectListChannelProductSummaryIsLoading,
+  makeSelectListChannelProductSummaryError,
 };
