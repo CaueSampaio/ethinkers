@@ -30,7 +30,7 @@ const listStatusInitialState = {
   isLoading: false,
   data: [],
 };
-function listProductsStatus(state = listStatusInitialState, action) {
+function listProductsStatusReducer(state = listStatusInitialState, action) {
   const { payload, type } = action;
   switch (type) {
     case types.LIST_PRODUCTS_STATUS:
@@ -47,7 +47,72 @@ function listProductsStatus(state = listStatusInitialState, action) {
   }
 }
 
+const createProductInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+function createProductsReducer(state = createProductInitialState, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.CREATE_PRODUCT:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
+const editProductStatusInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+function editProductStatusReducer(
+  state = editProductStatusInitialState,
+  action,
+) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.EDIT_PRODUCT_STATUS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
+const removeProductInitialState = {
+  error: null,
+  isLoading: false,
+};
+function removeProductReducer(state = removeProductInitialState, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.REMOVE_PRODUCT:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listProducts: listProductsReducer,
-  listStatus: listProductsStatus,
+  listStatus: listProductsStatusReducer,
+  createProduct: createProductsReducer,
+  editProductStatus: editProductStatusReducer,
+  removeProduct: removeProductReducer,
 });

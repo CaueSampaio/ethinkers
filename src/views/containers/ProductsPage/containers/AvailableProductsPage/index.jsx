@@ -5,7 +5,16 @@ import { Link } from 'react-router-dom';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty, debounce } from 'lodash';
-import { Row, Col, Dropdown, Icon, Menu, Avatar } from 'antd';
+import {
+  Row,
+  Col,
+  Dropdown,
+  Icon,
+  Menu,
+  Avatar,
+  notification,
+  Modal,
+} from 'antd';
 
 import {
   productsActions,
@@ -20,14 +29,20 @@ import SendProductToChannelCard from './components/SendProductToChannelCard';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../../../components/MySpinner';
+import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
 
 import './style.less';
+
+const { confirm } = Modal;
 
 class AvailableProductsPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
     products: PropTypes.object.isRequired,
+
     productsIsLoading: PropTypes.bool.isRequired,
+    editStatusError: PropTypes.object,
+    removeProductError: PropTypes.object,
   };
 
   state = {
@@ -132,17 +147,17 @@ class AvailableProductsPage extends Component {
         <span>Editar</span>
       </Menu.Item>
       {isEmpty(product.channels) && (
-        <Menu.Item>
+        <Menu.Item onClick={(e) => this.showConfirmRemoveProduct(e, product)}>
           <span>Remover</span>
         </Menu.Item>
       )}
       {product.status === 0 && (
-        <Menu.Item>
+        <Menu.Item onClick={(e) => this.showConfirmEnableProduct(e, product)}>
           <span>Habilitar</span>
         </Menu.Item>
       )}
       {!isEmpty(product.channels) && (
-        <Menu.Item>
+        <Menu.Item onClick={(e) => this.showConfirmDisableProduct(e, product)}>
           <span>Desabilitar</span>
         </Menu.Item>
       )}
@@ -205,6 +220,96 @@ class AvailableProductsPage extends Component {
       ),
     },
   ];
+
+  showConfirmDisableProduct = (e, product) => {
+    const {
+      actions: { editProductStatus },
+      editStatusError,
+    } = this.props;
+    const { idProduct, status } = product;
+
+    confirm({
+      title: 'Deseja realmente desabilitar este produto?',
+      okText: 'Confirmar',
+      content: 'Ao desabilitar, este produto não ficará mais disponível',
+      onOk: async () => {
+        const result = await editProductStatus(idProduct, status);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto desabilitado com sucesso',
+          });
+          await this.fetchProducts();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  showConfirmRemoveProduct = (e, product) => {
+    const {
+      actions: { removeProduct },
+      removeProductError,
+    } = this.props;
+    const { idProduct } = product;
+
+    confirm({
+      title: 'Deseja realmente remover este produto?',
+      okText: 'Confirmar',
+      content: 'Ao remover, este produto não ficará mais disponível',
+      onOk: async () => {
+        const result = await removeProduct(idProduct);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto reomvido com sucesso',
+          });
+          await this.fetchProducts();
+        } else {
+          const { message: errorMessage, errors } = removeProductError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  showConfirmEnableProduct = (e, product) => {
+    const {
+      actions: { editProductStatus },
+      editStatusError,
+    } = this.props;
+    const { idProduct, status } = product;
+
+    confirm({
+      title: 'Deseja realmente habilitar este produto?',
+      okText: 'Confirmar',
+      content: 'Ao habilitar, este produto ficará disponível',
+      onOk: async () => {
+        const result = await editProductStatus(idProduct, status);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto habilitado com sucesso',
+          });
+          await this.fetchProducts();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
 
   renderHeaderContent = () => (
     <Row type="flex">
@@ -274,6 +379,12 @@ class AvailableProductsPage extends Component {
 const mapStateToProps = createStructuredSelector({
   products: productsSelectors.makeSelectProducts(),
   productsIsLoading: productsSelectors.makeSelectProductsIsLoading(),
+
+  editStatusIsLoading: productsSelectors.makeSelectEditProductStatusIsLoading(),
+  editStatusError: productsSelectors.makeSelectCreateProductError(),
+
+  removeProductIsLoading: productsSelectors.makeSelectRemoveProductIsLoading(),
+  removeProductError: productsSelectors.makeSelectRemoveProductError(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(productsActions, dispatch),

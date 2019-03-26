@@ -36,6 +36,56 @@ const makeSelectStatusError = () =>
     ({ error }) => error,
   );
 
+// CREATE PRODUCT
+const selectCreateProduct = ({ products: { createProduct } }) => createProduct;
+const makeSelectCreateProduct = () =>
+  createSelector(
+    selectCreateProduct,
+    ({ data }) => data,
+  );
+const makeSelectCreateProductIsLoading = () =>
+  createSelector(
+    selectCreateProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectCreateProductError = () =>
+  createSelector(
+    selectCreateProduct,
+    ({ error }) => error,
+  );
+
+// EDIT PRODUCT STATUS
+const selectEditProductStatus = ({ products: { editProductStatus } }) =>
+  editProductStatus;
+const makeSelectEditProductStatus = () =>
+  createSelector(
+    selectEditProductStatus,
+    ({ data }) => data,
+  );
+const makeSelectEditProductStatusIsLoading = () =>
+  createSelector(
+    selectEditProductStatus,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectEditProductStatusError = () =>
+  createSelector(
+    selectEditProductStatus,
+    ({ error }) => error,
+  );
+
+// REMOVE PRODUCT
+const selectRemoveProduct = ({ products: { removeProduct } }) => removeProduct;
+const makeSelectRemoveProductIsLoading = () =>
+  createSelector(
+    selectRemoveProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectRemoveProductError = () =>
+  createSelector(
+    selectRemoveProduct,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectProducts,
@@ -48,4 +98,21 @@ export default {
   makeSelectStatus,
   makeSelectStatusIsLoading,
   makeSelectStatusError,
+
+  // CREATE PRODUCT
+  selectCreateProduct,
+  makeSelectCreateProduct,
+  makeSelectCreateProductIsLoading,
+  makeSelectCreateProductError,
+
+  // EDIT PRODUCT STATUS
+  selectEditProductStatus,
+  makeSelectEditProductStatus,
+  makeSelectEditProductStatusIsLoading,
+  makeSelectEditProductStatusError,
+
+  // REMOVE PRODUCT
+  selectRemoveProduct,
+  makeSelectRemoveProductIsLoading,
+  makeSelectRemoveProductError,
 };

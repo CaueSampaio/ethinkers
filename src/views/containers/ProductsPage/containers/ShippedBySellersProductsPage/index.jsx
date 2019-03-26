@@ -4,7 +4,16 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { debounce } from 'lodash';
-import { Row, Col, Menu, Dropdown, Icon, Avatar } from 'antd';
+import {
+  Row,
+  Col,
+  Menu,
+  Dropdown,
+  Icon,
+  Avatar,
+  Modal,
+  notification,
+} from 'antd';
 
 import {
   channelProductsActions,
@@ -16,6 +25,9 @@ import PrivatePageSection from '../../../../components/PrivatePageSection';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../../../components/MySpinner';
+import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
+
+const { confirm } = Modal;
 
 class ShippedBySellersProductsPage extends Component {
   static propTypes = {
@@ -23,6 +35,7 @@ class ShippedBySellersProductsPage extends Component {
 
     channelProducts: PropTypes.object.isRequired,
     channelProductsIsLoading: PropTypes.bool.isRequired,
+    editStatusError: PropTypes.object,
   };
 
   state = {
@@ -114,79 +127,126 @@ class ShippedBySellersProductsPage extends Component {
     });
   };
 
+  showConfirmAcceptProduct = (e, product) => {
+    const {
+      actions: { editChannelProductStatus },
+      editStatusError,
+    } = this.props;
+    const { idProduct, status } = product;
+
+    confirm({
+      title: 'Deseja realmente aceitar este produto?',
+      okText: 'Confirmar',
+      content: 'Ao aceitá-lo, este produto ficará disponível',
+      onOk: async () => {
+        const result = await editChannelProductStatus(idProduct, status);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto aceito com sucesso',
+          });
+          await this.fetchChannelProducts();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  showConfirmRefuseProduct = (e, product) => {
+    const {
+      actions: { editChannelProductStatus },
+      editStatusError,
+    } = this.props;
+    const { idProduct, status } = product;
+
+    confirm({
+      title: 'Deseja realmente recusar este produto?',
+      okText: 'Confirmar',
+      content: 'Ao recusá-lo, este produto não ficará mais disponível',
+      onOk: async () => {
+        const result = await editChannelProductStatus(idProduct, status);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto recusado com sucesso',
+          });
+          await this.fetchChannelProducts();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
   getFormRef = (ref) => {
     this.filterForm = ref;
   };
 
-  getTableColumns = () => {
-    const itemMenu = (
-      <Menu>
-        <Menu.Item>
-          <span>Aceitar</span>
-        </Menu.Item>
-        <Menu.Item>
-          <span>Recusar</span>
-        </Menu.Item>
-      </Menu>
-    );
+  renderItemsMenu = (product) => (
+    <Menu>
+      <Menu.Item onClick={(e) => this.showConfirmAcceptProduct(e, product)}>
+        <span>Aceitar</span>
+      </Menu.Item>
+      <Menu.Item onClick={(e) => this.showConfirmRefuseProduct(e, product)}>
+        <span>Recusar</span>
+      </Menu.Item>
+    </Menu>
+  );
 
-    return [
-      {
-        title: 'Imagem',
-        dataIndex: 'image',
-        key: 'image',
-        render: (text) => <Avatar size="large" shape="square" src={text} />,
-      },
-      {
-        title: 'Código',
-        dataIndex: 'idProduct',
-        key: 'id',
-      },
-      {
-        title: 'Nome',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: 'Marca',
-        dataIndex: 'brand.name',
-        key: 'brand',
-      },
-      {
-        title: 'Categoria',
-        dataIndex: 'category.name',
-        key: 'category',
-      },
-      {
-        title: 'Canal',
-        dataIndex: 'channel.name',
-        key: 'channel',
-      },
-      {
-        dataIndex: 'actions',
-        key: 'actions',
-        render: () => (
-          <Dropdown overlay={itemMenu}>
-            <Icon className="ic-config" type="ellipsis" />
-          </Dropdown>
-        ),
-      },
-    ];
-  };
+  getTableColumns = () => [
+    {
+      title: 'Imagem',
+      dataIndex: 'image',
+      key: 'image',
+      render: (text) => <Avatar size="large" shape="square" src={text} />,
+    },
+    {
+      title: 'Código',
+      dataIndex: 'idProduct',
+      key: 'id',
+    },
+    {
+      title: 'Nome',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Marca',
+      dataIndex: 'brand.name',
+      key: 'brand',
+    },
+    {
+      title: 'Categoria',
+      dataIndex: 'category.name',
+      key: 'category',
+    },
+    {
+      title: 'Canal',
+      dataIndex: 'channel.name',
+      key: 'channel',
+    },
+    {
+      key: 'actions',
+      render: (record) => (
+        <Dropdown overlay={this.renderItemsMenu(record)}>
+          <Icon className="ic-config" type="ellipsis" />
+        </Dropdown>
+      ),
+    },
+  ];
 
   render() {
     const { channelProducts, channelProductsIsLoading } = this.props;
     const { loadingSubmit, pagination } = this.state;
-
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        console.log(
-          `selectedRowKeys: ${selectedRowKeys}`,
-          'selectedRows: ',
-          selectedRows,
-        );
-      },
-    };
 
     return (
       <div>
@@ -196,7 +256,6 @@ class ShippedBySellersProductsPage extends Component {
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
-                rowSelection={rowSelection}
                 dataSource={channelProducts.results}
                 columns={this.getTableColumns()}
                 rowKey={(record) => record.idProduct}
@@ -224,6 +283,9 @@ class ShippedBySellersProductsPage extends Component {
 const mapStateToProps = createStructuredSelector({
   channelProducts: channelProductsSelectors.makeSelectChannelProducts(),
   channelProductsIsLoading: channelProductsSelectors.makeSelectChannelProductsIsLoading(),
+
+  editStatusIsLoading: channelProductsSelectors.makeSelectEnableOrDisableProductIsLoading(),
+  editStatusError: channelProductsSelectors.makeSelectEnableOrDisableProductError(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

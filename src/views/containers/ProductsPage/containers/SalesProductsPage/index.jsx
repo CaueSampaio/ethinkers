@@ -154,7 +154,7 @@ class SalesProductsPage extends Component {
 
   showConfirmDesableProduct = (e, idProduct, status) => {
     const {
-      actions: { enableOrDisableChannelProduct },
+      actions: { editChannelProductStatus },
       disableIsLoading,
       disableOrEnableError
     } = this.props;
@@ -167,7 +167,7 @@ class SalesProductsPage extends Component {
       confirmLoading: disableIsLoading,
       content: 'Ao desabilitar, você não terá mais disponível.',
       onOk: async () => {
-        const result = await enableOrDisableChannelProduct(idProduct);
+        const result = await editChannelProductStatus(idProduct, status);
         if (!result.error) {
           notification.success({
             message: 'Sucesso',
@@ -178,7 +178,7 @@ class SalesProductsPage extends Component {
           const {
             message: errorMessage,
             errors,
-          } = this.props.disableOrEnableError;
+          } = disableOrEnableError;
     
           notification.error({
             message: errorMessage,

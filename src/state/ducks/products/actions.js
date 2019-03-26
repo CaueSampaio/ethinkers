@@ -1,5 +1,5 @@
 import types from './types';
-import { get, getQueryParams } from '../../../utils/request';
+import { get, getQueryParams, post, put, remove } from '../../../utils/request';
 
 function listProducts(params) {
   return {
@@ -21,8 +21,32 @@ function clearProductsStatus() {
   };
 }
 
+function createProduct(data) {
+  return {
+    type: types.CREATE_PRODUCT,
+    promise: post(`products`, data),
+  };
+}
+
+function editProductStatus(id, status) {
+  return {
+    type: types.EDIT_PRODUCT_STATUS,
+    promise: put(`products/${id}/status`, status),
+  };
+}
+
+function removeProduct(id) {
+  return {
+    type: types.REMOVE_PRODUCT,
+    promise: remove(`products/${id}`),
+  };
+}
+
 export default {
   listProducts,
   listProductsStatus,
   clearProductsStatus,
+  createProduct,
+  editProductStatus,
+  removeProduct,
 };
