@@ -90,17 +90,7 @@ class AccountPage extends Component {
                   <Row type="flex">
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                       <Form.Item wrapperCol={{}}>
-                        <Button
-                          style={{
-                            borderRadius: 40,
-                            marginTop: 10,
-                          }}
-                          type="primary"
-                          htmlType="submit"
-                          // loading={updateIsLoading}
-                        >
-                          Atualizar
-                        </Button>
+                        <Button>Atualizar</Button>
                       </Form.Item>
                     </Col>
                   </Row>

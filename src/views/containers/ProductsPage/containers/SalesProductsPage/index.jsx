@@ -1,9 +1,21 @@
-/*eslint-disable*/
+/* eslint-disable */
 import React, { Component, Fragment } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Row, Col, Dropdown, Icon, Menu, Avatar } from 'antd';
+import { Link } from 'react-router-dom';
+import { isEmpty, debounce } from 'lodash';
+import {
+  Row,
+  Col,
+  Dropdown,
+  Icon,
+  Menu,
+  Avatar,
+  Modal,
+  notification,
+} from 'antd';
 
 import {
   channelProductsActions,
@@ -16,45 +28,244 @@ import SummaryProducts from './components/SummaryProducts';
 import SynchronizeProducts from './components/SynchronizeProducts';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
+import UploadButton from './components/UploadButton';
+import { spinnerAtrr } from '../../../../components/MySpinner';
+import DetailsProductModal from './components/DetailsProductModal';
+import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
+
+const { confirm } = Modal;
 
 class SalesProductsPage extends Component {
-  state = {
-    selectedProducts: [],
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
   };
+
+  state = {
+    lastId: '',
+    selectedProducts: [],
+    idsProducts: [],
+    idsBrands: [],
+    idsCategories: [],
+    idsChannels: [],
+    refsProducts: [],
+    idsCompanies: [],
+    status: [],
+    name: '',
+    loadingSubmit: false,
+    pagination: {},
+    visibleModal: false,
+    idProduct: '',
+  };
+
+  constructor(props) {
+    super(props);
+    this.filterChannelProducts = debounce(this.fetchChannelProducts);
+  }
 
   componentDidMount() {
     const {
-      actions: { listChannelProducts },
+      actions: { listChannelProductsSummary },
     } = this.props;
-    const result = listChannelProducts();
-    console.log(result);
+    listChannelProductsSummary();
+    this.fetchChannelProducts();
   }
 
-  render() {
-    const itemMenu = (
+  getFormRef = (ref) => {
+    this.filterForm = ref;
+  };
+
+  onTableChange = async (pagination) => {
+    const { channelProducts } = this.props;
+    const currentPagination = { ...this.state.pagination };
+    currentPagination.current = pagination.current;
+    const lastItem = channelProducts.results.pop();
+
+    await this.setState({
+      pagination: currentPagination,
+      lastId: lastItem.idProduct,
+    });
+    this.filterChannelProducts();
+  };
+
+  fetchChannelProducts = async () => {
+    const {
+      actions: { listChannelProducts },
+    } = this.props;
+    const {
+      lastId,
+      name,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      idsProducts,
+      idsCompanies,
+      refsProducts,
+      status,
+    } = this.state;
+
+    const params = {
+      lastId,
+      name,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      idsProducts,
+      idsCompanies,
+      refsProducts,
+      status,
+    };
+    await listChannelProducts(params);
+
+    const { total } = this.props.channelProducts;
+
+    const currentPagination = { ...this.state.pagination };
+    currentPagination.total = total;
+    currentPagination.pageSize = 15;
+
+    await this.setState({ pagination: currentPagination });
+  };
+
+  showConfirmRemoveProduct = async (e, id) => {
+    const {
+      actions: { removeChannelProduct, removeChannelProductIsLoading },
+    } = this.props;
+
+    e.domEvent.stopPropagation();
+
+    confirm({
+      title: 'Deseja realmente recusar este produto?',
+      okText: 'Confirmar',
+      confirmLoading: removeChannelProductIsLoading,
+      content:
+        'Ao recusá-lo, você não terá mais acesso às informações do mesmo.',
+      onOk: async () => {
+        const result = await removeChannelProduct(id);
+        if (!result.error) {
+          notification.success({
+            message: 'Sucesso',
+            description: 'Produto recusado com sucesso!',
+          });
+          this.fetchChannelProducts();
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  showConfirmDesableProduct = (e, idProduct, status) => {
+    const {
+      actions: { enableOrDisableChannelProduct },
+      disableIsLoading,
+      disableOrEnableError
+    } = this.props;
+
+    e.domEvent.stopPropagation();
+
+    confirm({
+      title: 'Deseja realmente desabilitar este produto?',
+      okText: 'Confirmar',
+      confirmLoading: disableIsLoading,
+      content: 'Ao desabilitar, você não terá mais disponível.',
+      onOk: async () => {
+        const result = await enableOrDisableChannelProduct(idProduct);
+        if (!result.error) {
+          notification.success({
+            message: 'Sucesso',
+            description: 'Produto desabilitado com sucesso!',
+          });
+          this.fetchChannelProducts();
+        } else {
+          const {
+            message: errorMessage,
+            errors,
+          } = this.props.disableOrEnableError;
+    
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+      onCancel() {},
+    });
+  };
+
+  handleSubmitFilters = (e) => {
+    e.preventDefault();
+    const {
+      actions: { listChannelProducts },
+    } = this.props;
+    const { validateFields } = this.filterForm;
+    validateFields(async (err, values) => {
+      if (err) return;
+      await this.setState({
+        ...values,
+        loadingSubmit: true,
+      });
+      const params = { ...values };
+      await listChannelProducts(params);
+      await this.setState({
+        loadingSubmit: false,
+      });
+    });
+  };
+
+  handleOk = (e) => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleCancel = (e) => {
+    this.setState({
+      visibleModal: false,
+    });
+  };
+
+  clickRowTable = async (record) => {
+    await this.setState({
+      idProduct: record.idProduct,
+    });
+    await this.setState({
+      visibleModal: true,
+    });
+  };
+
+  getItemMenu = (record) => {
+    const { idProduct, status } = record;
+
+    return (
       <Menu>
         <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            1st menu item
-          </a>
+          <Link to={`/products/sales/${idProduct}/edit`}>Editar</Link>
         </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            2nd menu item
-          </a>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="/">
-            3d menu item
-          </a>
-        </Menu.Item>
+        {(status === 12 || status === 3) && (
+          <Menu.Item
+            onClick={(e) => this.showConfirmRemoveProduct(e, idProduct)}
+          >
+            <span style={{ width: '100%' }}>Remover</span>
+          </Menu.Item>
+        )}
+        {(status === 19 || status === 17) && (
+          <Menu.Item
+            onClick={(e) =>
+              this.showConfirmDesableProduct(e, idProduct, status)
+            }
+          >
+            <span>Desabilitar</span>
+          </Menu.Item>
+        )}
       </Menu>
     );
-    const columns = [
+  };
+
+  getTableColumns = () => {
+    return [
       {
         title: 'Imagem',
-        dataIndex: 'imagem',
+        dataIndex: 'image',
         key: 'image',
+        render: (text) => <Avatar size="large" shape="square" src={text} />,
       },
       {
         title: 'Código',
@@ -82,33 +293,27 @@ class SalesProductsPage extends Component {
         key: 'channel',
       },
       {
-        dataIndex: 'actions',
         key: 'actions',
-        render: () => (
-          <Dropdown overlay={itemMenu}>
+        render: (record) => (
+          <Dropdown overlay={this.getItemMenu(record)}>
             <Icon className="ic-config" type="ellipsis" />
           </Dropdown>
         ),
       },
     ];
+  };
 
-    const data = [
-      {
-        codigo: 12344,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-      {
-        codigo: 1444,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-      {
-        codigo: 1944,
-        nome: 'Tenis Nike Flex',
-        marca: 'Nike',
-      },
-    ];
+  renderHeaderContent = () => (
+    <UploadButton textChildren="Atualizar Produtos via Planilha" />
+  );
+
+  render() {
+    const { selectedProducts } = this.state;
+    const {
+      channelProducts,
+      channelsProductsIsLoading,
+      productsSummary,
+    } = this.props;
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
@@ -118,32 +323,51 @@ class SalesProductsPage extends Component {
       },
     };
 
-    const { selectedProducts } = this.state;
-    const { channelProducts } = this.props;
-    console.log(this.props);
     return (
       <Fragment>
-        <PrivatePageHeader title="Produtos a Venda" />
+        <PrivatePageHeader
+          title="Produtos a Venda"
+          content={this.renderHeaderContent()}
+        />
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
-            <SummaryProducts />
+            <SummaryProducts productsSummary={productsSummary} />
             <SynchronizeProducts selectedProducts={selectedProducts} />
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
+                onRow={(record) => {
+                  return {
+                    onClick: () => this.clickRowTable(record),
+                  };
+                }}
                 rowSelection={rowSelection}
                 dataSource={channelProducts.results}
-                columns={columns}
+                columns={this.getTableColumns()}
                 rowKey={(record) => record.idProduct}
+                pagination={this.state.pagination}
+                onChange={this.onTableChange}
+                loading={channelsProductsIsLoading && spinnerAtrr}
               />
             </PrivatePageSection>
           </Col>
           <Col xs={24} sm={24} md={24} lg={24} xl={7}>
             <PrivatePageSection>
-              <FilterForm />
+              <FilterForm
+                ref={this.getFormRef}
+                onSubmit={this.handleSubmitFilters}
+                loading={this.state.loadingSubmit}
+              />
             </PrivatePageSection>
           </Col>
         </Row>
+        {!isEmpty(this.state.idProduct) && (
+          <DetailsProductModal
+            onCancel={this.handleCancel}
+            visible={this.state.visibleModal}
+            idProduct={this.state.idProduct}
+          />
+        )}
       </Fragment>
     );
   }
@@ -151,6 +375,15 @@ class SalesProductsPage extends Component {
 
 const mapStateToProps = createStructuredSelector({
   channelProducts: channelProductsSelectors.makeSelectChannelProducts(),
+  channelsProductsIsLoading: channelProductsSelectors.makeSelectChannelProductsIsLoading(),
+
+  removeChannelProductIsLoading: channelProductsSelectors.makeSelectRemoveChannelProductIsLoading(),
+  removeChannelProductError: channelProductsSelectors.makeSelectRemoveChannelProductError(),
+
+  disableIsLoading: channelProductsSelectors.makeSelectEnableOrDisableProductIsLoading(),
+  disableOrEnableError: channelProductsSelectors.makeSelectEnableOrDisableProductError(),
+
+  productsSummary: channelProductsSelectors.makeSelectListChannelProductSummary(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

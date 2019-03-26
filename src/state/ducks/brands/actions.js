@@ -8,6 +8,13 @@ function listBrands(params) {
   };
 }
 
+function clearBrands() {
+  return {
+    type: types.CLEAR_BRANDS,
+  };
+}
+
 export default {
   listBrands,
+  clearBrands,
 };

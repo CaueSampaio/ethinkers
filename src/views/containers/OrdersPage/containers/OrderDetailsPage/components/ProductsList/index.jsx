@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import { Row, Col, Card, List, Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
 
+import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 
 import './style.less';
 
 class ProductList extends Component {
-  state = {};
+  state = {
+    products: null,
+  };
 
   renderTitle = (item) => (
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -23,11 +26,12 @@ class ProductList extends Component {
       <img alt="" src={item.avatar} style={{ marginLeft: 8 }} />
     </div>
   );
+
   render() {
     const list = [
       {
         id: 1235,
-        description: 'fdhjgdhk',
+        description: 'teste',
         avatar:
           'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
         title: 'Tênis nike',
@@ -47,11 +51,17 @@ class ProductList extends Component {
         title: 'Tênis flex',
       },
     ];
+    const { products } = this.props;
+    console.log("render", products);
     return (
       <div>
         <PrivatePageSection>
           <h3>Produtos</h3>
-          <Row>actions</Row>
+          <Row type="flex">
+            <PrivatePageHeaderButton>Faturar SKUS</PrivatePageHeaderButton>
+            <PrivatePageHeaderButton>Enviar tracking dos SKUS</PrivatePageHeaderButton>
+            <PrivatePageHeaderButton>Cancelar produto</PrivatePageHeaderButton>
+          </Row>
           <Row>
             <Col className="space-bottom">
               <Checkbox>Selecionar todos</Checkbox>

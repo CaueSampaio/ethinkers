@@ -19,6 +19,8 @@ function listBrandsReducer(state = listInitialState, action) {
         finish: (prevState) => ({ ...prevState, isLoading: false }),
         success: (prevState) => ({ ...prevState, data: payload }),
       });
+    case types.CLEAR_BRANDS:
+      return listInitialState;
     default:
       return state;
   }

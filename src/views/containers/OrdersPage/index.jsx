@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -6,14 +7,13 @@ import { createStructuredSelector } from 'reselect';
 import { Row, Col } from 'antd';
 
 import { ordersActions, ordersSelectors } from '../../../state/ducks/orders';
+import { formatCurrency } from '../../../utils/masks/formatCurrency';
 
 import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../components/MySpinner';
-
-import { formatCurrency } from '../../../utils/masks/formatCurrency';
 
 class OrdersPage extends Component {
   static propTypes = {
@@ -32,6 +32,7 @@ class OrdersPage extends Component {
       firstName: '',
       status: '',
     },
+    loadingSubmit: false,
   };
 
   componentDidMount() {
@@ -58,12 +59,16 @@ class OrdersPage extends Component {
       if (err) return;
       await this.setState({
         search: { ...values },
+        loadingSubmit: true,
       });
       const params = {
         lastId,
         ...values,
       };
       await this.fetchOrders(params);
+      await this.setState({
+        loadingSubmit: false,
+      });
     });
   };
 
@@ -75,13 +80,11 @@ class OrdersPage extends Component {
     const {
       actions: { listOrders },
     } = this.props;
-    console.log(this.filterForm);
     const { pagination, lastId, search } = this.state;
     const params = {
       lastId,
       ...search,
     };
-    console.log(params);
 
     await listOrders(params);
     const {
@@ -91,7 +94,7 @@ class OrdersPage extends Component {
 
     const currentPagination = { ...pagination };
     currentPagination.total = total;
-    currentPagination.pageSize = 30;
+    currentPagination.pageSize = 15;
 
     await this.setState({
       pagination: currentPagination,
@@ -101,7 +104,7 @@ class OrdersPage extends Component {
 
   render() {
     const { orders, isLoading } = this.props;
-    const { pagination, lastId } = this.state;
+    const { pagination, lastId, loadingSubmit } = this.state;
 
     const columns = [
       {
@@ -149,7 +152,8 @@ class OrdersPage extends Component {
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <PrivatePageSection>
               <StandardTable
-                onRow={(record) => { // eslint-disable-line
+                onRow={(record) => {
+                  // eslint-disable-line
                   return {
                     onClick: () => {
                       const {
@@ -179,6 +183,7 @@ class OrdersPage extends Component {
                   this.filterForm = ref;
                 }}
                 handleSubmit={this.handleSubmitFilters}
+                loadingSubmit={loadingSubmit}
               />
             </PrivatePageSection>
           </Col>

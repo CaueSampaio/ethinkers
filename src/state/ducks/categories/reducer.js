@@ -19,6 +19,8 @@ function listCategoriesReducer(state = listInitialState, action) {
         finish: (prevState) => ({ ...prevState, isLoading: false }),
         success: (prevState) => ({ ...prevState, data: payload }),
       });
+    case types.CLEAR_CATEGORIES:
+      return listInitialState;
     default:
       return state;
   }

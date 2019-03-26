@@ -36,7 +36,6 @@ class OrderDetailsPage extends Component {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    order: PropTypes.object.isRequired,
     orders: PropTypes.object,
   };
 
@@ -122,7 +121,7 @@ class OrderDetailsPage extends Component {
   render() {
     let {
       slide,
-      order: { customer, delivery, payment },
+      order: { customer, delivery, payment, orderItems },
     } = this.state;
     console.log(this.state);
     return (
@@ -131,11 +130,7 @@ class OrderDetailsPage extends Component {
           title="Detalhes do Pedido"
           resourceMap={this.renderResourceMap()}
         />
-        <Animated
-          animationIn="zoomIn"
-          animationOut="zoomOut"
-          isVisible={slide}
-        >
+        <Animated animationIn="zoomIn" animationOut="zoomOut" isVisible={slide}>
           <PrivatePageSection className="content-client-data">
             <Row type="flex" gutter={24} justify="space-around">
               <Col xs={24} sm={24} md={24} lg={24} xl={8}>
@@ -223,28 +218,22 @@ class OrderDetailsPage extends Component {
               </Col>
             </Row>
           </PrivatePageSection>
-        </Animated>
-        <Row
-          type="flex"
-          gutter={16}
-          justify="space-between"
-          className="antd-pro-components-setting-drawer-index-handle btn-paginate"
-          align="middle"
-          style={{ top: 400, width: '100%', marginLeft: 1 }}
-        >
-          <Button className="btn-prev" onClick={() => this.prevItem()}>
-            <Icon type="left" />
-          </Button>
-          <Button className="btn-next" onClick={() => this.nextItem()}>
-            <Icon type="right" />
-          </Button>
-        </Row>
-        <Animated
-          animationIn="zoomIn"
-          animationOut="zoomOut"
-          isVisible={slide}
-        >
-          <ProductsList />
+          <Row
+            type="flex"
+            gutter={16}
+            justify="space-between"
+            className="antd-pro-components-setting-drawer-index-handle btn-paginate"
+            align="middle"
+            style={{ top: 400, width: '100%', marginLeft: 1 }}
+          >
+            <Button className="btn-prev" onClick={() => this.prevItem()}>
+              <Icon type="left" />
+            </Button>
+            <Button className="btn-next" onClick={() => this.nextItem()}>
+              <Icon type="right" />
+            </Button>
+          </Row>
+          <ProductsList products={ orderItems } />
         </Animated>
       </Fragment>
     );

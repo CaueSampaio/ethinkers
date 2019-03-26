@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
 
-const selectChannels = ({ categories: { listChannels } }) => listChannels;
+// LIST CHANNELS
+const selectChannels = ({ channels: { listChannels } }) => listChannels;
 const makeSelectChannels = () =>
   createSelector(
     selectChannels,
@@ -17,10 +18,35 @@ const makeSelectChannelsError = () =>
     ({ error }) => error,
   );
 
+// LIST CHANNELS STATUS
+const selectChannelsStatus = ({ channels: { listChannelsStatus } }) =>
+  listChannelsStatus;
+const makeSelectChannelsStatus = () =>
+  createSelector(
+    selectChannelsStatus,
+    ({ data }) => data,
+  );
+const makeSelectChannelsStatusIsLoading = () =>
+  createSelector(
+    selectChannelsStatus,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectChannelsStatusError = () =>
+  createSelector(
+    selectChannelsStatus,
+    ({ error }) => error,
+  );
+
 export default {
-  // List
+  // LIST CHANNELS
   selectChannels,
   makeSelectChannels,
   makeSelectChannelsIsLoading,
   makeSelectChannelsError,
+
+  // LIST CHANNELS STATUS
+  selectChannelsStatus,
+  makeSelectChannelsStatus,
+  makeSelectChannelsStatusIsLoading,
+  makeSelectChannelsStatusError,
 };

@@ -19,6 +19,31 @@ function listChannelsReducer(state = listInitialState, action) {
         finish: (prevState) => ({ ...prevState, isLoading: false }),
         success: (prevState) => ({ ...prevState, data: payload }),
       });
+    case types.CLEAR_CHANNELS:
+      return listInitialState;
+    default:
+      return state;
+  }
+}
+
+const listStatusInitialState = {
+  error: null,
+  isLoading: false,
+  data: [],
+};
+function listChannelsStatusReducer(state = listStatusInitialState, action) {
+  const { type, payload } = action;
+
+  switch (type) {
+    case types.LIST_CHANNELS_STATUS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    case types.CLEAR_CHANNELS_STATUS:
+      return listStatusInitialState;
     default:
       return state;
   }
@@ -26,4 +51,5 @@ function listChannelsReducer(state = listInitialState, action) {
 
 export default combineReducers({
   listChannels: listChannelsReducer,
+  listChannelsStatus: listChannelsStatusReducer,
 });
