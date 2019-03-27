@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Form, Button, Row, Col } from 'antd';
 
 import {
   channelProductsActions,
@@ -13,12 +12,12 @@ import {
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import ProductDataFieldsForm from './components/ProductDataFieldsForm';
+import SkusDataList from './components/SkusDataList';
 
 class EditProductPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
-    form: PropTypes.object.isRequired,
 
     product: PropTypes.object.isRequired,
   };
@@ -35,10 +34,10 @@ class EditProductPage extends Component {
     findChannelProduct(id);
   };
 
-  handleSubmit = () => {
-    const {
-      form: { validateFields },
-    } = this.props;
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { validateFields } = this.formRef;
+    console.log(this.formRef);
     validateFields(async (err, values) => {
       console.log(values);
     });
@@ -55,41 +54,19 @@ class EditProductPage extends Component {
       <Fragment>
         <PrivatePageHeader title="Editar Produto" />
         <PrivatePageSection>
-          <Form>
-            <ProductDataFieldsForm product={product} />
-            <Row
-              type="flex"
-              justify="end"
-              gutter={12}
-              style={{ marginTop: 20 }}
-            >
-              <Col>
-                <Form.Item>
-                  <Button style={{ borderRadius: 50 }} type="ghost">
-                    <span>Cancelar</span>
-                  </Button>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item>
-                  <Button
-                    onClick={this.handleSubmit}
-                    style={{ borderRadius: 50 }}
-                    type="primary"
-                  >
-                    Atualizar
-                  </Button>
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
+          <ProductDataFieldsForm
+            product={product}
+            onSubmit={this.handleSubmit}
+            ref={this.getFormRef}
+          />
+        </PrivatePageSection>
+        <PrivatePageSection>
+          <SkusDataList product={product} />
         </PrivatePageSection>
       </Fragment>
     );
   }
 }
-
-const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   product: channelProductsSelectors.makeSelectFindChannelProduct(),
@@ -104,7 +81,4 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(
-  withForm,
-  withConnect,
-)(EditProductPage);
+export default compose(withConnect)(EditProductPage);

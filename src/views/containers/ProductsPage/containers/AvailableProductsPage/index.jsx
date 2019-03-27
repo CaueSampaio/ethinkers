@@ -144,21 +144,21 @@ class AvailableProductsPage extends Component {
   renderItemsMenu = (product) => (
     <Menu>
       <Menu.Item>
-        <span>Editar</span>
+        <span className="btn-edit">Editar</span>
       </Menu.Item>
       {isEmpty(product.channels) && (
         <Menu.Item onClick={(e) => this.showConfirmRemoveProduct(e, product)}>
-          <span>Remover</span>
+          <span className="btn-remove-refuse">Remover</span>
         </Menu.Item>
       )}
       {product.status === 0 && (
         <Menu.Item onClick={(e) => this.showConfirmEnableProduct(e, product)}>
-          <span>Habilitar</span>
+          <span className="btn-disable-enable">Habilitar</span>
         </Menu.Item>
       )}
       {!isEmpty(product.channels) && (
         <Menu.Item onClick={(e) => this.showConfirmDisableProduct(e, product)}>
-          <span>Desabilitar</span>
+          <span className="btn-disable-enable">Desabilitar</span>
         </Menu.Item>
       )}
     </Menu>

@@ -33,6 +33,8 @@ import { spinnerAtrr } from '../../../../components/MySpinner';
 import DetailsProductModal from './components/DetailsProductModal';
 import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
 
+import './style.less';
+
 const { confirm } = Modal;
 
 class SalesProductsPage extends Component {
@@ -156,7 +158,7 @@ class SalesProductsPage extends Component {
     const {
       actions: { editChannelProductStatus },
       disableIsLoading,
-      disableOrEnableError
+      disableOrEnableError,
     } = this.props;
 
     e.domEvent.stopPropagation();
@@ -175,11 +177,8 @@ class SalesProductsPage extends Component {
           });
           this.fetchChannelProducts();
         } else {
-          const {
-            message: errorMessage,
-            errors,
-          } = disableOrEnableError;
-    
+          const { message: errorMessage, errors } = disableOrEnableError;
+
           notification.error({
             message: errorMessage,
             description: <BadRequestNotificationBody errors={errors} />,
@@ -237,13 +236,15 @@ class SalesProductsPage extends Component {
     return (
       <Menu>
         <Menu.Item>
-          <Link to={`/products/sales/${idProduct}/edit`}>Editar</Link>
+          <Link to={`/products/sales/${idProduct}/edit`}>
+            <span className="btn-edit">Editar</span>
+          </Link>
         </Menu.Item>
         {(status === 12 || status === 3) && (
           <Menu.Item
             onClick={(e) => this.showConfirmRemoveProduct(e, idProduct)}
           >
-            <span style={{ width: '100%' }}>Remover</span>
+            <span className="btn-remove-refuse">Remover</span>
           </Menu.Item>
         )}
         {(status === 19 || status === 17) && (
@@ -252,7 +253,7 @@ class SalesProductsPage extends Component {
               this.showConfirmDesableProduct(e, idProduct, status)
             }
           >
-            <span>Desabilitar</span>
+            <span className="btn-disable-enable">Desabilitar</span>
           </Menu.Item>
         )}
       </Menu>

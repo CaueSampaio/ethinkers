@@ -37,7 +37,7 @@ class DetailsProductPage extends Component {
         name,
         idProduct,
         longDescription,
-        shortDescription,
+        // shortDescription,
         refProduct,
         metaTags,
         category = {},
@@ -46,8 +46,9 @@ class DetailsProductPage extends Component {
         skus = [],
         keyWords,
       },
+      channelProductIsLoading,
     } = this.props;
-
+    console.log(channelProductIsLoading);
     return (
       <div>
         <Modal
@@ -70,46 +71,36 @@ class DetailsProductPage extends Component {
         >
           <Row type="flex" gutter={16} className="details-product">
             <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Nome:</span>
-              <span>{name}</span>
+              <span className="label term">Nome</span>
+              <span className="detail">{name}</span>
             </Col>
             <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Código:</span>
-              <span>{idProduct}</span>
+              <span className="label term">Código</span>
+              <span className="detail">{idProduct}</span>
             </Col>
             <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Marca:</span>
-              <span>{brand.name}</span>
+              <span className="label term">Marca</span>
+              <span className="detail">{brand.name}</span>
             </Col>
           </Row>
           <Row type="flex" gutter={16} className="data-item">
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <span className="label">Descrição longa:</span>
-              <span>{longDescription}</span>
+            <Col xs={24} sm={24} md={16} lg={16} xl={16}>
+              <span className="label term">Ref do produto</span>
+              <span className="detail">{refProduct}</span>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <span className="label">Descrição curta:</span>
-              <span>{shortDescription}</span>
-            </Col>
-          </Row>
-          <Row type="flex" gutter={16} className="data-item">
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Ref do produto:</span>
-              <span>{refProduct}</span>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Meta Tags: </span>
-              <span>{metaTags}</span>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Palavras chave: </span>
-              <span>{keyWords}</span>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+              <span className="label term">Meta Tags</span>
+              <span className="detail">{metaTags}</span>
             </Col>
           </Row>
           <Row type="flex" gutter={16} className="data-item">
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+              <span className="label term">Palavras chave</span>
+              <span className="detail">{keyWords}</span>
+            </Col>
             <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <span className="label">Categoria:</span>
-              <span>{category.name}</span>
+              <span className="label term">Categoria</span>
+              <span className="detail">{category.name}</span>
             </Col>
             {!isEmpty(attributes) &&
               attributes.map((attribute) => (
@@ -121,10 +112,16 @@ class DetailsProductPage extends Component {
                   lg={8}
                   xl={8}
                 >
-                  <span className="label">Atributo:</span>
-                  <span>{attribute.value}</span>
+                  <span className="label term">Atributo</span>
+                  <span className="detail">{attribute.value}</span>
                 </Col>
               ))}
+          </Row>
+          <Row type="flex" gutter={16} className="data-item">
+            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+              <span className="label term">Descrição longa</span>
+              <span className="detail">{longDescription}</span>
+            </Col>
           </Row>
           <Divider orientation="left">SKUS</Divider>
           <Row className="data-item">
@@ -143,12 +140,12 @@ class DetailsProductPage extends Component {
                         </Col>
                       )}
                       <Col span={12}>
-                        <span className="label">Descrição:</span>
-                        <span>{sku.description}</span>
+                        <span className="label term">Descrição</span>
+                        <span className="detail">{sku.description}</span>
                       </Col>
                       <Col span={10}>
-                        <span className="label">REF:</span>
-                        <span>{sku.refSku}</span>
+                        <span className="label term">REF</span>
+                        <span className="detail">{sku.refSku}</span>
                       </Col>
                     </Row>
                     <Row
@@ -157,47 +154,51 @@ class DetailsProductPage extends Component {
                       type="flex"
                       align="middle"
                     >
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label">Preço de:</span>
-                        <span>{formatCurrency(sku.priceBy)}</span>
+                      <Col xs={12} sm={12} md={12} lg={5} xl={5} offset={2}>
+                        <span className="label term">Preço de</span>
+                        <span className="detail">
+                          {formatCurrency(sku.priceBy)}
+                        </span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label">Preço por:</span>
-                        <span>{formatCurrency(sku.priceOf)}</span>
+                        <span className="label term">Preço por</span>
+                        <span className="detail">
+                          {formatCurrency(sku.priceOf)}
+                        </span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label">Altura:</span>
-                        <span>{sku.height}</span>
+                        <span className="label term">Altura</span>
+                        <span className="detail">{sku.height}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label">Largura:</span>
-                        <span>{sku.width}</span>
+                        <span className="label term">Largura</span>
+                        <span className="detail">{sku.width}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label">Peso:</span>
-                        <span>{sku.weight}</span>
+                        <span className="label term">Peso</span>
+                        <span className="detail">{sku.weight}</span>
                       </Col>
                     </Row>
                     <Row gutter={16}>
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label">Tamanho:</span>
-                        <span>{sku.lenght}</span>
+                      <Col xs={12} sm={12} md={12} lg={5} xl={5} offset={2}>
+                        <span className="label term">Tamanho</span>
+                        <span className="detail">{sku.lenght}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label">Altura:</span>
-                        <span>{sku.realHeight}</span>
+                        <span className="label term">Altura</span>
+                        <span className="detail">{sku.realHeight}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label">Largura:</span>
-                        <span>{sku.realWidth}</span>
+                        <span className="label term">Largura</span>
+                        <span className="detail">{sku.realWidth}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label">Peso:</span>
-                        <span>{sku.realWeight}</span>
+                        <span className="label term">Peso</span>
+                        <span className="detail">{sku.realWeight}</span>
                       </Col>
                       <Col xs={12} sm={12} md={12} lg={4} xl={4}>
-                        <span className="label">Tamanho:</span>
-                        <span>{sku.realLenght}</span>
+                        <span className="label term">Tamanho</span>
+                        <span className="detail">{sku.realLenght}</span>
                       </Col>
                     </Row>
                   </Panel>
@@ -216,11 +217,12 @@ DetailsProductPage.propTypes = {
   actions: PropTypes.object.isRequired,
   idProduct: PropTypes.string.isRequired,
   channelProduct: PropTypes.object.isRequired,
+  channelProductIsLoading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   channelProduct: channelProductsSelectors.makeSelectFindChannelProduct(),
-  channelsProductIsLoading: channelProductsSelectors.makeSelectFindChannelProductIsLoading(),
+  channelProductIsLoading: channelProductsSelectors.makeSelectFindChannelProductIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

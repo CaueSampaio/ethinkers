@@ -17,14 +17,14 @@ class SummaryProducts extends Component {
         <Row type="flex" justify="center">
           <h3>Resumo dos produtos</h3>
         </Row>
-        <Row type="flex" justify="center" gutter={24} align="middle">
+        <Row type="flex" justify="center" gutter={10}>
           {productsSummary.map(({ status, statusName, value }) => (
-            <Col key={status} span={8} className="status">
+            <Col key={status} span={5} className="status">
               <Row>
-                <span>{statusName}</span>
+                <Col>{statusName}</Col>
               </Row>
               <Row>
-                <span className="quantity">{value}</span>
+                <Col className="quantity">{value}</Col>
               </Row>
             </Col>
           ))}

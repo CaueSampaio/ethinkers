@@ -194,10 +194,10 @@ class ShippedBySellersProductsPage extends Component {
   renderItemsMenu = (product) => (
     <Menu>
       <Menu.Item onClick={(e) => this.showConfirmAcceptProduct(e, product)}>
-        <span>Aceitar</span>
+        <span className="btn-accept">Aceitar</span>
       </Menu.Item>
       <Menu.Item onClick={(e) => this.showConfirmRefuseProduct(e, product)}>
-        <span>Recusar</span>
+        <span className="btn-remove-refuse">Recusar</span>
       </Menu.Item>
     </Menu>
   );
