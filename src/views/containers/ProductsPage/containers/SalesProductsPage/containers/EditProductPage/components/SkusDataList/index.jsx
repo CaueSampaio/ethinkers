@@ -121,9 +121,6 @@ class SkusDataList extends Component {
                       <span>Add field</span>
                     </Button>
                   </Col>
-                  <Row>
-                    <Col />
-                  </Row>
                 </Form>
               </Panel>
             </Collapse>
