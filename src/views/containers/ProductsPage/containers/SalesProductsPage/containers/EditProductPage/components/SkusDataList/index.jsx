@@ -118,7 +118,7 @@ class SkusDataList extends Component {
                   <Col span={6}>
                     <Button type="dashed" onClick={this.add}>
                       <Icon type="plus" />
-                      <span>Add field</span>
+                      <span>Adicionar Imagem</span>
                     </Button>
                   </Col>
                 </Form>
