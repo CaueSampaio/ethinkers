@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -151,7 +152,8 @@ class OrdersPage extends Component {
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <PrivatePageSection>
               <StandardTable
-                onRow={(record) => { // eslint-disable-line
+                onRow={(record) => {
+                  // eslint-disable-line
                   return {
                     onClick: () => {
                       const {

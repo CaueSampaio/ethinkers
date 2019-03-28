@@ -1,4 +1,4 @@
-/* eslint-disable */
+/*eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Divider } from 'antd';
