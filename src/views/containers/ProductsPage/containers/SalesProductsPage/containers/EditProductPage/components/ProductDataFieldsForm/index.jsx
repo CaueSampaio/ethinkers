@@ -112,7 +112,7 @@ class EditProductPage extends Component {
                   style={{ borderRadius: 50 }}
                   type="primary"
                 >
-                  Atualizar
+                  <span>Atualizar</span>
                 </Button>
               </Form.Item>
             </Col>

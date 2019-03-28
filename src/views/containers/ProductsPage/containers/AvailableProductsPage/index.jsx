@@ -315,7 +315,7 @@ class AvailableProductsPage extends Component {
     <Row type="flex">
       <Link to="available/create">
         <PrivatePageHeaderButton icon="plus-circle">
-          Cadastrar Produto
+          <span>Cadastrar Produto</span>
         </PrivatePageHeaderButton>
       </Link>
       <UploadButton textChildren="Atualizar Estoque via Planilha" />

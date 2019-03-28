@@ -65,7 +65,7 @@ class DetailsProductPage extends Component {
               type="primary"
               onClick={onCancel}
             >
-              Fechar
+              <span>Fechar</span>
             </Button>,
           ]}
         >

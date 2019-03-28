@@ -31,7 +31,7 @@ class SkusDataList extends Component {
   renderGenExtra = () => (
     <button type="submit" onClick={this.showModalEdit}>
       <Icon type="edit" style={{ marginRight: 8, fontSize: 17 }} />
-      Editar
+      <span>Editar</span>
     </button>
   );
 
@@ -59,6 +59,17 @@ class SkusDataList extends Component {
     });
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const {
+      form: { validateFields },
+    } = this.props;
+
+    validateFields(async (err, values) => {
+      console.log(values);
+    });
+  };
+
   render() {
     const {
       product,
@@ -71,7 +82,7 @@ class SkusDataList extends Component {
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
 
-    const formItems = keys.map((k) => (
+    const formItemsImages = keys.map((k) => (
       <Col span={8} key={k}>
         <Form.Item label="URL da Imagem" required={false}>
           {getFieldDecorator(`images[${k}]`, {
@@ -102,25 +113,143 @@ class SkusDataList extends Component {
                 extra={this.renderGenExtra()}
               >
                 <Form>
-                  <Row type="flex" gutter={24}>
+                  <Row type="flex" gutter={24} align="middle">
                     {!isEmpty(sku.images) &&
                       sku.images.map((image, i) => (
-                        <Col span={12} key={sku.images[i]}>
+                        <Col span={8} key={sku.images[i]}>
                           <StyledFormItem label="URL da Imagem">
-                            {getFieldDecorator('images02')(<Input />)}
+                            {getFieldDecorator(`image[${i}]`, {
+                              initialValue: `${image}`,
+                            })(<Input />)}
+                          </StyledFormItem>
+                        </Col>
+                      ))}
+                    {formItemsImages}
+                    <Col span={6}>
+                      <Button
+                        style={{ borderRadius: 50, marginTop: 10 }}
+                        type="dashed"
+                        onClick={this.add}
+                      >
+                        <Icon type="plus" />
+                        <span>Adicionar imagem</span>
+                      </Button>
+                    </Col>
+                  </Row>
+                  <Row type="flex" gutter={24}>
+                    <Col span={12}>
+                      <StyledFormItem label="Descrição">
+                        {getFieldDecorator('description', {
+                          initialValue: sku.description,
+                        })(<Input.TextArea autosize />)}
+                      </StyledFormItem>
+                    </Col>
+                    {!isEmpty(sku.attributes) &&
+                      sku.attributes.map((attribute, i) => (
+                        <Col span={12} key={attribute.id}>
+                          <StyledFormItem label="Atributo 01">
+                            {getFieldDecorator(`attributes[${i}]`, {
+                              initialValue: attribute.value,
+                            })(<Input />)}
                           </StyledFormItem>
                         </Col>
                       ))}
                   </Row>
-                  <Row type="flex" gutter={10}>
-                    {formItems}
+                  <Row type="flex" gutter={24}>
+                    <Col span={4}>
+                      <StyledFormItem label="Preço de">
+                        {getFieldDecorator('priceOf', {
+                          initialValue: sku.priceOf,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Preço por">
+                        {getFieldDecorator('priceBy', {
+                          initialValue: sku.priceOf,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Peso">
+                        {getFieldDecorator('weight', {
+                          initialValue: sku.weight,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Peso real">
+                        {getFieldDecorator('realWeight', {
+                          initialValue: sku.realWeight,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Altura">
+                        {getFieldDecorator('height', {
+                          initialValue: sku.height,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Altura real">
+                        {getFieldDecorator('realHeight', {
+                          initialValue: sku.realHeight,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
                   </Row>
-                  <Col span={6}>
-                    <Button type="dashed" onClick={this.add}>
-                      <Icon type="plus" />
-                      <span>Add field</span>
-                    </Button>
-                  </Col>
+                  <Row type="flex" gutter={24}>
+                    <Col span={4}>
+                      <StyledFormItem label="Largura">
+                        {getFieldDecorator('width', {
+                          initialValue: sku.width,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Largura real">
+                        {getFieldDecorator('realWidth', {
+                          initialValue: sku.realWidth,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Comprimento">
+                        {getFieldDecorator('lenght', {
+                          initialValue: sku.lenght,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Comprimento real">
+                        {getFieldDecorator('realLenght', {
+                          initialValue: sku.realLenght,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                    <Col span={4}>
+                      <StyledFormItem label="Peso cúbico">
+                        {getFieldDecorator('cubicWeight', {
+                          initialValue: sku.cubnicWeight,
+                        })(<Input />)}
+                      </StyledFormItem>
+                    </Col>
+                  </Row>
+                  <Row type="flex" justify="end">
+                    <Col>
+                      <StyledFormItem>
+                        <Button
+                          style={{ borderRadius: 50 }}
+                          type="primary"
+                          onClick={this.handleSubmit}
+                          htmlType="submit"
+                        >
+                          <span>Atualizar SKU</span>
+                        </Button>
+                      </StyledFormItem>
+                    </Col>
+                  </Row>
                 </Form>
               </Panel>
             </Collapse>

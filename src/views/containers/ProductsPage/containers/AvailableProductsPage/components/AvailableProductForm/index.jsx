@@ -175,7 +175,7 @@ class AvailableProductForm extends Component {
                   htmlType="submit"
                   type="primary"
                 >
-                  Cadastrar
+                  <span>Cadastrar</span>
                 </Button>
               </StyledFormItem>
             </Col>
