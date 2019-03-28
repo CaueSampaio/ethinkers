@@ -65,7 +65,7 @@ class DetailsProductPage extends Component {
               type="primary"
               onClick={onCancel}
             >
-              Fechar
+              <span>Fechar</span>
             </Button>,
           ]}
         >
@@ -129,76 +129,71 @@ class DetailsProductPage extends Component {
               skus.map((sku) => (
                 <Collapse key={sku.refSku}>
                   <Panel header={sku.refSku} key="1">
-                    <Row type="flex" gutter={16}>
+                    <Row type="flex" gutter={24} align="middle">
                       {!isEmpty(sku.images) && (
                         <Col xs={24} sm={24} md={2} lg={2} xl={2}>
                           <Avatar
-                            size="large"
+                            size={90}
                             shape="square"
                             src={sku.images[0]}
                           />
                         </Col>
                       )}
-                      <Col span={12}>
-                        <span className="label term">Descrição</span>
-                        <span className="detail">{sku.description}</span>
-                      </Col>
-                      <Col span={10}>
-                        <span className="label term">REF</span>
-                        <span className="detail">{sku.refSku}</span>
-                      </Col>
-                    </Row>
-                    <Row
-                      gutter={16}
-                      className="data-item"
-                      type="flex"
-                      align="middle"
-                    >
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5} offset={2}>
-                        <span className="label term">Preço de</span>
-                        <span className="detail">
-                          {formatCurrency(sku.priceBy)}
-                        </span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label term">Preço por</span>
-                        <span className="detail">
-                          {formatCurrency(sku.priceOf)}
-                        </span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label term">Altura</span>
-                        <span className="detail">{sku.height}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label term">Largura</span>
-                        <span className="detail">{sku.width}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label term">Peso</span>
-                        <span className="detail">{sku.weight}</span>
-                      </Col>
-                    </Row>
-                    <Row gutter={16}>
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5} offset={2}>
-                        <span className="label term">Tamanho</span>
-                        <span className="detail">{sku.lenght}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={5} xl={5}>
-                        <span className="label term">Altura</span>
-                        <span className="detail">{sku.realHeight}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label term">Largura</span>
-                        <span className="detail">{sku.realWidth}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={3} xl={3}>
-                        <span className="label term">Peso</span>
-                        <span className="detail">{sku.realWeight}</span>
-                      </Col>
-                      <Col xs={12} sm={12} md={12} lg={4} xl={4}>
-                        <span className="label term">Tamanho</span>
-                        <span className="detail">{sku.realLenght}</span>
+                      <Col span={22}>
+                        <Row>
+                          <Col span={20} offset={2}>
+                            <span>Descrição: </span>
+                            <span>{sku.description}</span>
+                          </Col>
+                          <Col span={24} offset={2}>
+                            <span>REF: </span>
+                            <span>{sku.refSku}</span>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col span={5} offset={2}>
+                            <span>Preço de: </span>
+                            <span>{formatCurrency(sku.priceBy)}</span>
+                          </Col>
+                          <Col span={5}>
+                            <span>Preço por: </span>
+                            <span>{formatCurrency(sku.priceOf)}</span>
+                          </Col>
+                        </Row>
+                        <Row type="flex" gutter={5}>
+                          <Col span={4} offset={2}>
+                            <span>Altura:</span>
+                            <span>{sku.height}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Largura:</span>
+                            <span>{sku.width}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Peso: </span>
+                            <span>{sku.weight}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Tamanho: </span>
+                            <span>{sku.lenght}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Altura: </span>
+                            <span>{sku.realHeight}</span>
+                          </Col>
+                          <Col span={4} offset={2}>
+                            <span>Largura: </span>
+                            <span>{sku.realWidth}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Peso: </span>
+                            <span>{sku.realWeight}</span>
+                          </Col>
+                          <Col span={4}>
+                            <span>Tamanho: </span>
+                            <span>{sku.realLenght}</span>
+                          </Col>
+                        </Row>
                       </Col>
                     </Row>
                   </Panel>

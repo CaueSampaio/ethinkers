@@ -135,11 +135,11 @@ class SalesProductsPage extends Component {
     e.domEvent.stopPropagation();
 
     confirm({
-      title: 'Deseja realmente recusar este produto?',
+      title: 'Deseja realmente remover este produto?',
       okText: 'Confirmar',
       confirmLoading: removeChannelProductIsLoading,
       content:
-        'Ao recusá-lo, você não terá mais acesso às informações do mesmo.',
+        'Ao removê-lo, você não terá mais acesso às informações do mesmo.',
       onOk: async () => {
         const result = await removeChannelProduct(id);
         if (!result.error) {

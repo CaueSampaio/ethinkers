@@ -17,9 +17,22 @@ class SummaryProducts extends Component {
         <Row type="flex" justify="center">
           <h3>Resumo dos produtos</h3>
         </Row>
-        <Row type="flex" justify="center" gutter={10}>
+        <Row
+          type="flex"
+          justify="center"
+          gutter={10}
+          className="content-status"
+        >
           {productsSummary.map(({ status, statusName, value }) => (
-            <Col key={status} span={5} className="status">
+            <Col
+              key={status}
+              xs={12}
+              sm={8}
+              md={8}
+              lg={5}
+              xl={5}
+              className="status"
+            >
               <Row>
                 <Col>{statusName}</Col>
               </Row>
@@ -36,5 +49,6 @@ class SummaryProducts extends Component {
 
 SummaryProducts.propTypes = {
   productsSummary: PropTypes.array.isRequired,
+  // productsSummaryIsLoading: PropTypes.bool.isRequired,
 };
 export default SummaryProducts;

@@ -6,20 +6,29 @@
     font-size: 18px;
     margin-bottom: 20px;
   }
-  .status {
-    text-align: center;
-    border: 1.2px solid #f0f0f0;
-    margin: 5px;
-    border-radius: 8px;
-    padding: 3px;
+  .content-status {
+    display: flex;
+    flex-wrap: wrap;
+    .status {
+      text-align: center;
+      border: 1.2px solid #f0f0f0;
+      margin: 5px;
+      border-radius: 8px;
+      padding: 2px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
 
-    .label-status {
-      font-weight: 600;
-      color: #6767;
-    }
-    .quantity {
+      .label-status {
+        font-weight: 600;
+        color: #6767;
+      }
+      .quantity {
         color: #1464b4;
         font-weight: 700;
+      }
     }
   }
 }

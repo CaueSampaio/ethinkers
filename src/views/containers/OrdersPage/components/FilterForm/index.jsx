@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Form, Input, InputNumber, Button, Row, Col, Select } from 'antd';
+import { Form, Input, Button, Row, Col, Select } from 'antd';
 import MaskedInput from 'react-text-mask';
 
 import {
@@ -72,7 +72,7 @@ class FilterForm extends Component {
               <StyledFormItem label="Código:">
                 {getFieldDecorator('orderNumber', {
                   initialValue: '',
-                })(<InputNumber style={{ width: '100%' }} />)}
+                })(<Input style={{ width: '100%' }} />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>

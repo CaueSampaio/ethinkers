@@ -123,7 +123,7 @@ export const request = (
  */
 export const getQueryParams = (params) => {
   if (isEmpty(params)) return '';
-
+  console.log(params);
   const urlParams = new URLSearchParams();
 
   Object.keys(params).forEach((key) => {

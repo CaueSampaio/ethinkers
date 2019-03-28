@@ -132,7 +132,7 @@ class FilterForm extends Component {
                 {getFieldDecorator('name', { initialValue: '' })(<Input />)}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Marcas:">
                 {getFieldDecorator('idsBrands', { initialValue: [] })(
                   <Select
@@ -153,7 +153,7 @@ class FilterForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Categorias:">
                 {getFieldDecorator('idsCategories', { initialValue: [] })(
                   <Select
@@ -176,7 +176,7 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
               <StyledFormItem label="Canal de Venda:">
                 {getFieldDecorator('idsChannels', { initialValue: [] })(
                   <Select
