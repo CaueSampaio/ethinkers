@@ -1,9 +1,9 @@
-/*eslint-disable*/
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { notification } from 'antd';
 
 import {
   channelProductsActions,
@@ -12,6 +12,7 @@ import {
 
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 import ProductDataFieldsForm from './components/ProductDataFieldsForm';
 import SkusDataList from './components/SkusDataList';
 
@@ -21,6 +22,8 @@ class EditProductPage extends Component {
     match: PropTypes.object.isRequired,
 
     product: PropTypes.object.isRequired,
+    editProductError: PropTypes.object,
+    editProductIsLoading: PropTypes.bool.isRequired,
   };
 
   state = {};
@@ -38,9 +41,29 @@ class EditProductPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const { validateFields } = this.formRef;
-    console.log(this.formRef);
+    const {
+      match: {
+        params: { id: idProduct },
+      },
+      actions: { editChannelProduct, findChannelProduct },
+      editProductError,
+    } = this.props;
+
     validateFields(async (err, values) => {
-      console.log(values);
+      const result = await editChannelProduct(idProduct, values);
+      if (!result.error) {
+        await notification.success({
+          message: 'Sucesso',
+          description: 'Produto atualizado com sucesso',
+        });
+        await findChannelProduct(idProduct);
+      } else {
+        const { message: errorMessage, errors } = editProductError;
+        notification.error({
+          message: errorMessage,
+          description: <BadRequestNotificationBody errors={errors} />,
+        });
+      }
     });
   };
 
@@ -49,7 +72,7 @@ class EditProductPage extends Component {
   };
 
   render() {
-    const { product } = this.props;
+    const { product, editProductIsLoading } = this.props;
 
     return (
       <Fragment>
@@ -59,6 +82,7 @@ class EditProductPage extends Component {
             product={product}
             onSubmit={this.handleSubmit}
             ref={this.getFormRef}
+            isLoading={editProductIsLoading}
           />
         </PrivatePageSection>
         <PrivatePageSection>
@@ -72,6 +96,9 @@ class EditProductPage extends Component {
 const mapStateToProps = createStructuredSelector({
   product: channelProductsSelectors.makeSelectFindChannelProduct(),
   productIsLoading: channelProductsSelectors.makeSelectFindChannelProductIsLoading(),
+
+  editProductError: channelProductsSelectors.makeSelectEditChannelProductError(),
+  editProductIsLoading: channelProductsSelectors.makeSelectEditChannelProductIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

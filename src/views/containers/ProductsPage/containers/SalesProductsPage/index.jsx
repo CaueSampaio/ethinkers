@@ -145,7 +145,7 @@ class SalesProductsPage extends Component {
         if (!result.error) {
           notification.success({
             message: 'Sucesso',
-            description: 'Produto recusado com sucesso!',
+            description: 'Produto removido com sucesso!',
           });
           this.fetchChannelProducts();
         }
@@ -167,7 +167,7 @@ class SalesProductsPage extends Component {
       title: 'Deseja realmente desabilitar este produto?',
       okText: 'Confirmar',
       confirmLoading: disableIsLoading,
-      content: 'Ao desabilitar, você não terá mais disponível.',
+      content: 'Ao desabilitar, este produto não estará mais disponível.',
       onOk: async () => {
         const result = await editChannelProductStatus(idProduct, status);
         if (!result.error) {

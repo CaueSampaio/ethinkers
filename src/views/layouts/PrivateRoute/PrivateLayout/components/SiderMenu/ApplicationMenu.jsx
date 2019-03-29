@@ -12,6 +12,8 @@ import './style.less';
 const { Sider } = Layout;
 const { SubMenu } = Menu;
 
+let firstMount = true;
+
 class ApplicationMenu extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
@@ -22,6 +24,10 @@ class ApplicationMenu extends Component {
     // userData: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
   };
+
+  componentDidMount() {
+    firstMount = false;
+  }
 
   getMenuMatchKeys = (flatMenuKeys, paths) =>
     paths.reduce(
@@ -59,25 +65,38 @@ class ApplicationMenu extends Component {
     const icon = this.renderIcon(item.icon);
     const { path, target, name } = item;
 
-    const { location, isMobile, onCollapse } = this.props;
+    const { location } = this.props;
 
     return (
       <Link
         to={path}
         target={target}
         replace={path === location.pathname}
-        onClick={
-          isMobile
-            ? () => {
-                onCollapse(true);
-              }
-            : undefined
-        }
+        onClick={(e) => this.onClickSubMenuItem(e)}
       >
         {icon}
         <span>{name}</span>
       </Link>
     );
+  };
+
+  onClickSubMenuItem = (e) => {
+    console.log(e);
+
+    const { isMobile, onCollapse } = this.props;
+
+    return isMobile
+      ? () => {
+          onCollapse(true);
+        }
+      : undefined;
+  };
+
+  conversionPath = (path) => {
+    if (path && path.indexOf('http') === 0) {
+      return path;
+    }
+    return `/${path || ''}`.replace(/\/+/g, '/');
   };
 
   renderSubMenuOrItem = (item) => {
@@ -107,7 +126,9 @@ class ApplicationMenu extends Component {
   };
 
   renderMenuItems = (items) => {
-    if (!items) return [];
+    if (!items) {
+      return [];
+    }
 
     return items
       .filter((item) => item.name && !item.hideInMenu)
@@ -119,6 +140,7 @@ class ApplicationMenu extends Component {
     const {
       isCollapsed,
       onCollapse,
+      isMobile,
       logo,
       menuData,
       // userData: { discriminator },
@@ -132,7 +154,11 @@ class ApplicationMenu extends Component {
         collapsible
         collapsed={isCollapsed}
         breakpoint="lg"
-        onCollapse={onCollapse}
+        onCollapse={(collapse) => {
+          if (firstMount || !isMobile) {
+            onCollapse(collapse);
+          }
+        }}
         width={256}
         theme="dark"
         className="sider fixSiderbar"
@@ -146,6 +172,7 @@ class ApplicationMenu extends Component {
 
         <Menu
           theme="dark"
+          inlineCollapsed={false}
           mode="inline"
           selectedKeys={selectedKeys}
           style={{ padding: '16px 0', width: '100%' }}

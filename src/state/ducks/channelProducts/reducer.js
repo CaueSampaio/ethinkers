@@ -117,10 +117,34 @@ function enableOrDisableChannelProductReducer(
   }
 }
 
+const editChannelProductInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+function editChannelProductReducer(
+  state = editChannelProductInitialState,
+  action,
+) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.EDIT_CHANNEL_PRODUCT:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listChannelProducts: listChannelProductsReducer,
   findChannelProduct: findChannelProductReducer,
   removeChannelProduct: removeChannelProductReducer,
   listSummary: listChannelProductsSummaryReducer,
   enableOrDisableProduct: enableOrDisableChannelProductReducer,
+  editChannelProduct: editChannelProductReducer,
 });

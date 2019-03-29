@@ -76,37 +76,68 @@ class AvailableProductForm extends Component {
           <Row className="create-product-form" gutter={24}>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Nome">
-                {getFieldDecorator('name', {})(<Input />)}
+                {getFieldDecorator('name', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher o nome!',
+                    },
+                  ],
+                })(<Input />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Ref do Produto">
-                {getFieldDecorator('refProduct', {})(<Input />)}
+                {getFieldDecorator('refProduct', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a REF!',
+                    },
+                  ],
+                })(<Input />)}
               </StyledFormItem>
             </Col>
           </Row>
           <Row>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
               <StyledFormItem label="Descrição longa">
-                {getFieldDecorator('longDescription', {})(
-                  <TextArea rows={3} />,
-                )}
+                {getFieldDecorator('longDescription', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a descrição longa!',
+                    },
+                  ],
+                })(<TextArea rows={3} />)}
               </StyledFormItem>
             </Col>
           </Row>
           <Row>
             <Col xs={24} sm={24} md={24} lg={24} xl={24}>
               <StyledFormItem label="Descrição curta">
-                {getFieldDecorator('shortDescription', {})(
-                  <TextArea autosize={{ minRows: 2, maxRows: 2 }} />,
-                )}
+                {getFieldDecorator('shortDescription', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a descrição curta!',
+                    },
+                  ],
+                })(<TextArea autosize={{ minRows: 2, maxRows: 2 }} />)}
               </StyledFormItem>
             </Col>
           </Row>
           <Row gutter={24}>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Marca">
-                {getFieldDecorator('idBrand', {})(<Input />)}
+                {getFieldDecorator('idBrand', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a marca!',
+                    },
+                  ],
+                })(<Input />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -114,7 +145,14 @@ class AvailableProductForm extends Component {
                 className="input-multiple-product"
                 label="Meta Tags"
               >
-                {getFieldDecorator('metaTags', {})(
+                {getFieldDecorator('metaTags', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher as Meta Tags!',
+                    },
+                  ],
+                })(
                   <Select
                     mode="tags"
                     style={{ width: '100%' }}
@@ -132,7 +170,14 @@ class AvailableProductForm extends Component {
                 className="input-multiple-product "
                 label="Palavras Chave"
               >
-                {getFieldDecorator('keyWords', {})(
+                {getFieldDecorator('keyWords', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher as palavras chave!',
+                    },
+                  ],
+                })(
                   <Select
                     mode="tags"
                     style={{ width: '100%' }}
@@ -145,7 +190,14 @@ class AvailableProductForm extends Component {
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Categoria">
-                {getFieldDecorator('idCategory', {})(
+                {getFieldDecorator('idCategory', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Categoria!',
+                    },
+                  ],
+                })(
                   <Select
                     notFoundContent={
                       categoriesIsLoading ? <SmallSpinner /> : null

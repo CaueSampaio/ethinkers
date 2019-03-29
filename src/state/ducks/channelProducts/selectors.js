@@ -99,6 +99,21 @@ const makeSelectEnableOrDisableProductError = () =>
     ({ error }) => error,
   );
 
+// EDIT CHANNEL PRODUCT
+const selectEditChannelProduct = ({
+  channelProducts: { editChannelProduct },
+}) => editChannelProduct;
+const makeSelectEditChannelProductIsLoading = () =>
+  createSelector(
+    selectEditChannelProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectEditChannelProductError = () =>
+  createSelector(
+    selectEditChannelProduct,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
@@ -128,4 +143,9 @@ export default {
   makeSelectEnableOrDisableProduct,
   makeSelectEnableOrDisableProductIsLoading,
   makeSelectEnableOrDisableProductError,
+
+  //  EDIT CHANNEL PRODUCT
+  selectEditChannelProduct,
+  makeSelectEditChannelProductIsLoading,
+  makeSelectEditChannelProductError,
 };

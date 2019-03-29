@@ -77,7 +77,6 @@ class SkusDataList extends Component {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
     const { visibleModal } = this.state;
-    console.log(product);
 
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
@@ -106,7 +105,7 @@ class SkusDataList extends Component {
         </Row>
         {!isEmpty(skus) &&
           skus.map((sku) => (
-            <Collapse key={sku.refSku}>
+            <Collapse key={sku.refSku} style={{ marginBottom: 20 }}>
               <Panel
                 header={`REF: ${sku.refSku}`}
                 key="1"
@@ -242,10 +241,10 @@ class SkusDataList extends Component {
                         <Button
                           style={{
                             borderRadius: 50,
-                            backgroundColor: '#40D2B1',
-                            border: 'none',
+                            border: '2px solid #1464B4',
+                            color: '#1464B4',
                           }}
-                          type="primary"
+                          type="ghost"
                           onClick={this.handleSubmit}
                           htmlType="submit"
                         >

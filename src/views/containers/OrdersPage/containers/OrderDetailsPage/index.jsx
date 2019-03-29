@@ -141,7 +141,7 @@ class OrderDetailsPage extends Component {
       slide,
       order: { customer, delivery, payment, orderItems, orderNumber, status },
     } = this.state;
-    console.log(this.state);
+
     return (
       <Fragment>
         <PrivatePageHeader

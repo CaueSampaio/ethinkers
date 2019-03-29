@@ -10,14 +10,14 @@ class EditSkuModal extends Component {
     onCancel: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
 
-    product: PropTypes.object.isRequired,
+    // product: PropTypes.object.isRequired,
   };
 
   state = {};
 
   render() {
-    const { onCancel, visible, product } = this.props;
-    console.log(product);
+    const { onCancel, visible } = this.props;
+
     return (
       <Modal
         title="Editar SKU"

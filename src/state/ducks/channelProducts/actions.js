@@ -36,10 +36,18 @@ function editChannelProductStatus(id, status) {
   };
 }
 
+function editChannelProduct(id, data) {
+  return {
+    type: types.EDIT_CHANNEL_PRODUCT,
+    promise: put(`channelproducts/${id}`, data),
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
   removeChannelProduct,
   listChannelProductsSummary,
   editChannelProductStatus,
+  editChannelProduct,
 };
