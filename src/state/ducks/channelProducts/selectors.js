@@ -114,6 +114,21 @@ const makeSelectEditChannelProductError = () =>
     ({ error }) => error,
   );
 
+// SYNCHRONIZE PRODUCTS
+const selectSynchronizeChannelProduct = ({
+  channelProducts: { synchronizeChannelProduct },
+}) => synchronizeChannelProduct;
+const makeSelectSynchronizeChannelProductIsLoading = () =>
+  createSelector(
+    selectSynchronizeChannelProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectSynchronizeChannelProductError = () =>
+  createSelector(
+    selectSynchronizeChannelProduct,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
@@ -148,4 +163,9 @@ export default {
   selectEditChannelProduct,
   makeSelectEditChannelProductIsLoading,
   makeSelectEditChannelProductError,
+
+  // SYNCHRONIZE CHANNEL PRODUCT
+  selectSynchronizeChannelProduct,
+  makeSelectSynchronizeChannelProductIsLoading,
+  makeSelectSynchronizeChannelProductError,
 };

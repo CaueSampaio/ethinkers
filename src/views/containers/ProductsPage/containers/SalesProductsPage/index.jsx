@@ -309,7 +309,29 @@ class SalesProductsPage extends Component {
   );
 
   render() {
-    const { selectedProducts } = this.state;
+    const {
+      selectedProducts,
+      idsProducts,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      refsProducts,
+      idsCompanies,
+      status,
+      name,
+    } = this.state;
+
+    const filterValues = {
+      idsProducts,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      refsProducts,
+      idsCompanies,
+      status,
+      name,
+    };
+
     const {
       channelProducts,
       channelsProductsIsLoading,
@@ -333,7 +355,10 @@ class SalesProductsPage extends Component {
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <SummaryProducts productsSummary={productsSummary} />
-            <SynchronizeProducts selectedProducts={selectedProducts} />
+            <SynchronizeProducts
+              selectedProducts={selectedProducts}
+              filterValues={filterValues}
+            />
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}

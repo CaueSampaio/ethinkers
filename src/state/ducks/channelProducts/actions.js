@@ -43,6 +43,13 @@ function editChannelProduct(id, data) {
   };
 }
 
+function synchronizeChannelProduct(data) {
+  return {
+    type: types.SYNCHRONIZE_CHANNEL_PRODUCT,
+    promise: put(`channelproducts/status`, data),
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
@@ -50,4 +57,5 @@ export default {
   listChannelProductsSummary,
   editChannelProductStatus,
   editChannelProduct,
+  synchronizeChannelProduct,
 };

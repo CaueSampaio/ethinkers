@@ -172,6 +172,7 @@ class ApplicationMenu extends Component {
 
         <Menu
           theme="dark"
+          defaultOpenKeys={['/products']}
           inlineCollapsed={false}
           mode="inline"
           selectedKeys={selectedKeys}
