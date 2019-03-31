@@ -1,17 +1,51 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
-import { Row, Col, Collapse, Divider, Input, Icon, Form, Button } from 'antd';
+import {
+  Row,
+  Col,
+  Collapse,
+  Divider,
+  Input,
+  Icon,
+  Form,
+  Button,
+  Avatar,
+  Select,
+  notification,
+  InputNumber,
+} from 'antd';
+
+import {
+  channelSkusActions,
+  channelSkusSelectors,
+} from '../../../../../../../../../state/ducks/channelSkus';
+import {
+  channelProductsActions,
+  // channelProductsSelectors,
+} from '../../../../../../../../../state/ducks/channelProducts';
 
 import EditSkuModal from '../EditSkuModal';
 import StyledFormItem from '../../../../../../../../components/StyledFormItem';
+import BadRequestNotificationBody from '../../../../../../../../components/BadRequestNotificationBody';
 
 const { Panel } = Collapse;
 
 let id = 0;
 
 class SkusDataList extends Component {
+  static propTypes = {
+    product: PropTypes.object.isRequired,
+    form: PropTypes.object.isRequired,
+    actions: PropTypes.object.isRequired,
+    categoriesAttributes: PropTypes.array,
+    editChannelSkusError: PropTypes.object,
+    editChannelSkusIsLoading: PropTypes.bool.isRequired,
+  };
+
   state = { visibleModal: false };
 
   showModalEdit = (event) => {
@@ -59,14 +93,31 @@ class SkusDataList extends Component {
     });
   };
 
-  handleSubmit = (e) => {
+  handleSubmit = (e, idSku) => {
     e.preventDefault();
     const {
+      actions: { editChannelSkus, findChannelProduct },
       form: { validateFields },
+      product: { idProduct },
+      editChannelSkusError,
     } = this.props;
 
     validateFields(async (err, values) => {
-      console.log(values);
+      if (err) return;
+      const result = await editChannelSkus(idSku, values);
+      if (!result.error) {
+        await notification.success({
+          message: 'Sucesso',
+          description: 'SKU atualizado com sucesso',
+        });
+        await findChannelProduct(idProduct);
+      } else {
+        const { message: errorMessage, errors } = editChannelSkusError;
+        notification.error({
+          message: errorMessage,
+          description: <BadRequestNotificationBody errors={errors} />,
+        });
+      }
     });
   };
 
@@ -74,14 +125,16 @@ class SkusDataList extends Component {
     const {
       product,
       product: { skus = [] },
-      form: { getFieldDecorator, getFieldValue },
+      form: { getFieldDecorator },
+      categoriesAttributes,
+      editChannelSkusIsLoading,
     } = this.props;
     const { visibleModal } = this.state;
 
     getFieldDecorator('keys', { initialValue: [] });
-    const keys = getFieldValue('keys');
+    // const keys = getFieldValue('keys');
 
-    const formItemsImages = keys.map((k) => (
+    /* const formItemsImages = keys.map((k) => (
       <Col span={8} key={k}>
         <Form.Item label="URL da Imagem" required={false}>
           {getFieldDecorator(`images[${k}]`, {
@@ -96,8 +149,9 @@ class SkusDataList extends Component {
           />
         </Form.Item>
       </Col>
-    ));
+    )); */
 
+    console.log(this.props);
     return (
       <Fragment>
         <Row>
@@ -111,41 +165,30 @@ class SkusDataList extends Component {
                 key="1"
                 extra={this.renderGenExtra()}
               >
-                <Form>
+                <Form onSubmit={(e) => this.handleSubmit(e, sku.refSku)}>
                   <Row type="flex" gutter={24} align="middle">
-                    {!isEmpty(sku.images) &&
-                      sku.images.map((image, i) => (
-                        <Col span={8} key={sku.images[i]}>
-                          <StyledFormItem label="URL da Imagem">
-                            {getFieldDecorator(`image[${i}]`, {
-                              initialValue: `${image}`,
-                            })(<Input />)}
-                          </StyledFormItem>
-                        </Col>
-                      ))}
-                    {formItemsImages}
-                    <Col span={6}>
-                      <Button
-                        style={{ borderRadius: 50, marginTop: 10 }}
-                        type="dashed"
-                        onClick={this.add}
-                      >
-                        <Icon type="plus" />
-                        <span>Adicionar imagem</span>
-                      </Button>
-                    </Col>
-                  </Row>
-                  <Row type="flex" gutter={24}>
-                    <Col span={12}>
+                    {!isEmpty(sku.images) && (
+                      <Col span={4} key={sku.images[0]}>
+                        <Avatar size={120} shape="square" src={sku.images[0]} />
+                      </Col>
+                    )}
+                    <Col span={10}>
                       <StyledFormItem label="Descrição">
                         {getFieldDecorator('description', {
                           initialValue: sku.description,
+                          rules: [
+                            {
+                              required: true,
+                              message: `Favor, preencher o campo Descrição!`,
+                              whitespace: true,
+                            },
+                          ],
                         })(<Input.TextArea autosize />)}
                       </StyledFormItem>
                     </Col>
                     {!isEmpty(sku.attributes) &&
                       sku.attributes.map((attribute, i) => (
-                        <Col span={12} key={attribute.id}>
+                        <Col span={10} key={attribute.id}>
                           <StyledFormItem label="Atributo 01">
                             {getFieldDecorator(`attributes[${i}]`, {
                               initialValue: attribute.value,
@@ -153,7 +196,47 @@ class SkusDataList extends Component {
                           </StyledFormItem>
                         </Col>
                       ))}
+                    {!isEmpty(categoriesAttributes) &&
+                      categoriesAttributes.map(
+                        (
+                          { id: idItem, values, type, required, description },
+                          i,
+                        ) =>
+                          type === 1 && (
+                            <Col span={8} key={idItem}>
+                              <Form.Item label={description}>
+                                {getFieldDecorator(
+                                  `attributes[${i}]`,
+                                  required
+                                    ? {
+                                        rules: [
+                                          {
+                                            required: true,
+                                            message: `Favor, preencher o campo ${description}!`,
+                                            whitespace: true,
+                                          },
+                                        ],
+                                      }
+                                    : {},
+                                )(
+                                  !isEmpty(values) ? (
+                                    <Select>
+                                      {values.map((value) => (
+                                        <Select.Option key={value.id}>
+                                          {value.description}
+                                        </Select.Option>
+                                      ))}
+                                    </Select>
+                                  ) : (
+                                    <Input />
+                                  ),
+                                )}
+                              </Form.Item>
+                            </Col>
+                          ),
+                      )}
                   </Row>
+                  <Row type="flex" gutter={24} />
                   <Row type="flex" gutter={24}>
                     <Col span={3}>
                       <StyledFormItem label="Preço de">
@@ -173,42 +256,42 @@ class SkusDataList extends Component {
                       <StyledFormItem label="Peso">
                         {getFieldDecorator('weight', {
                           initialValue: sku.weight,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Peso real">
                         {getFieldDecorator('realWeight', {
                           initialValue: sku.realWeight,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Altura">
                         {getFieldDecorator('height', {
                           initialValue: sku.height,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Altura real">
                         {getFieldDecorator('realHeight', {
                           initialValue: sku.realHeight,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Largura">
                         {getFieldDecorator('width', {
                           initialValue: sku.width,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Largura real">
                         {getFieldDecorator('realWidth', {
                           initialValue: sku.realWidth,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                   </Row>
@@ -217,21 +300,21 @@ class SkusDataList extends Component {
                       <StyledFormItem label="Comprimento">
                         {getFieldDecorator('lenght', {
                           initialValue: sku.lenght,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Comprimento real">
                         {getFieldDecorator('realLenght', {
                           initialValue: sku.realLenght,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Peso cúbico">
                         {getFieldDecorator('cubicWeight', {
                           initialValue: sku.cubnicWeight,
-                        })(<Input />)}
+                        })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                   </Row>
@@ -244,8 +327,8 @@ class SkusDataList extends Component {
                             border: '2px solid #1464B4',
                             color: '#1464B4',
                           }}
+                          loading={editChannelSkusIsLoading}
                           type="ghost"
-                          onClick={this.handleSubmit}
                           htmlType="submit"
                         >
                           <span>Atualizar SKU</span>
@@ -267,11 +350,24 @@ class SkusDataList extends Component {
   }
 }
 
-SkusDataList.propTypes = {
-  product: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-};
-
 const withForm = Form.create();
+const mapStateToProps = createStructuredSelector({
+  editChannelSkusError: channelSkusSelectors.makeSelectEditSkuError(),
+  editChannelSkusIsLoading: channelSkusSelectors.makeSelectEditChannelSkuIsLoading(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(
+    { ...channelSkusActions, ...channelProductsActions },
+    dispatch,
+  ),
+});
 
-export default compose(withForm)(SkusDataList);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withForm,
+  withConnect,
+)(SkusDataList);

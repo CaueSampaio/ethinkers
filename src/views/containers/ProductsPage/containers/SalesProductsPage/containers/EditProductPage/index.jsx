@@ -9,6 +9,10 @@ import {
   channelProductsActions,
   channelProductsSelectors,
 } from '../../../../../../../state/ducks/channelProducts';
+import {
+  channelCategoriesActions,
+  channelCategoriesSelectors,
+} from '../../../../../../../state/ducks/channelCategories';
 
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
@@ -22,8 +26,10 @@ class EditProductPage extends Component {
     match: PropTypes.object.isRequired,
 
     product: PropTypes.object.isRequired,
+    productIsLoading: PropTypes.bool.isRequired,
     editProductError: PropTypes.object,
     editProductIsLoading: PropTypes.bool.isRequired,
+    categoriesAttributes: PropTypes.array,
   };
 
   state = {};
@@ -38,7 +44,7 @@ class EditProductPage extends Component {
     findChannelProduct(id);
   };
 
-  handleSubmit = (e) => {
+  handleSubmitProductData = (e) => {
     e.preventDefault();
     const { validateFields } = this.formRef;
     const {
@@ -50,6 +56,7 @@ class EditProductPage extends Component {
     } = this.props;
 
     validateFields(async (err, values) => {
+      if (err) return;
       const result = await editChannelProduct(idProduct, values);
       if (!result.error) {
         await notification.success({
@@ -72,21 +79,30 @@ class EditProductPage extends Component {
   };
 
   render() {
-    const { product, editProductIsLoading } = this.props;
+    const {
+      product,
+      editProductIsLoading,
+      categoriesAttributes,
+      productIsLoading,
+    } = this.props;
 
     return (
       <Fragment>
         <PrivatePageHeader title="Editar Produto" />
-        <PrivatePageSection>
+        <PrivatePageSection isLoading={productIsLoading}>
           <ProductDataFieldsForm
             product={product}
-            onSubmit={this.handleSubmit}
+            onSubmit={this.handleSubmitProductData}
             ref={this.getFormRef}
             isLoading={editProductIsLoading}
           />
         </PrivatePageSection>
-        <PrivatePageSection>
-          <SkusDataList product={product} />
+        <PrivatePageSection isLoading={productIsLoading}>
+          <SkusDataList
+            product={product}
+            categoriesAttributes={categoriesAttributes}
+            ref={this.getFormSkuRef}
+          />
         </PrivatePageSection>
       </Fragment>
     );
@@ -99,9 +115,15 @@ const mapStateToProps = createStructuredSelector({
 
   editProductError: channelProductsSelectors.makeSelectEditChannelProductError(),
   editProductIsLoading: channelProductsSelectors.makeSelectEditChannelProductIsLoading(),
+
+  categoriesAttributes: channelCategoriesSelectors.makeSelectCategoriesAttributes(),
+  categoriesAttributesIsLoading: channelCategoriesSelectors.makeSelectCategoriesAttributesIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(channelProductsActions, dispatch),
+  actions: bindActionCreators(
+    { ...channelProductsActions, ...channelCategoriesActions },
+    dispatch,
+  ),
 });
 
 const withConnect = connect(

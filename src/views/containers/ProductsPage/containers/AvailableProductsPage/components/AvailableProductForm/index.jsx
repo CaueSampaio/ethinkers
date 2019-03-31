@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { debounce } from 'lodash';
-import { Row, Col, Form, Input, Select, Button } from 'antd';
+import { Row, Col, Form, Input, Select, Button, Icon } from 'antd';
 
 import {
   categoriesActions,
@@ -13,6 +13,7 @@ import {
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import { SmallSpinner } from '../../../../../../components/MySpinner';
+import SkuModalForm from '../SkuModalForm';
 
 import './style.less';
 
@@ -35,11 +36,23 @@ class AvailableProductForm extends Component {
     this.filterCategories = debounce(this.fetchCategories);
   }
 
-  state = {};
+  state = { visibleModal: false };
 
   componentDidMount() {
     this.fetchCategories();
   }
+
+  showSkuModal = () => {
+    this.setState({
+      visibleModal: true,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      visibleModal: false,
+    });
+  };
 
   /* onCategoriesSearch = async (search) => {
     this.filterCategories(search);
@@ -66,15 +79,18 @@ class AvailableProductForm extends Component {
       form: { getFieldDecorator },
       isLoading,
       onSubmit,
+      categories,
+      categoriesIsLoading,
     } = this.props;
+    const { visibleModal } = this.state;
+
     const children = [];
-    const { categories, categoriesIsLoading } = this.props;
 
     return (
-      <Row type="flex" justify="center">
-        <Form style={{ width: '75%' }} onSubmit={onSubmit}>
-          <Row className="create-product-form" gutter={24}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+      <Fragment>
+        <Form onSubmit={onSubmit}>
+          <Row className="create-product-form" gutter={24} type="flex">
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem label="Nome">
                 {getFieldDecorator('name', {
                   rules: [
@@ -86,7 +102,7 @@ class AvailableProductForm extends Component {
                 })(<Input />)}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem label="Ref do Produto">
                 {getFieldDecorator('refProduct', {
                   rules: [
@@ -98,9 +114,21 @@ class AvailableProductForm extends Component {
                 })(<Input />)}
               </StyledFormItem>
             </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+              <StyledFormItem label="Marca">
+                {getFieldDecorator('idBrand', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a marca!',
+                    },
+                  ],
+                })(<Input />)}
+              </StyledFormItem>
+            </Col>
           </Row>
-          <Row>
-            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+          <Row gutter={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Descrição longa">
                 {getFieldDecorator('longDescription', {
                   rules: [
@@ -112,9 +140,7 @@ class AvailableProductForm extends Component {
                 })(<TextArea rows={3} />)}
               </StyledFormItem>
             </Col>
-          </Row>
-          <Row>
-            <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <StyledFormItem label="Descrição curta">
                 {getFieldDecorator('shortDescription', {
                   rules: [
@@ -128,19 +154,7 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-              <StyledFormItem label="Marca">
-                {getFieldDecorator('idBrand', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Favor, preencher a marca!',
-                    },
-                  ],
-                })(<Input />)}
-              </StyledFormItem>
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem
                 className="input-multiple-product"
                 label="Meta Tags"
@@ -163,9 +177,7 @@ class AvailableProductForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem
                 className="input-multiple-product "
                 label="Palavras Chave"
@@ -188,7 +200,7 @@ class AvailableProductForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem label="Categoria">
                 {getFieldDecorator('idCategory', {
                   rules: [
@@ -213,6 +225,18 @@ class AvailableProductForm extends Component {
               </StyledFormItem>
             </Col>
           </Row>
+          <Row gutter={24}>
+            <Col>
+              <Button
+                style={{ borderRadius: 50 }}
+                type="dashed"
+                onClick={this.showSkuModal}
+              >
+                <Icon type="plus" />
+                <span>Cadastrar SKU</span>
+              </Button>
+            </Col>
+          </Row>
           <Row type="flex" justify="end" gutter={8}>
             <Col>
               <StyledFormItem>
@@ -233,7 +257,8 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
         </Form>
-      </Row>
+        <SkuModalForm visible={visibleModal} onCancel={this.handleCancel} />
+      </Fragment>
     );
   }
 }

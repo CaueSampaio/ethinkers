@@ -10,6 +10,14 @@ import {
   categoriesActions,
   categoriesSelectors,
 } from '../../../../../../../../../state/ducks/categories';
+import {
+  brandsActions,
+  brandsSelectors,
+} from '../../../../../../../../../state/ducks/brands';
+import {
+  channelCategoriesActions,
+  channelCategoriesSelectors,
+} from '../../../../../../../../../state/ducks/channelCategories';
 
 import './style.less';
 
@@ -23,18 +31,38 @@ class EditProductPage extends Component {
     onSubmit: PropTypes.func.isRequired,
     categories: PropTypes.array,
     categoriesIsLoading: PropTypes.bool.isRequired,
+    brands: PropTypes.array.isRequired,
+    brandsIsLoading: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
+    product: PropTypes.object.isRequired,
+    categoriesAttributes: PropTypes.array,
   };
 
   constructor(props) {
     super(props);
-    this.handleCategorySelectSearch = debounce(this.handleCategorySelectSearch);
+    this.handleCategorySelectSearch = debounce(
+      this.handleCategorySelectSearch,
+      800,
+    );
+    this.handleBrandSelectSearch = debounce(this.handleBrandSelectSearch, 800);
   }
 
-  state = {};
+  state = {
+    categorySearch: null,
+    brandSearch: null,
+  };
 
   componentDidMount() {
     this.fetchCategories();
+    this.fetchBrands();
+  }
+
+  componentWillUnmount() {
+    const {
+      actions: { clearBrands, clearCategories },
+    } = this.props;
+    clearBrands();
+    clearCategories();
   }
 
   handleCategorySelectSearch = async (value) => {
@@ -55,6 +83,30 @@ class EditProductPage extends Component {
     );
   };
 
+  handleBrandSelectSearch = async (value) => {
+    await this.setState({
+      brandSearch: isEmpty(value) ? null : value,
+    });
+    this.fetchBrands();
+  };
+
+  fetchBrands = async () => {
+    const {
+      actions: { listBrands, clearBrands },
+    } = this.props;
+    const { brandSearch } = this.state;
+    await clearBrands();
+    await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
+  };
+
+  handleSelectCategory = async (value) => {
+    const {
+      actions: { listAllCategoryAttributeChannelId },
+    } = this.props;
+    const result = await listAllCategoryAttributeChannelId(value);
+    console.log(result);
+  };
+
   render() {
     const {
       onSubmit,
@@ -62,52 +114,75 @@ class EditProductPage extends Component {
       categories,
       categoriesIsLoading,
       isLoading,
+      brands,
+      brandsIsLoading,
+      categoriesAttributes,
+      // attributesIsLoading,
+      product,
+      product: { attributes = [], brand = {}, category = {} },
     } = this.props;
+
+    console.log(this.props);
 
     return (
       <Fragment>
         <Divider orientation="left">Dados do Produto</Divider>
         <Form onSubmit={onSubmit}>
-          <Row gutter={24}>
-            <Col span={6}>
+          <Row gutter={24} className="input-multiple-product">
+            <Col span={8}>
               <Form.Item label="Nome">
-                {getFieldDecorator('name', {})(<Input />)}
+                {getFieldDecorator('name', {
+                  initialValue: product.name,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Nome!`,
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
-              <Form.Item label="Código">
-                {getFieldDecorator('idProduct', {})(<Input />)}
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item label="Ref">
-                {getFieldDecorator('refProduct', {})(<Input />)}
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item label="Marca">
-                {getFieldDecorator('brand', {})(<Input />)}
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24}>
-            <Col span={12}>
-              <Form.Item label="Descrição Longa">
-                {getFieldDecorator('longDescription', {})(
-                  <TextArea autosize={{ minRows: 2, maxRows: 6 }} />,
+            <Col span={8}>
+              <Form.Item label="Marcas:">
+                {getFieldDecorator('brand', {
+                  initialValue: brand.name,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Marca!`,
+                    },
+                  ],
+                })(
+                  <Select
+                    showSearch
+                    filterOption={false}
+                    notFoundContent={
+                      brandsIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleBrandSelectSearch}
+                    style={{ width: '100%' }}
+                  >
+                    {brands.map((brandItem) => (
+                      <Select.Option key={brandItem.id} title={brandItem.name}>
+                        {brandItem.name}
+                      </Select.Option>
+                    ))}
+                  </Select>,
                 )}
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="Descrição curta">
-                {getFieldDecorator('shortDescription', {})(<Input />)}
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={24} className="input-multiple-product">
             <Col span={8}>
               <Form.Item label="Meta tags">
-                {getFieldDecorator('metaTags', {})(
+                {getFieldDecorator('metaTags', {
+                  initialValue: product.metaTags,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Meta Tags!`,
+                    },
+                  ],
+                })(
                   <Select
                     mode="tags"
                     style={{ width: '100%' }}
@@ -117,9 +192,49 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={12}>
+              <Form.Item label="Descrição Longa">
+                {getFieldDecorator('longDescription', {
+                  initialValue: product.longDescription,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Descrição!`,
+                      whitespace: true,
+                    },
+                  ],
+                })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="Descrição curta">
+                {getFieldDecorator('shortDescription', {
+                  initialValue: product.shortDescription,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Descrição curta!`,
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={24} className="input-multiple-product">
             <Col span={8}>
               <Form.Item label="Palavras Chave">
-                {getFieldDecorator('keyWords', {})(
+                {getFieldDecorator('keyWords', {
+                  initialValue: product.keyWords,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Palavras Chave!`,
+                    },
+                  ],
+                })(
                   <Select
                     mode="tags"
                     style={{ width: '100%' }}
@@ -131,23 +246,79 @@ class EditProductPage extends Component {
             </Col>
             <Col span={8}>
               <Form.Item label="Categoria">
-                {getFieldDecorator('category', {})(
+                {getFieldDecorator('category', {
+                  initialValue: category.name,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Categoria!`,
+                    },
+                  ],
+                })(
                   <Select
                     showSearch
+                    filterOption={false}
                     notFoundContent={
                       categoriesIsLoading ? <Spin size="small" /> : null
                     }
                     onSearch={this.handleCategorySelectSearch}
+                    onSelect={this.handleSelectCategory}
                   >
-                    {categories.map((item) => (
-                      <Select.Option key={item.id} value={item.id}>
-                        {item.name}
+                    {categories.map((categoryItem) => (
+                      <Select.Option
+                        key={categoryItem.id}
+                        title={categoryItem.name}
+                      >
+                        {categoryItem.name}
                       </Select.Option>
                     ))}
                   </Select>,
                 )}
               </Form.Item>
             </Col>
+            {!isEmpty(attributes) &&
+              attributes.map((attribute) => (
+                <Col span={8} key={attribute.id}>
+                  <Form.Item label="Atributo 1">
+                    {getFieldDecorator('attributProduct', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+              ))}
+            {!isEmpty(categoriesAttributes) &&
+              categoriesAttributes.map(
+                ({ id, values, type, required, description }, i) =>
+                  type === 0 && (
+                    <Col span={8} key={id}>
+                      <Form.Item label={description}>
+                        {getFieldDecorator(
+                          `attributes[${i}]`,
+                          required
+                            ? {
+                                rules: [
+                                  {
+                                    required: true,
+                                    message: `Favor, preencher o campo ${description}!`,
+                                  },
+                                ],
+                              }
+                            : {},
+                        )(
+                          !isEmpty(values) ? (
+                            <Select>
+                              {values.map((value) => (
+                                <Select.Option key={value.id}>
+                                  {value.description}
+                                </Select.Option>
+                              ))}
+                            </Select>
+                          ) : (
+                            <Input />
+                          ),
+                        )}
+                      </Form.Item>
+                    </Col>
+                  ),
+              )}
           </Row>
           <Row type="flex" justify="end" gutter={12} style={{ marginTop: 20 }}>
             <Col>
@@ -169,38 +340,25 @@ class EditProductPage extends Component {
   }
 }
 
-const withForm = Form.create({
-  mapPropsToFields(props) {
-    const {
-      product = {},
-      product: { brand = {}, category = {} },
-    } = props;
-
-    return {
-      name: Form.createFormField({ value: product.name }),
-      idProduct: Form.createFormField({ value: product.idProduct }),
-      refProduct: Form.createFormField({ value: product.refProduct }),
-      brand: Form.createFormField({ value: brand.name }),
-      longDescription: Form.createFormField({ value: product.longDescription }),
-      shortDescription: Form.createFormField({
-        value: product.shortDescription,
-      }),
-      metaTags: Form.createFormField({ value: product.metaTags }),
-      keyWords: Form.createFormField({ value: product.keyWords }),
-      category: Form.createFormField({ value: category.name }),
-    };
-  },
-});
+const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   categories: categoriesSelectors.makeSelectCategories(),
   categoriesIsLoading: categoriesSelectors.makeSelectCategoriesIsLoading(),
+
+  brands: brandsSelectors.makeSelectBrands(),
+  brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
+
+  categoriesAttributes: channelCategoriesSelectors.makeSelectCategoriesAttributes(),
+  categoriesAttributesIsLoading: channelCategoriesSelectors.makeSelectCategoriesAttributesIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       ...categoriesActions,
+      ...channelCategoriesActions,
+      ...brandsActions,
     },
     dispatch,
   ),
