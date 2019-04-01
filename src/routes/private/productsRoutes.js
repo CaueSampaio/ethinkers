@@ -5,6 +5,9 @@ import AvailableProductsPage from '../../views/containers/ProductsPage/container
 import ShippedBySellersProductsPage from '../../views/containers/ProductsPage/containers/ShippedBySellersProductsPage';
 import EditProductPage from '../../views/containers/ProductsPage/containers/SalesProductsPage/containers/EditProductPage';
 import CreateProductPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage/containers/CreateProductPage';
+import EditAvailableProductPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage/containers/EditAvailableProductPage';
+import ShippedBySellersProductDetailsPage from '../../views/containers/ProductsPage/containers/ShippedBySellersProductsPage/containers/ShippedBySellersProductDetailsPage';
+import SalesProductDetailsPage from '../../views/containers/ProductsPage/containers/SalesProductsPage/containers/SalesProductDetailsPage';
 
 const routes = [
   {
@@ -62,10 +65,24 @@ export default [
     layout: PrivateRoute,
   },
   {
+    path: '/products/sales/:id',
+    exact: true,
+    component: SalesProductDetailsPage,
+    breadcrumb: 'Detalhes do Produto',
+    layout: PrivateRoute,
+  },
+  {
     path: '/products/available',
     exact: true,
     component: AvailableProductsPage,
     breadcrumb: 'Produtos disponíveis',
+    layout: PrivateRoute,
+  },
+  {
+    path: '/products/available/:id/edit',
+    exact: true,
+    component: EditAvailableProductPage,
+    breadcrumb: 'Editar Produto',
     layout: PrivateRoute,
   },
   {
@@ -80,6 +97,13 @@ export default [
     exact: true,
     component: ShippedBySellersProductsPage,
     breadcrumb: 'Produtos Enviados por Sellers',
+    layout: PrivateRoute,
+  },
+  {
+    path: '/products/shipped/:id',
+    exact: true,
+    component: ShippedBySellersProductDetailsPage,
+    breadcrumb: 'Detalhes do Produto',
     layout: PrivateRoute,
   },
 ];

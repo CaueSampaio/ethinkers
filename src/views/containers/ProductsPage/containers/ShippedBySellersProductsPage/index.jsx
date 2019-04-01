@@ -32,6 +32,7 @@ const { confirm } = Modal;
 class ShippedBySellersProductsPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
 
     channelProducts: PropTypes.object.isRequired,
     channelProductsIsLoading: PropTypes.bool.isRequired,
@@ -245,7 +246,11 @@ class ShippedBySellersProductsPage extends Component {
   ];
 
   render() {
-    const { channelProducts, channelProductsIsLoading } = this.props;
+    const {
+      channelProducts,
+      channelProductsIsLoading,
+      history: { push },
+    } = this.props;
     const { loadingSubmit, pagination } = this.state;
 
     return (
@@ -258,6 +263,12 @@ class ShippedBySellersProductsPage extends Component {
                 minWidth={1000}
                 dataSource={channelProducts.results}
                 columns={this.getTableColumns()}
+                onRow={(record) => { // eslint-disable-line
+                  return {
+                    onClick: () =>
+                      push(`/products/shipped/${record.idProduct}`),
+                  };
+                }}
                 rowKey={(record) => record.idProduct}
                 pagination={pagination}
                 onChange={this.onTableChange}

@@ -9,8 +9,6 @@ class EditSkuModal extends Component {
   static propTypes = {
     onCancel: PropTypes.func.isRequired,
     visible: PropTypes.bool.isRequired,
-
-    // product: PropTypes.object.isRequired,
   };
 
   state = {};

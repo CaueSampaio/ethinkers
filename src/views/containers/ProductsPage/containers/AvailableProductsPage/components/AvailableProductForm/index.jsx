@@ -3,16 +3,29 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { debounce } from 'lodash';
-import { Row, Col, Form, Input, Select, Button, Icon } from 'antd';
+import { isEmpty, debounce } from 'lodash';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  Icon,
+  Tooltip,
+  Spin,
+} from 'antd';
 
 import {
   categoriesActions,
   categoriesSelectors,
 } from '../../../../../../../state/ducks/categories';
+import {
+  brandsActions,
+  brandsSelectors,
+} from '../../../../../../../state/ducks/brands';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
-import { SmallSpinner } from '../../../../../../components/MySpinner';
 import SkuModalForm from '../SkuModalForm';
 
 import './style.less';
@@ -28,18 +41,23 @@ class AvailableProductForm extends Component {
     categories: PropTypes.array.isRequired,
     categoriesIsLoading: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
+    createSkuAction: PropTypes.bool.isRequired,
+    brands: PropTypes.array.isRequired,
+    brandsIsLoading: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
     super(props);
 
-    this.filterCategories = debounce(this.fetchCategories);
+    this.filterCategories = debounce(this.fetchCategories, 800);
+    this.filterBrands = debounce(this.fetchBrands, 800);
   }
 
   state = { visibleModal: false };
 
   componentDidMount() {
     this.fetchCategories();
+    this.fetchBrands();
   }
 
   showSkuModal = () => {
@@ -54,24 +72,38 @@ class AvailableProductForm extends Component {
     });
   };
 
-  /* onCategoriesSearch = async (search) => {
-    this.filterCategories(search);
-  };
-
-  onCategoriesSelect = async (value, element) => {
-    const {
-      props: { title: search },
-    } = element;
-
-    await this.filterCategories(search);
-  }; */
-
-  fetchCategories = async (search = '') => {
+  fetchCategories = async () => {
     const {
       actions: { listCategories, clearCategories },
     } = this.props;
-    clearCategories();
-    await listCategories({ search });
+    const { categorySearch } = this.state;
+    await clearCategories();
+    await listCategories(
+      isEmpty(categorySearch) ? null : { search: categorySearch },
+    );
+  };
+
+  handleBrandSelectSearch = async (value) => {
+    await this.setState({
+      brandSearch: isEmpty(value) ? null : value,
+    });
+    this.fetchBrands();
+  };
+
+  handleCategorySelectSearch = async (value) => {
+    await this.setState({
+      categorySearch: isEmpty(value) ? null : value,
+    });
+    this.fetchCategories();
+  };
+
+  fetchBrands = async () => {
+    const {
+      actions: { listBrands, clearBrands },
+    } = this.props;
+    const { brandSearch } = this.state;
+    await clearBrands();
+    await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
   };
 
   render() {
@@ -81,6 +113,9 @@ class AvailableProductForm extends Component {
       onSubmit,
       categories,
       categoriesIsLoading,
+      createSkuAction,
+      brands,
+      brandsIsLoading,
     } = this.props;
     const { visibleModal } = this.state;
 
@@ -115,15 +150,31 @@ class AvailableProductForm extends Component {
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-              <StyledFormItem label="Marca">
-                {getFieldDecorator('idBrand', {
+              <StyledFormItem label="Marca:">
+                {getFieldDecorator('brand', {
                   rules: [
                     {
                       required: true,
-                      message: 'Favor, preencher a marca!',
+                      message: `Favor, preencher o campo Marca!`,
                     },
                   ],
-                })(<Input />)}
+                })(
+                  <Select
+                    showSearch
+                    filterOption={false}
+                    notFoundContent={
+                      brandsIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleBrandSelectSearch}
+                    style={{ width: '100%' }}
+                  >
+                    {brands.map((brandItem) => (
+                      <Select.Option key={brandItem.id} title={brandItem.name}>
+                        {brandItem.name}
+                      </Select.Option>
+                    ))}
+                  </Select>,
+                )}
               </StyledFormItem>
             </Col>
           </Row>
@@ -211,9 +262,12 @@ class AvailableProductForm extends Component {
                   ],
                 })(
                   <Select
+                    showSearch
+                    filterOption={false}
                     notFoundContent={
-                      categoriesIsLoading ? <SmallSpinner /> : null
+                      categoriesIsLoading ? <Spin size="small" /> : null
                     }
+                    onSearch={this.handleCategorySelectSearch}
                   >
                     {categories.map((item) => (
                       <Select.Option key={item.id} title={item.name}>
@@ -231,10 +285,22 @@ class AvailableProductForm extends Component {
                 style={{ borderRadius: 50 }}
                 type="dashed"
                 onClick={this.showSkuModal}
+                disabled={createSkuAction}
               >
                 <Icon type="plus" />
                 <span>Cadastrar SKU</span>
               </Button>
+              {createSkuAction ? (
+                <Tooltip
+                  placement="top"
+                  title="O cadastro do SKU será possível somente após o cadastro do Produto."
+                >
+                  <Icon
+                    type="question-circle"
+                    style={{ marginLeft: 10, fontSize: 16 }}
+                  />
+                </Tooltip>
+              ) : null}
             </Col>
           </Row>
           <Row type="flex" justify="end" gutter={8}>
@@ -266,12 +332,16 @@ class AvailableProductForm extends Component {
 const mapStateToProps = createStructuredSelector({
   categories: categoriesSelectors.makeSelectCategories(),
   categoriesIsLoading: categoriesSelectors.makeSelectCategoriesIsLoading(),
+
+  brands: brandsSelectors.makeSelectBrands(),
+  brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       ...categoriesActions,
+      ...brandsActions,
     },
     dispatch,
   ),

@@ -80,9 +80,7 @@ class ApplicationMenu extends Component {
     );
   };
 
-  onClickSubMenuItem = (e) => {
-    console.log(e);
-
+  onClickSubMenuItem = () => {
     const { isMobile, onCollapse } = this.props;
 
     return isMobile

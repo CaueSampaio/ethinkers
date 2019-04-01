@@ -15,6 +15,13 @@ function listProductsStatus() {
   };
 }
 
+function editProduct(id, data) {
+  return {
+    type: types.EDIT_PRODUCT,
+    promise: put(`products/${id}`, data),
+  };
+}
+
 function clearProductsStatus() {
   return {
     type: types.CLEAR_PRODUCTS_STATUS,
@@ -42,11 +49,20 @@ function removeProduct(id) {
   };
 }
 
+function findProduct(id) {
+  return {
+    type: types.FIND_PRODUCT,
+    promise: get(`products/${id}`),
+  };
+}
+
 export default {
   listProducts,
+  editProduct,
   listProductsStatus,
   clearProductsStatus,
   createProduct,
   editProductStatus,
   removeProduct,
+  findProduct,
 };

@@ -87,7 +87,7 @@ class ProductList extends Component {
 
   render() {
     const { products } = this.state;
-    console.log('render', this.state);
+
     return (
       <div>
         <PrivatePageSection>

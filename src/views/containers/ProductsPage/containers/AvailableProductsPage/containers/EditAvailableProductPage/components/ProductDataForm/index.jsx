@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { isEmpty, debounce } from 'lodash';
-import { Form, Divider, Row, Col, Input, Select, Button, Spin } from 'antd';
+import { isEmpty } from 'lodash';
+import { Form, Button, Input, Row, Col, Select, Spin, Radio } from 'antd';
 
 import {
   categoriesActions,
@@ -14,43 +14,24 @@ import {
   brandsActions,
   brandsSelectors,
 } from '../../../../../../../../../state/ducks/brands';
-import {
-  channelCategoriesActions,
-  channelCategoriesSelectors,
-} from '../../../../../../../../../state/ducks/channelCategories';
-
-import './style.less';
 
 const { TextArea } = Input;
+const RadioGroup = Radio.Group;
 
-class EditProductPage extends Component {
+class ProductDataForm extends Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-
-    onSubmit: PropTypes.func.isRequired,
-    categories: PropTypes.array,
-    categoriesIsLoading: PropTypes.bool.isRequired,
+    form: PropTypes.object.isRequired,
+    product: PropTypes.object,
     brands: PropTypes.array.isRequired,
     brandsIsLoading: PropTypes.bool.isRequired,
+    categories: PropTypes.array,
+    categoriesIsLoading: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    product: PropTypes.object.isRequired,
-    categoriesAttributes: PropTypes.array,
+    onSubmit: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleCategorySelectSearch = debounce(
-      this.handleCategorySelectSearch,
-      800,
-    );
-    this.handleBrandSelectSearch = debounce(this.handleBrandSelectSearch, 800);
-  }
-
-  state = {
-    categorySearch: null,
-    brandSearch: null,
-  };
+  state = {};
 
   componentDidMount() {
     this.fetchCategories();
@@ -99,31 +80,21 @@ class EditProductPage extends Component {
     await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
   };
 
-  handleSelectCategory = async (value) => {
-    const {
-      actions: { listAllCategoryAttributeChannelId },
-    } = this.props;
-    listAllCategoryAttributeChannelId(value);
-  };
-
   render() {
     const {
-      onSubmit,
       form: { getFieldDecorator },
-      categories,
-      categoriesIsLoading,
-      isLoading,
+      product,
+      product: { brand = {}, category = {} },
       brands,
       brandsIsLoading,
-      categoriesAttributes,
-      // attributesIsLoading,
-      product,
-      product: { attributes = [], brand = {}, category = {} },
+      categoriesIsLoading,
+      categories,
+      isLoading,
+      onSubmit,
     } = this.props;
 
     return (
       <Fragment>
-        <Divider orientation="left">Dados do Produto</Divider>
         <Form onSubmit={onSubmit}>
           <Row gutter={24} className="input-multiple-product">
             <Col span={8}>
@@ -134,6 +105,21 @@ class EditProductPage extends Component {
                     {
                       required: true,
                       message: `Favor, preencher o campo Nome!`,
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="REF">
+                {getFieldDecorator('refProduct', {
+                  initialValue: product.refProduct,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo REF!`,
                       whitespace: true,
                     },
                   ],
@@ -169,26 +155,6 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item label="Meta tags">
-                {getFieldDecorator('metaTags', {
-                  initialValue: product.metaTags,
-                  rules: [
-                    {
-                      required: true,
-                      message: `Favor, preencher o campo Meta Tags!`,
-                    },
-                  ],
-                })(
-                  <Select
-                    mode="tags"
-                    style={{ width: '100%' }}
-                    // onChange={handleChange}
-                    tokenSeparators={[',']}
-                  />,
-                )}
-              </Form.Item>
-            </Col>
           </Row>
           <Row gutter={24}>
             <Col span={12}>
@@ -220,8 +186,13 @@ class EditProductPage extends Component {
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={24} className="input-multiple-product">
-            <Col span={8}>
+          <Row
+            type="flex"
+            align="middle"
+            gutter={24}
+            className="input-multiple-product"
+          >
+            <Col span={7}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
                   initialValue: product.keyWords,
@@ -241,7 +212,27 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={7}>
+              <Form.Item label="Meta tags">
+                {getFieldDecorator('metaTags', {
+                  initialValue: product.metaTags,
+                  rules: [
+                    {
+                      required: true,
+                      message: `Favor, preencher o campo Meta Tags!`,
+                    },
+                  ],
+                })(
+                  <Select
+                    mode="tags"
+                    style={{ width: '100%' }}
+                    // onChange={handleChange}
+                    tokenSeparators={[',']}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={5}>
               <Form.Item label="Categoria">
                 {getFieldDecorator('category', {
                   initialValue: category.name,
@@ -273,49 +264,16 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            {!isEmpty(attributes) &&
-              attributes.map((attribute) => (
-                <Col span={8} key={attribute.id}>
-                  <Form.Item label="Atributo 1">
-                    {getFieldDecorator('attributProduct', {})(<Input />)}
-                  </Form.Item>
-                </Col>
-              ))}
-            {!isEmpty(categoriesAttributes) &&
-              categoriesAttributes.map(
-                ({ id, values, type, required, description }, i) =>
-                  type === 0 && (
-                    <Col span={8} key={id}>
-                      <Form.Item label={description}>
-                        {getFieldDecorator(
-                          `attributes[${i}]`,
-                          required
-                            ? {
-                                rules: [
-                                  {
-                                    required: true,
-                                    message: `Favor, preencher o campo ${description}!`,
-                                  },
-                                ],
-                              }
-                            : {},
-                        )(
-                          !isEmpty(values) ? (
-                            <Select>
-                              {values.map((value) => (
-                                <Select.Option key={value.id}>
-                                  {value.description}
-                                </Select.Option>
-                              ))}
-                            </Select>
-                          ) : (
-                            <Input />
-                          ),
-                        )}
-                      </Form.Item>
-                    </Col>
-                  ),
-              )}
+            <Col span={5}>
+              <Form.Item label="Situação">
+                {getFieldDecorator('cured', {})(
+                  <RadioGroup>
+                    <Radio value={1}>Curado</Radio>
+                    <Radio value={2}>Não Curado</Radio>
+                  </RadioGroup>,
+                )}
+              </Form.Item>
+            </Col>
           </Row>
           <Row type="flex" justify="end" gutter={12} style={{ marginTop: 20 }}>
             <Col>
@@ -337,35 +295,32 @@ class EditProductPage extends Component {
   }
 }
 
-const withForm = Form.create();
-
 const mapStateToProps = createStructuredSelector({
   categories: categoriesSelectors.makeSelectCategories(),
   categoriesIsLoading: categoriesSelectors.makeSelectCategoriesIsLoading(),
 
   brands: brandsSelectors.makeSelectBrands(),
   brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
-
-  categoriesAttributes: channelCategoriesSelectors.makeSelectCategoriesAttributes(),
-  categoriesAttributesIsLoading: channelCategoriesSelectors.makeSelectCategoriesAttributesIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
       ...categoriesActions,
-      ...channelCategoriesActions,
       ...brandsActions,
     },
     dispatch,
   ),
 });
 
+const withForm = Form.create();
+
 const withConnect = connect(
   mapStateToProps,
   mapDispatchToProps,
 );
+
 export default compose(
   withForm,
   withConnect,
-)(EditProductPage);
+)(ProductDataForm);

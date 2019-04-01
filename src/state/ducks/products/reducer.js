@@ -109,10 +109,50 @@ function removeProductReducer(state = removeProductInitialState, action) {
   }
 }
 
+const findProductInitialState = {
+  error: null,
+  isLoading: false,
+};
+function findProductReducer(state = findProductInitialState, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.FIND_PRODUCT:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
+const editProductInitialState = {
+  error: null,
+  isLoading: false,
+};
+function editProductReducer(state = editProductInitialState, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.EDIT_PRODUCT:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listProducts: listProductsReducer,
   listStatus: listProductsStatusReducer,
   createProduct: createProductsReducer,
   editProductStatus: editProductStatusReducer,
   removeProduct: removeProductReducer,
+  findProduct: findProductReducer,
+  editProduct: editProductReducer,
 });

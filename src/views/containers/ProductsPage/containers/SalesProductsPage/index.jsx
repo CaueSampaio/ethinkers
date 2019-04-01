@@ -235,7 +235,7 @@ class SalesProductsPage extends Component {
 
     return (
       <Menu>
-        <Menu.Item>
+        <Menu.Item onClick={(e) => e.domEvent.stopPropagation()}>
           <Link to={`/products/sales/${idProduct}/edit`}>
             <span className="btn-edit">Editar</span>
           </Link>
@@ -336,6 +336,7 @@ class SalesProductsPage extends Component {
       channelProducts,
       channelsProductsIsLoading,
       productsSummary,
+      history: { push },
     } = this.props;
 
     const rowSelection = {
@@ -364,7 +365,9 @@ class SalesProductsPage extends Component {
                 minWidth={1000}
                 onRow={(record) => {
                   return {
-                    onClick: () => this.clickRowTable(record),
+                    onClick: (e) => {
+                      push(`/products/sales/${record.idProduct}`)
+                    },
                   };
                 }}
                 rowSelection={rowSelection}

@@ -49,7 +49,7 @@ class DetailsProductPage extends Component {
       },
       channelProductIsLoading,
     } = this.props;
-    console.log(channelProductIsLoading);
+
     return (
       <div>
         <Modal

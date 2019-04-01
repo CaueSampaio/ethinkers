@@ -8,6 +8,5 @@ export const parseToRcFormField = (data) =>
   );
 
 export default (props, changedFields) => {
-  console.log(props, changedFields);
   props.updateFormData(changedFields);
 };

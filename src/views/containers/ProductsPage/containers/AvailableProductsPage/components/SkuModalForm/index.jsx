@@ -23,6 +23,8 @@ import {
 
 import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
+import './style.less';
+
 let id = 0;
 // const imagesList = [];
 
@@ -38,9 +40,13 @@ class SkuModalForm extends Component {
 
   state = { previewImage: '' };
 
-  remove = (k) => {
+  remove = async (k) => {
     const { form } = this.props;
     const keys = form.getFieldValue('keys');
+
+    await this.setState({
+      previewImage: '',
+    });
 
     form.setFieldsValue({
       keys: keys.filter((key) => key !== k),
@@ -52,9 +58,6 @@ class SkuModalForm extends Component {
     const keys = form.getFieldValue('keys');
     const nextKeys = keys.concat((id += 1));
 
-    await this.setState({
-      previewImage: '',
-    });
     form.setFieldsValue({
       keys: nextKeys,
     });
@@ -63,7 +66,6 @@ class SkuModalForm extends Component {
   handleChangeImage = (e) => {
     e.persist();
 
-    console.log(e.target.value);
     this.setState({
       previewImage: e.target.value,
     });
@@ -83,7 +85,7 @@ class SkuModalForm extends Component {
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',
-          description: 'SKU criado com sucesso',
+          description: 'SKU cadastrado com sucesso',
         });
         onCancel();
       } else {
@@ -110,30 +112,34 @@ class SkuModalForm extends Component {
 
     const formItemsImages = keys.map((k) => (
       <Fragment key={k}>
-        <Col span={5}>
+        <Col span={6}>
           <Form.Item label="URL da Imagem" required={false}>
             {getFieldDecorator(`images[${k}].url`, {
               validateTrigger: ['onChange', 'onBlur'],
             })(<Input onChange={this.handleChangeImage} />)}
           </Form.Item>
         </Col>
-        <Col span={5}>
+        <Col span={6}>
           <Form.Item label="Nome" required={false}>
             {getFieldDecorator(`images[${k}].name`, {
               validateTrigger: ['onChange', 'onBlur'],
             })(<Input />)}
           </Form.Item>
         </Col>
-        <Col span={6}>
+        <Col span={9}>
           <Form.Item label="Descrição" required={false}>
             {getFieldDecorator(`images[${k}].description`, {
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input />)}
+            })(<Input.TextArea autosize />)}
           </Form.Item>
         </Col>
-        <Col span={4}>
-          <button type="submit" onClick={() => this.remove(k)}>
-            <span>remover</span>
+        <Col span={3}>
+          <button
+            className="remove-image"
+            type="submit"
+            onClick={() => this.remove(k)}
+          >
+            <span>Remover</span>
           </button>
         </Col>
       </Fragment>
@@ -146,39 +152,48 @@ class SkuModalForm extends Component {
         visible={visible}
         onCancel={onCancel}
         onOk={this.handleSubmit}
+        centered
         footer={[
-          <Button key="back" onClick={onCancel}>
+          <Button style={{ borderRadius: 50 }} key="back" onClick={onCancel}>
             <span>Cancelar</span>
           </Button>,
           <Button
             key="submit"
             type="primary"
             loading={createSkuIsLoading}
+            style={{ borderRadius: 50 }}
             onClick={this.handleSubmit}
           >
             <span>Cadastrar</span>
           </Button>,
         ]}
       >
-        <Form onSubmit={this.handleSubmit}>
-          <Row type="flex" align="middle" gutter={24}>
-            {' '}
+        <Form onSubmit={this.handleSubmit} className="add-sku-form">
+          <Row type="flex" gutter={10} align="middle">
             {keys.length >= 1 ? (
               <Col span={4}>
-                <Col>
-                  <span>Imagem</span>
+                <Col span={24}>
+                  <span className="label-avatar">VISUALIZE A IMAGEM: </span>
                 </Col>
                 <Col>
-                  <Avatar shape="square" src={previewImage} size={95} />
+                  <Avatar
+                    className="avatar-sku create-sku"
+                    shape="square"
+                    src={previewImage}
+                    icon="picture"
+                    size={135}
+                  />
                 </Col>
               </Col>
             ) : null}
-            {formItemsImages}
-            <Col>
-              <Button type="dashed" onClick={this.add}>
-                <Icon type="plus" />
-                <span>Adicionar imagem</span>
-              </Button>
+            <Col span={20}>
+              {formItemsImages}
+              <Col span={24}>
+                <Button className="add-image" type="dashed" onClick={this.add}>
+                  <Icon type="plus" />
+                  <span>Adicionar imagem</span>
+                </Button>
+              </Col>
             </Col>
           </Row>
           <Divider orientation="left">SKU</Divider>
