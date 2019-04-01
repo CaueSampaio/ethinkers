@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { Row, Col, Card, List, Checkbox } from 'antd';
+import { Row, Col, Card, List, Checkbox, Modal, notification } from 'antd';
 import { isEmpty } from 'lodash';
 
 import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
@@ -8,6 +8,9 @@ import PrivatePageSection from '../../../../../../components/PrivatePageSection'
 import CheckBox from '../CheckBox';
 
 import './style.less';
+import { consoleTestResultHandler } from 'tslint/lib/test';
+
+const { confirm } = Modal;
 
 class ProductList extends Component {
   constructor(props) {
@@ -85,6 +88,41 @@ class ProductList extends Component {
     console.log("target", event);
   };
 
+  showConfirmInvoiceProductsSKU = (event, products) => {
+    console.log(this.props)
+    const {
+      actions: { invoiceOrderProductsSKU },
+      editStatusError,
+    } = this.props.props;
+    const data = this.getSelectedProducts(products);
+    console.log("DATA", data);
+
+    confirm({
+      title: 'Deseja realmente faturar os produtos selecionados?',
+      okText: 'Confirmar',
+      content: 'Ao faturar, sera gerado um invoice dos produtos selecionados',
+      onOk: async () => {
+        const result = await invoiceOrderProductsSKU(data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produtos faturados com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  getSelectedProducts = (productsList) => (
+    productsList.filter(product => product.isChecked)
+  );
+
   render() {
     const { products } = this.state;
 
@@ -93,11 +131,11 @@ class ProductList extends Component {
         <PrivatePageSection>
           <h3>Produtos</h3>
           <Row type="flex">
-            <PrivatePageHeaderButton>Faturar SKUS</PrivatePageHeaderButton>
-            <PrivatePageHeaderButton>
+            <PrivatePageHeaderButton onClick={(e) => this.showConfirmInvoiceProductsSKU(e, products)}>Faturar SKUS</PrivatePageHeaderButton>
+            <PrivatePageHeaderButton onClick={(e) => this.sendProductsSKU(e, products)}>
               Enviar tracking dos SKUS
             </PrivatePageHeaderButton>
-            <PrivatePageHeaderButton>Cancelar produto</PrivatePageHeaderButton>
+            <PrivatePageHeaderButton onClick={(e) => this.cancelProducts(e, product)}>Cancelar produto</PrivatePageHeaderButton>
           </Row>
           <Row>
             <Col className="space-bottom">

@@ -1,5 +1,5 @@
 import types from './types';
-import { get, getQueryParams } from '../../../utils/request';
+import { get, getQueryParams, post } from '../../../utils/request';
 
 function listOrders(data) {
   return {
@@ -22,9 +22,17 @@ function listOrderStatus() {
   };
 }
 
+function invoiceOrderProductsSKU(data) {
+  return {
+    type: types.INVOICE_ORDER_PRODUCTS_SKUS,
+    promise: post(`orderinvoices`, data),
+  };
+}
+
 export default {
   listOrders,
   findOrder,
 
   listOrderStatus,
+  invoiceOrderProductsSKU,
 };
