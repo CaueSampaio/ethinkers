@@ -1,5 +1,5 @@
 import types from './types';
-import { get, getQueryParams, remove, put } from '../../../utils/request';
+import { get, getQueryParams, remove, put, post } from '../../../utils/request';
 
 function listChannelProducts(params) {
   return {
@@ -50,6 +50,13 @@ function synchronizeChannelProduct(data) {
   };
 }
 
+function createChannelProduct(data) {
+  return {
+    type: types.CREATE_CHANNEL_PRODUCT,
+    promise: post(`channelProducts`, data),
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
@@ -58,4 +65,5 @@ export default {
   editChannelProductStatus,
   editChannelProduct,
   synchronizeChannelProduct,
+  createChannelProduct,
 };

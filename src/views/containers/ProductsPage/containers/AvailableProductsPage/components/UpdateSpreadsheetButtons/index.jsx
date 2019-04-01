@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { Form, Icon, Upload, message, Modal, Button } from 'antd';
 
-import { uploadChannelProduct } from '../../../../../../../utils/request';
+import {
+  uploadInventories,
+  downloadFile,
+} from '../../../../../../../utils/request';
 
-class UploadButton extends Component {
+import './style.less';
+
+class UpdateSpreadsheetButtons extends Component {
   state = {
     uploadingFile: false,
   };
@@ -24,12 +29,16 @@ class UploadButton extends Component {
     }
   };
 
+  onDownloadSpreadsheet = () => {
+    downloadFile(`inventories/export`);
+  };
+
   render() {
     const { uploadingFile } = this.state;
-    const { textChildren, visible, onCancel } = this.props;
+    const { textChildren, onCancel, visible } = this.props;
 
     const props = {
-      ...uploadChannelProduct(),
+      ...uploadInventories(),
       accept: '.xls, .xlsx',
       multiple: false,
       onChange: async (info) => {
@@ -44,11 +53,10 @@ class UploadButton extends Component {
           message.success(
             `Upload do arquivo ${file.name} realizado com sucesso!`,
           );
-          onCancel();
         } else if (file.status === 'error') {
           const { response: { Errors: errorMessage } = {} } = file;
 
-          const text = errorMessage || 'Clique aqui ou arraste o arquivo.';
+          const text = errorMessage || 'Clique aqui ou arraste o arq';
 
           message.error(text);
         }
@@ -57,29 +65,23 @@ class UploadButton extends Component {
 
     return (
       <Modal
-        title="Planilha com produtos curados"
+        title="Atualizar Planilha de Estoque"
         visible={visible}
         onCancel={onCancel}
         onOk={this.handleUploadFile}
         confirmLoading={uploadingFile}
-        footer={[
-          <Button style={{ borderRadius: 50 }} key="back" onClick={onCancel}>
-            Cancelar
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            style={{ borderRadius: 50 }}
-            loading={uploadingFile}
-            onClick={this.handleUploadFile}
-          >
-            Atualizar
-          </Button>,
-        ]}
+        footer={[]}
       >
-        <p>Faça o Upload da planilha atualizada</p>
-        <Upload {...props}>
-          <Button style={{ width: 120 }} type="submit" disabled={uploadingFile}>
+        <p>
+          Exporte a planilha, faça as devidas alterações e em seguida, faça o
+          Upload da mesma.
+        </p>
+        <Button onClick={this.onDownloadSpreadsheet}>
+          <Icon type="file-excel" />
+          <span>Exportar planilha</span>
+        </Button>
+        <Upload {...props} style={{ marginLeft: 10 }}>
+          <Button type="submit" loading={uploadingFile}>
             <Icon type="upload" />
             <span style={{ marginLeft: 5 }}>{textChildren}</span>
           </Button>
@@ -89,13 +91,13 @@ class UploadButton extends Component {
   }
 }
 
-UploadButton.propTypes = {
+UpdateSpreadsheetButtons.propTypes = {
   form: PropTypes.object.isRequired,
   textChildren: PropTypes.string.isRequired,
-  visible: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
 const withForm = Form.create();
 
-export default compose(withForm)(UploadButton);
+export default compose(withForm)(UpdateSpreadsheetButtons);

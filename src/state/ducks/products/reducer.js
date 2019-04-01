@@ -112,6 +112,7 @@ function removeProductReducer(state = removeProductInitialState, action) {
 const findProductInitialState = {
   error: null,
   isLoading: false,
+  data: {},
 };
 function findProductReducer(state = findProductInitialState, action) {
   const { payload, type } = action;

@@ -10,6 +10,7 @@ import {
   Row,
   Icon,
   Input,
+  InputNumber,
   Button,
   Avatar,
   Divider,
@@ -227,44 +228,44 @@ class SkuModalForm extends Component {
             </Col>
             <Col span={3}>
               <Form.Item label="Peso">
-                {getFieldDecorator('weight', {})(<Input />)}
+                {getFieldDecorator('weight', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={3}>
               <Form.Item label="Peso real">
-                {getFieldDecorator('realWeight', {})(<Input />)}
+                {getFieldDecorator('realWeight', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={3}>
               <Form.Item label="Altura">
-                {getFieldDecorator('height', {})(<Input />)}
+                {getFieldDecorator('height', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={3}>
               <Form.Item label="Altura real">
-                {getFieldDecorator('realHeight', {})(<Input />)}
+                {getFieldDecorator('realHeight', {})(<InputNumber />)}
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={24}>
             <Col span={3}>
               <Form.Item label="Largura">
-                {getFieldDecorator('width', {})(<Input />)}
+                {getFieldDecorator('width', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={3}>
               <Form.Item label="Altura real">
-                {getFieldDecorator('realHeight', {})(<Input />)}
+                {getFieldDecorator('realHeight', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={4}>
               <Form.Item label="Comprimento">
-                {getFieldDecorator('length', {})(<Input />)}
+                {getFieldDecorator('length', {})(<InputNumber />)}
               </Form.Item>
             </Col>
             <Col span={4}>
               <Form.Item label="Comprimento real">
-                {getFieldDecorator('realLength', {})(<Input />)}
+                {getFieldDecorator('realLength', {})(<InputNumber />)}
               </Form.Item>
             </Col>
           </Row>

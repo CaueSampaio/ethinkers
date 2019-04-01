@@ -25,7 +25,8 @@ import {
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
-import UploadButton from './components/UploadButton';
+import UpdateSpreadsheetButtons from './components/UpdateSpreadsheetButtons';
+import UpdateSpreadsheetProductButtons from './components/UpdateSpreadsheetProductButtons';
 import SendProductToChannelCard from './components/SendProductToChannelCard';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
@@ -48,16 +49,18 @@ class AvailableProductsPage extends Component {
 
   state = {
     lastId: '',
-    // selectedProducts: [],
-    // idsProducts: [],
+    selectedProducts: [],
+    idsProducts: [],
     idsBrands: [],
     idsCategories: [],
     idsChannels: [],
-    // refsProducts: [],
+    refsProducts: [],
     status: [],
     name: '',
     loadingSubmit: false,
     pagination: {},
+    visibleModalUploadProduct: false,
+    selectedProducts: [],
   };
 
   constructor(props) {
@@ -224,6 +227,29 @@ class AvailableProductsPage extends Component {
     },
   ];
 
+  handleCancelUpload = (e) => {
+    this.setState({
+      visibleModalUpload: false,
+    });
+  };
+
+  handleCancelUploadProduct = (e) => {
+    this.setState({
+      visibleModalUploadProduct: false,
+    });
+  };
+
+  showModalUploadInventories = () => {
+    this.setState({
+      visibleModalUpload: true,
+    });
+  };
+
+  showModalUploadProduct = () => {
+    this.setState({
+      visibleModalUploadProduct: true,
+    });
+  };
   showConfirmDisableProduct = (e, product) => {
     const {
       actions: { editProductStatus },
@@ -321,28 +347,61 @@ class AvailableProductsPage extends Component {
           Cadastrar Produto
         </PrivatePageHeaderButton>
       </Link>
-      <UploadButton textChildren="Atualizar Estoque via Planilha" />
-      <UploadButton textChildren="Atualizar Produtos via Planilha" />
+      <button
+        className="private-page-header-button"
+        onClick={this.showModalUploadInventories}
+      >
+        <Icon type="upload" />
+        <span>Atualizar Estoque</span>
+      </button>
+      <button
+        className="private-page-header-button"
+        onClick={this.showModalUploadProduct}
+      >
+        <Icon type="upload" />
+        <span>Atualizar Produtos</span>
+      </button>
     </Row>
   );
 
   render() {
-    const { loadingSubmit, pagination } = this.state;
     const {
+      loadingSubmit,
+      pagination,
+      selectedProducts,
+      idsProducts,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      refsProducts,
+      status,
+    } = this.state;
+
+    const filterValues = {
+      idsProducts,
+      idsBrands,
+      idsCategories,
+      idsChannels,
+      refsProducts,
+      status,
+    };
+
+    const {
+      products,
       products: { results },
+      history: { push },
       productsIsLoading,
     } = this.props;
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(
-          `selectedRowKeys: ${selectedRowKeys}`,
-          'selectedRows: ',
-          selectedRows,
-        );
+        this.setState({
+          selectedProducts: selectedRows,
+        });
       },
     };
-
+    console.log(productsIsLoading);
+  
     return (
       <div>
         <PrivatePageHeader
@@ -351,13 +410,24 @@ class AvailableProductsPage extends Component {
         />
         <Row type="flex" gutter={24}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
-            <SendProductToChannelCard />
+            <SendProductToChannelCard
+              filterValues={filterValues}
+              selectedProducts={selectedProducts}
+              products={products}
+              productsIsLoading={productsIsLoading}
+            />
             <PrivatePageSection>
               <StandardTable
                 minWidth={1000}
                 rowSelection={rowSelection}
                 dataSource={results}
                 columns={this.getTableColumns()}
+                onRow={(record) => { // eslint-disable-line
+                  return {
+                    onClick: () =>
+                      push(`/products/available/${record.idProduct}`),
+                  };
+                }}
                 rowKey={(record) => record.idProduct}
                 pagination={pagination}
                 loading={productsIsLoading && spinnerAtrr}
@@ -374,6 +444,16 @@ class AvailableProductsPage extends Component {
             </PrivatePageSection>
           </Col>
         </Row>
+        <UpdateSpreadsheetButtons
+          textChildren="Upload"
+          visible={this.state.visibleModalUpload}
+          onCancel={this.handleCancelUpload}
+        />
+        <UpdateSpreadsheetProductButtons
+          textChildren="Upload"
+          visible={this.state.visibleModalUploadProduct}
+          onCancel={this.handleCancelUploadProduct}
+        />
       </div>
     );
   }

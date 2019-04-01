@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Divider, Collapse, Avatar, Col, Row } from 'antd';
+import { Row, Col, Divider, Collapse, Avatar } from 'antd';
 
 import { formatCurrency } from '../../../../../../../../../utils/masks/formatCurrency';
 
 const { Panel } = Collapse;
 
-const SkuDataList = ({ channelProduct: { skus = [], attributes = [] } }) => (
+const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
   <Fragment>
     <Divider orientation="left">SKUS</Divider>
     {!isEmpty(skus) &&
@@ -96,8 +96,8 @@ const SkuDataList = ({ channelProduct: { skus = [], attributes = [] } }) => (
   </Fragment>
 );
 
-SkuDataList.propTypes = {
-  channelProduct: PropTypes.object.isRequired,
+SkuDataItem.propTypes = {
+  product: PropTypes.object.isRequired,
 };
 
-export default SkuDataList;
+export default SkuDataItem;

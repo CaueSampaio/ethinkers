@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Row, Col, Button, Divider, notification } from 'antd';
+import { Row, Col, Button, Divider, notification, Skeleton } from 'antd';
 import { isEmpty } from 'lodash';
 
 import {
@@ -22,10 +22,15 @@ class SynchronizeProducts extends Component {
     selectedProducts: PropTypes.array,
     filterValues: PropTypes.object.isRequired,
     synchronizeProductsError: PropTypes.object,
-    synchronizeProductsIsLoading: PropTypes.bool.isRequired,
+    // synchronizeProductsIsLoading: PropTypes.bool.isRequired,
+    channelProducts: PropTypes.object.isRequired,
+    channelsProductsIsLoading: PropTypes.bool.isRequired,
   };
 
-  state = {};
+  state = {
+    synchronizeAllIsLoading: false,
+    synchronizeSelectedIsLoading: false,
+  };
 
   handleSynchronizeAll = async () => {
     const {
@@ -33,15 +38,22 @@ class SynchronizeProducts extends Component {
       filterValues,
       synchronizeProductsError,
     } = this.props;
+    await this.setState({
+      synchronizeAllIsLoading: true,
+    });
     const params = {
       status: 4,
       filters: [filterValues],
     };
     const result = await synchronizeChannelProduct(params);
+
     if (!result.error) {
-      notification.success({
+      await notification.success({
         message: 'Sucesso',
         description: 'Productos sincronizados com sucesso!',
+      });
+      await this.setState({
+        synchronizeAllIsLoading: false,
       });
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
@@ -60,41 +72,32 @@ class SynchronizeProducts extends Component {
       synchronizeProductsError,
     } = this.props;
 
-    const filters = {
-      idsCompanies: [],
-      idsBrands: [],
-      idsCategories: [],
-      refsProducts: [],
+    await this.setState({
+      synchronizeSelectedIsLoading: true,
+    });
+    const filter = {
       idsProducts: [],
-      idsChannels: [],
-      status: [],
     };
 
-    await selectedProducts.map((product) => { // eslint-disable-line
-      return (
-        filters.idsCompanies.push(product.company.id),
-        filters.idsBrands.push(product.brand.id),
-        filters.idsCategories.push(product.category.id),
-        filters.refsProducts.push(product.refProduct),
-        filters.idsProducts.push(product.idProduct),
-        filters.idsChannels.push(product.channel.id),
-        filters.status.push(product.status)
-      );
-    });
+    await selectedProducts.map((product) =>
+      filter.idsProducts.push(product.idProduct),
+    );
 
     const params = {
       status: 4,
-      filters,
+      filter,
     };
-    const result = synchronizeChannelProduct(params);
+    const result = await synchronizeChannelProduct(params);
     if (!result.error) {
-      notification.success({
+      await notification.success({
         message: 'Sucesso',
         description: 'Productos sincronizados com sucesso!',
       });
+      await this.setState({
+        synchronizeSelectedIsLoading: false,
+      });
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
-
       notification.error({
         message: errorMessage,
         description: <BadRequestNotificationBody errors={errors} />,
@@ -103,66 +106,88 @@ class SynchronizeProducts extends Component {
   };
 
   render() {
-    const { selectedProducts, synchronizeProductsIsLoading } = this.props;
+    const {
+      selectedProducts,
+      channelProducts: { results = [] },
+      channelsProductsIsLoading,
+    } = this.props;
+    const {
+      synchronizeAllIsLoading,
+      synchronizeSelectedIsLoading,
+    } = this.state;
+    const totalProducts = results.length;
+
     return (
       <PrivatePageSection className="synchronize-container">
-        <Row type="flex" justify="center" align="middle">
-          <Col xs={24} sm={24} md={24} lg={24} xl={11}>
-            <Row type="flex" justify="center">
-              <Col>
-                <span className="amount-total">100&ensp;</span>
-                <span className="label-amount">Produtos encontrados</span>
-              </Col>
-            </Row>
-            <Row type="flex" justify="center">
-              <Button
-                loading={synchronizeProductsIsLoading}
-                className="btn-synchronize-all"
-                onClick={this.handleSynchronizeAll}
-              >
-                <span>Sincronizar todos</span>
-              </Button>
-            </Row>
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={2}>
-            <Divider type="vertical" className="divider" />
-          </Col>
-          <Col xs={24} sm={24} md={24} lg={24} xl={11}>
-            <Row type="flex" align="middle" justify="center" gutter={16}>
-              <Col>
-                {isEmpty(selectedProducts) ? (
-                  <Row type="flex" align="middle">
-                    <Col span={24} className="synchronize-description">
-                      <span>OU SINCRONIZE UM OU MAIS PRODUTOS</span>
-                    </Col>
-                    <Col className="sub-description" span={24} offset={2}>
-                      <span>NENHUM PRODUTO SELECIONADO AINDA</span>
-                    </Col>
-                  </Row>
-                ) : (
-                  <Row type="flex" align="middle">
-                    <Col span={2}>
-                      <span className="selected-amount">
-                        {selectedProducts.length}
-                      </span>
-                    </Col>
-                    <Col span={2} className="label-selected">
-                      <span>Produto(s) Selecionado(s)</span>
-                    </Col>
-                    <Col offset={7}>
-                      <Button
-                        onClick={this.synchronizeSelectedProducts}
-                        className="btn-synchronize"
-                      >
-                        <span>Sincronizar</span>
-                      </Button>
-                    </Col>
-                  </Row>
-                )}
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <Skeleton
+          active
+          loading={channelsProductsIsLoading}
+          title={false}
+          paragraph={{ rows: 3 }}
+        >
+          <Row type="flex" justify="center" align="middle">
+            <Col xs={24} sm={24} md={24} lg={24} xl={11}>
+              <Row type="flex" justify="center">
+                <Col>
+                  <span className="amount-total">{totalProducts}</span>
+                  <span className="label-amount">
+                    &ensp;Produtos encontrados
+                  </span>
+                </Col>
+              </Row>
+              <Row type="flex" justify="center">
+                <Button
+                  disabled={synchronizeSelectedIsLoading}
+                  loading={synchronizeAllIsLoading}
+                  className="btn-synchronize-all"
+                  onClick={this.handleSynchronizeAll}
+                >
+                  <span>Sincronizar todos</span>
+                </Button>
+              </Row>
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={24} xl={2}>
+              <Divider type="vertical" className="divider" />
+            </Col>
+            <Col xs={24} sm={24} md={24} lg={24} xl={11}>
+              <Row type="flex" align="middle" justify="center" gutter={16}>
+                <Col>
+                  {isEmpty(selectedProducts) ? (
+                    <Row type="flex" align="middle">
+                      <Col span={24} className="synchronize-description">
+                        <span>OU SINCRONIZE UM OU MAIS PRODUTOS</span>
+                      </Col>
+                      <Col className="sub-description" span={24} offset={2}>
+                        <span>NENHUM PRODUTO SELECIONADO AINDA</span>
+                      </Col>
+                    </Row>
+                  ) : (
+                    <Row type="flex" align="middle">
+                      <Col span={2}>
+                        <span className="selected-amount">
+                          {selectedProducts.length}
+                        </span>
+                      </Col>
+                      <Col span={2} className="label-selected">
+                        <span>Produto(s) Selecionado(s)</span>
+                      </Col>
+                      <Col offset={7}>
+                        <Button
+                          disabled={synchronizeAllIsLoading}
+                          loading={synchronizeSelectedIsLoading}
+                          onClick={this.synchronizeSelectedProducts}
+                          className="btn-synchronize"
+                        >
+                          <span>Sincronizar</span>
+                        </Button>
+                      </Col>
+                    </Row>
+                  )}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Skeleton>
       </PrivatePageSection>
     );
   }
@@ -170,7 +195,7 @@ class SynchronizeProducts extends Component {
 
 const mapStateToProps = createStructuredSelector({
   synchronizeProductsError: channelProductsSelectors.makeSelectSynchronizeChannelProductError(),
-  synchronizeProductsIsLoading: channelProductsSelectors.makeSelectSynchronizeChannelProductIsLoading(),
+  productsSummaryIsLoading: channelProductsSelectors.makeSelectSynchronizeChannelProductIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

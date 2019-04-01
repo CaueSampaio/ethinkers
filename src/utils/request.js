@@ -66,9 +66,10 @@ export const remove = (
   });
 
 export const downloadFile = (url) =>
-  request(url, {
+  get(url, {
     contentType: 'application/pdf',
-    responseType: 'blob',
+    responseType:
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     successHandler: (res) => {
       const blob = res.data;
       const { parameters = {} } = parse(res.headers['content-disposition']);
@@ -137,6 +138,14 @@ export const getQueryParams = (params) => {
 export const defaultUploadProps = () => ({
   name: 'file',
   action: `${API}/products/import`,
+  // headers: {
+  //  authorization: `Bearer ${localStorage.getItem('token')}`,
+  // },
+});
+
+export const uploadInventories = () => ({
+  name: 'file',
+  action: `${API}/inventories/import`,
   // headers: {
   //  authorization: `Bearer ${localStorage.getItem('token')}`,
   // },

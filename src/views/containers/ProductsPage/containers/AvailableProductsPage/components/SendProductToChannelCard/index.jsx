@@ -1,24 +1,138 @@
 import React, { Component } from 'react';
-import { Row, Col, Button, Divider } from 'antd';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { isEmpty } from 'lodash';
+import { Row, Col, Button, Divider, notification } from 'antd';
+
+import {
+  channelProductsActions,
+  channelProductsSelectors,
+} from '../../../../../../../state/ducks/channelProducts';
 
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 class SendProductToChannelCard extends Component {
-  state = {};
+  static propTypes = {
+    actions: PropTypes.object.isRequired,
+    selectedProducts: PropTypes.array.isRequired,
+    createChannelProductError: PropTypes.object,
+    filterValues: PropTypes.object.isRequired,
+    products: PropTypes.object.isRequired,
+    productsIsLoading: PropTypes.bool.isRequired,
+  };
+
+  state = {
+    sendAllIsLoading: false,
+    sendSelectedsIsLoading: false,
+  };
+
+  handleSendAllToChannel = async () => {
+    const {
+      actions: { createChannelProduct },
+      filterValues,
+      createChannelProductError,
+    } = this.props;
+    await this.setState({
+      sendAllIsLoading: true,
+    });
+    const params = {
+      status: 4,
+      filters: [filterValues],
+    };
+    const result = await createChannelProduct(params);
+
+    if (!result.error) {
+      await notification.success({
+        message: 'Sucesso',
+        description: 'Produtos enviados para o canal com sucesso!',
+      });
+      await this.setState({
+        sendAllIsLoading: false,
+      });
+    } else {
+      const { message: errorMessage, errors } = createChannelProductError;
+
+      notification.error({
+        message: errorMessage,
+        description: <BadRequestNotificationBody errors={errors} />,
+      });
+    }
+  };
+
+  handleSendSelectedToChannel = async () => {
+    const {
+      actions: { createChannelProduct },
+      selectedProducts,
+      createChannelProductError,
+    } = this.props;
+
+    await this.setState({
+      sendSelectedsIsLoading: true,
+    });
+    const filter = {
+      idsProducts: [],
+    };
+
+    await selectedProducts.map((product) =>
+      filter.idsProducts.push(product.idProduct),
+    );
+
+    const params = {
+      status: 4,
+      filter,
+    };
+    const result = await createChannelProduct(params);
+    if (!result.error) {
+      await notification.success({
+        message: 'Sucesso',
+        description: 'Produtos enviados para o canal com sucesso!',
+      });
+      await this.setState({
+        sendSelectedsIsLoading: false,
+      });
+    } else {
+      const { message: errorMessage, errors } = createChannelProductError;
+      notification.error({
+        message: errorMessage,
+        description: <BadRequestNotificationBody errors={errors} />,
+      });
+    }
+  };
 
   render() {
+    const {
+      selectedProducts,
+      products: { results = [] },
+      productsIsLoading,
+    } = this.props;
+    const { sendAllIsLoading, sendSelectedsIsLoading } = this.state;
+    const totalProducts = results.length;
+
     return (
-      <PrivatePageSection className="synchronize-container">
+      <PrivatePageSection
+        isLoading={productsIsLoading}
+        className="synchronize-container"
+      >
         <Row type="flex" justify="center" align="middle">
           <Col xs={24} sm={24} md={24} lg={24} xl={11}>
             <Row type="flex" justify="center">
               <Col>
-                <span className="amount-total">100&ensp;</span>
-                <span className="label-amount">Produtos encontrados</span>
+                <span className="amount-total">{totalProducts}</span>
+                <span className="label-amount">&ensp;Produtos encontrados</span>
               </Col>
             </Row>
             <Row type="flex" justify="center">
-              <Button className="btn-synchronize-all">Enviar p/ canal</Button>
+              <Button
+                disabled={sendSelectedsIsLoading}
+                loading={sendAllIsLoading}
+                className="btn-synchronize-all"
+                onClick={this.handleSendAllToChannel}
+              >
+                Enviar p/ canal
+              </Button>
             </Row>
           </Col>
           <Col xs={24} sm={24} md={24} lg={24} xl={2}>
@@ -27,17 +141,37 @@ class SendProductToChannelCard extends Component {
           <Col xs={24} sm={24} md={24} lg={24} xl={11}>
             <Row type="flex" align="middle" justify="center" gutter={16}>
               <Col>
-                <Row type="flex" align="middle">
-                  <Col>
-                    <span className="selected-amount">01 &ensp;</span>
-                  </Col>
-                  <Col span={2}>
-                    <span className="label-selected">Produto Selecionado</span>
-                  </Col>
-                  <Col offset={6}>
-                    <Button className="btn-synchronize">Enviar p/ canal</Button>
-                  </Col>
-                </Row>
+                {isEmpty(selectedProducts) ? (
+                  <Row type="flex" align="middle">
+                    <Col span={24} className="synchronize-description">
+                      <span>OU SINCRONIZE UM OU MAIS PRODUTOS</span>
+                    </Col>
+                    <Col className="sub-description" span={24} offset={2}>
+                      <span>NENHUM PRODUTO SELECIONADO AINDA</span>
+                    </Col>
+                  </Row>
+                ) : (
+                  <Row type="flex" align="middle">
+                    <Col span={2}>
+                      <span className="selected-amount">
+                        {selectedProducts.length}
+                      </span>
+                    </Col>
+                    <Col span={2} className="label-selected">
+                      <span>Produto(s) Selecionado(s)</span>
+                    </Col>
+                    <Col offset={7}>
+                      <Button
+                        disabled={sendAllIsLoading}
+                        loading={sendSelectedsIsLoading}
+                        onClick={this.handleSendSelectedToChannel}
+                        className="btn-synchronize"
+                      >
+                        <span>Sincronizar</span>
+                      </Button>
+                    </Col>
+                  </Row>
+                )}
               </Col>
             </Row>
           </Col>
@@ -47,4 +181,17 @@ class SendProductToChannelCard extends Component {
   }
 }
 
-export default SendProductToChannelCard;
+const mapStateToProps = createStructuredSelector({
+  createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
+  createChannelProductIsLoading: channelProductsSelectors.makeSelectCreateChannelProductIsLoading(),
+});
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(channelProductsActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(SendProductToChannelCard);

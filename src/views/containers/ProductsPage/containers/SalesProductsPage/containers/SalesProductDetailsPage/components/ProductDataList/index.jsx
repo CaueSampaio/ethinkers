@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Row, Col, Divider } from 'antd';
 
+import './style.less';
+
 class ProductList extends Component {
   state = {};
 
@@ -47,7 +49,9 @@ class ProductList extends Component {
             <span className="label term">Meta Tags</span>
             <span className="detail">
               {!isEmpty(metaTags) &&
-                metaTags.map((item) => <span key={item}>{`${item},`}</span>)}
+                metaTags.map((item) => (
+                  <span key={item} className="tags-details">{`${item}`}</span>
+                ))}
             </span>
           </Col>
           <Col span={8}>
@@ -55,7 +59,7 @@ class ProductList extends Component {
             <span className="detail">
               {!isEmpty(keyWords) &&
                 keyWords.map((item) => (
-                  <span key={item} className="detail">
+                  <span key={item} className="tags-details">
                     {item}
                   </span>
                 ))}

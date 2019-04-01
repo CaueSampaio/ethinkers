@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Form, Icon, Upload, message } from 'antd';
+import { Form, Icon, Upload, message, Modal, Button } from 'antd';
 
-import { defaultUploadProps } from '../../../../../../../utils/request';
+import {
+  downloadFile,
+  defaultUploadProps,
+} from '../../../../../../../utils/request';
 
-import './style.less';
-
-class UploadButton extends Component {
+class UpdateSpreadsheetProductButtons extends Component {
   state = {
     uploadingFile: false,
   };
@@ -26,9 +27,13 @@ class UploadButton extends Component {
     }
   };
 
+  onDownloadSpreadsheet = () => {
+    downloadFile(`products/export`);
+  };
+
   render() {
     const { uploadingFile } = this.state;
-    const { textChildren } = this.props;
+    const { textChildren, onCancel, visible } = this.props;
 
     const props = {
       ...defaultUploadProps(),
@@ -57,25 +62,40 @@ class UploadButton extends Component {
     };
 
     return (
-      <Upload {...props}>
-        <button
-          type="submit"
-          className="private-page-header-button"
-          disabled={uploadingFile}
-        >
-          <Icon type="upload" />
-          <span style={{ marginLeft: 5 }}>{textChildren}</span>
-        </button>
-      </Upload>
+      <Modal
+        title="Atualizar Planilha de Produtos"
+        visible={visible}
+        onCancel={onCancel}
+        onOk={this.handleUploadFile}
+        confirmLoading={uploadingFile}
+        footer={[]}
+      >
+        <p>
+          Exporte a planilha, faça as devidas alterações e em seguida, faça o
+          Upload da mesma.
+        </p>
+        <Button onClick={this.onDownloadSpreadsheet}>
+          <Icon type="file-excel" />
+          <span>Exportar planilha</span>
+        </Button>
+        <Upload {...props} style={{ marginLeft: 10 }}>
+          <Button type="submit" loading={uploadingFile}>
+            <Icon type="upload" />
+            <span style={{ marginLeft: 5 }}>{textChildren}</span>
+          </Button>
+        </Upload>
+      </Modal>
     );
   }
 }
 
-UploadButton.propTypes = {
+UpdateSpreadsheetProductButtons.propTypes = {
   form: PropTypes.object.isRequired,
   textChildren: PropTypes.string.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  visible: PropTypes.bool.isRequired,
 };
 
 const withForm = Form.create();
 
-export default compose(withForm)(UploadButton);
+export default compose(withForm)(UpdateSpreadsheetProductButtons);

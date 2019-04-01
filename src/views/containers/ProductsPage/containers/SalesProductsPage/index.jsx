@@ -57,6 +57,7 @@ class SalesProductsPage extends Component {
     pagination: {},
     visibleModal: false,
     idProduct: '',
+    visibleModalUpload: false,
   };
 
   constructor(props) {
@@ -221,6 +222,18 @@ class SalesProductsPage extends Component {
     });
   };
 
+  handleCancelUpload = (e) => {
+    this.setState({
+      visibleModalUpload: false,
+    });
+  };
+
+  showModalUpload = () => {
+    this.setState({
+      visibleModalUpload: true,
+    });
+  };
+
   clickRowTable = async (record) => {
     await this.setState({
       idProduct: record.idProduct,
@@ -305,7 +318,13 @@ class SalesProductsPage extends Component {
   };
 
   renderHeaderContent = () => (
-    <UploadButton textChildren="Atualizar Produtos via Planilha" />
+    <button
+      onClick={this.showModalUpload}
+      className="private-page-header-button"
+    >
+      <Icon type="upload" />
+      <span>Atualizar Produtos via Planilha</span>
+    </button>
   );
 
   render() {
@@ -337,6 +356,7 @@ class SalesProductsPage extends Component {
       channelsProductsIsLoading,
       productsSummary,
       history: { push },
+      productsSummaryIsLoading,
     } = this.props;
 
     const rowSelection = {
@@ -345,6 +365,9 @@ class SalesProductsPage extends Component {
           selectedProducts: selectedRows,
         });
       },
+      getCheckboxProps: (record) => ({
+        disabled: record.status === 23 || record.status === 19,
+      }),
     };
 
     return (
@@ -353,12 +376,17 @@ class SalesProductsPage extends Component {
           title="Produtos a Venda"
           content={this.renderHeaderContent()}
         />
-        <Row type="flex" gutter={24}>
+        <Row type="flex" gutter={24} className="table-channel-products">
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
-            <SummaryProducts productsSummary={productsSummary} />
+            <SummaryProducts
+              productsSummary={productsSummary}
+              productsSummaryIsLoading={productsSummaryIsLoading}
+            />
             <SynchronizeProducts
               selectedProducts={selectedProducts}
               filterValues={filterValues}
+              channelProducts={channelProducts}
+              channelsProductsIsLoading={channelsProductsIsLoading}
             />
             <PrivatePageSection>
               <StandardTable
@@ -366,7 +394,7 @@ class SalesProductsPage extends Component {
                 onRow={(record) => {
                   return {
                     onClick: (e) => {
-                      push(`/products/sales/${record.idProduct}`)
+                      push(`/products/sales/${record.idProduct}`);
                     },
                   };
                 }}
@@ -397,6 +425,11 @@ class SalesProductsPage extends Component {
             idProduct={this.state.idProduct}
           />
         )}
+        <UploadButton
+          textChildren="Upload"
+          visible={this.state.visibleModalUpload}
+          onCancel={this.handleCancelUpload}
+        />
       </Fragment>
     );
   }
@@ -413,6 +446,7 @@ const mapStateToProps = createStructuredSelector({
   disableOrEnableError: channelProductsSelectors.makeSelectEnableOrDisableProductError(),
 
   productsSummary: channelProductsSelectors.makeSelectListChannelProductSummary(),
+  productsSummaryIsLoading: channelProductsSelectors.makeSelectListChannelProductSummaryIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(channelProductsActions, dispatch),

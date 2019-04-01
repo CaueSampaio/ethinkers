@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col } from 'antd';
+import { Row, Col, Skeleton } from 'antd';
 
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 
@@ -10,38 +10,45 @@ class SummaryProducts extends Component {
   state = {};
 
   render() {
-    const { productsSummary = [] } = this.props;
-
+    const { productsSummary = [], productsSummaryIsLoading } = this.props;
+    console.log(productsSummaryIsLoading);
     return (
       <PrivatePageSection className="summary-content">
-        <Row type="flex" justify="center">
-          <h3>Resumo dos produtos</h3>
-        </Row>
-        <Row
-          type="flex"
-          justify="center"
-          gutter={10}
-          className="content-status"
+        <Skeleton
+          loading={productsSummaryIsLoading}
+          active
+          title={false}
+          paragraph={{ rows: 3 }}
         >
-          {productsSummary.map(({ status, statusName, value }) => (
-            <Col
-              key={status}
-              xs={12}
-              sm={8}
-              md={8}
-              lg={5}
-              xl={5}
-              className="status"
-            >
-              <Row>
-                <Col>{statusName}</Col>
-              </Row>
-              <Row>
-                <Col className="quantity">{value}</Col>
-              </Row>
-            </Col>
-          ))}
-        </Row>
+          <Row type="flex" justify="center">
+            <h3>Resumo dos produtos</h3>
+          </Row>
+          <Row
+            type="flex"
+            justify="center"
+            gutter={10}
+            className="content-status"
+          >
+            {productsSummary.map(({ status, statusName, value }) => (
+              <Col
+                key={status}
+                xs={12}
+                sm={8}
+                md={8}
+                lg={5}
+                xl={5}
+                className="status"
+              >
+                <Row>
+                  <Col>{statusName}</Col>
+                </Row>
+                <Row>
+                  <Col className="quantity">{value}</Col>
+                </Row>
+              </Col>
+            ))}
+          </Row>
+        </Skeleton>
       </PrivatePageSection>
     );
   }
@@ -49,6 +56,6 @@ class SummaryProducts extends Component {
 
 SummaryProducts.propTypes = {
   productsSummary: PropTypes.array.isRequired,
-  // productsSummaryIsLoading: PropTypes.bool.isRequired,
+  productsSummaryIsLoading: PropTypes.bool.isRequired,
 };
 export default SummaryProducts;

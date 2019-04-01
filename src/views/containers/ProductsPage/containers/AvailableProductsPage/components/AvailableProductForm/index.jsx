@@ -288,7 +288,7 @@ class AvailableProductForm extends Component {
                 disabled={createSkuAction}
               >
                 <Icon type="plus" />
-                <span>Cadastrar SKU</span>
+                <span>Adicionar SKU</span>
               </Button>
               {createSkuAction ? (
                 <Tooltip
