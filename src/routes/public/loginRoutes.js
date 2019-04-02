@@ -5,7 +5,7 @@ export default [
   {
     path: '/login',
     component: LoginPage,
-    breadcrumb: 'Login',
     layout: PublicLayout,
+    breadcrumb: 'Login',
   },
 ];

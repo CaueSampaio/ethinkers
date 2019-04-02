@@ -18,6 +18,7 @@ import {
   layoutSelectors,
   layoutUtils,
 } from '../../../../state/ducks/layout';
+import { userSelectors } from '../../../../state/ducks/user';
 
 import logo from '../../../../assets/images/logo/it4-ic.svg';
 import SiderMenu from './components/SiderMenu';
@@ -61,6 +62,7 @@ class PrivateLayout extends React.Component {
     isMobile: PropTypes.bool.isRequired,
     isCollapsed: PropTypes.bool.isRequired,
     path: PropTypes.string.isRequired,
+    userData: PropTypes.object.isRequired,
     // discriminators: PropTypes.arrayOf(PropTypes.string),
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
@@ -137,6 +139,7 @@ class PrivateLayout extends React.Component {
       isCollapsed,
       path,
       location,
+      userData,
       component: Component,
       ...rest
     } = this.props;
@@ -155,7 +158,7 @@ class PrivateLayout extends React.Component {
                 isCollapsed={isCollapsed}
                 onCollapse={this.handleMenuCollapse}
                 menuData={layoutUtils.getMenuData()}
-                // userData={userData}
+                userData={userData}
                 location={location}
               />
               <Layout>
@@ -186,6 +189,8 @@ const mapStateToProps = createStructuredSelector({
   isMobile: layoutSelectors.makeSelectIsMobile(),
   isCollapsed: layoutSelectors.makeSelectIsCollapsed(),
   breakpoint: layoutSelectors.makeSelectBreakpoint(),
+
+  userData: userSelectors.makeSelectUserData(),
 });
 
 const mapDispatchToProps = (dispatch) => ({

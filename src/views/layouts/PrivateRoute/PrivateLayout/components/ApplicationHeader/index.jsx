@@ -1,10 +1,17 @@
 /* eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import { Link } from 'react-router-dom';
-
 import { Divider, Dropdown, Avatar, Menu, Icon } from 'antd';
 
+import {
+  userActions,
+  userSelectors,
+  userUtils,
+} from '../../../../../../state/ducks/user';
 import logo from '../../../../../../assets/images/logo/colorful-logo.svg';
 import NotificationsPopover from './components/NotificationsPopover';
 
@@ -13,12 +20,21 @@ import './style.less';
 class ApplicationHeader extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
+    userData: PropTypes.object.isRequired,
   };
 
   state = {};
 
   handleMenuClick = (event) => {
     if (event.key === 'logout') this.handleLogoutClick();
+  };
+
+  handleLogoutClick = () => {
+    const { handleLogout } = this.props.actions;
+    const { removeLocalStorageUser } = userUtils;
+
+    removeLocalStorageUser();
+    handleLogout();
   };
 
   triggerResizeEvent() {
@@ -52,7 +68,8 @@ class ApplicationHeader extends Component {
   };
 
   render() {
-    const { isMobile, isCollapsed } = this.props;
+    const { isMobile, isCollapsed, userData: { User = {} } } = this.props;
+    console.log(this.props);
 
     return (
       <div className="header">
@@ -72,7 +89,7 @@ class ApplicationHeader extends Component {
           <Dropdown overlay={this.renderCurrentUserMenu()}>
             <span className="action account">
               <Avatar size="small" className="avatar" icon="user" />
-              <span className="name">usuário x</span>
+              <span className="name">{User.Name}</span>
             </span>
           </Dropdown>
         </div>
@@ -81,4 +98,17 @@ class ApplicationHeader extends Component {
   }
 }
 
-export default ApplicationHeader;
+const mapStateToProps = createStructuredSelector({
+  userData: userSelectors.makeSelectUserData(),
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(userActions, dispatch),
+});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(ApplicationHeader);

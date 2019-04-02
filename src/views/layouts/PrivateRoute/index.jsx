@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { Route, Redirect } from 'react-router-dom';
+import { isEmpty } from 'lodash';
+import { createStructuredSelector } from 'reselect';
+
+import { userSelectors } from '../../../state/ducks/user';
 
 import PrivateLayout from './PrivateLayout';
 
@@ -11,27 +17,42 @@ class PrivateRoute extends React.Component {
       PropTypes.func,
     ]),
     children: PropTypes.array,
+    userData: PropTypes.object,
   };
 
   state = {};
 
   render() {
-    const { component, children, ...rest } = this.props;
+    const { component, userData, children, ...rest } = this.props;
 
     return (
       <Route
         {...rest}
-        render={(props) => (
-          <PrivateLayout
-            component={component}
-            {...props}
-            {...rest}
-            childrenItems={this.props.children ? children : []} // eslint-disable-line
-          />
-        )}
+        render={(props) =>
+          isEmpty(userData) ? (
+            <Redirect to="/login" />
+          ) : (
+            <PrivateLayout
+              component={component}
+              {...props}
+              {...rest}
+              childrenItems={this.props.children ? children : []} // eslint-disable-line
+            />
+          )
+        }
       />
     );
   }
 }
 
-export default PrivateRoute;
+const mapStateToProps = createStructuredSelector({
+  userData: userSelectors.makeSelectUserData(),
+});
+const mapDispatchToProps = () => ({});
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withConnect)(PrivateRoute);

@@ -1,0 +1,9 @@
+const HANDLE_LOGIN = 'user/HANDLE_LOGIN';
+const HANDLE_LOGOUT = 'user/HANDLE_LOGOUT';
+const VERIFY_TOKEN = 'user/VERIFY_TOKEN';
+
+export default {
+  HANDLE_LOGIN,
+  HANDLE_LOGOUT,
+  VERIFY_TOKEN,
+};

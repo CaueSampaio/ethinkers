@@ -21,7 +21,6 @@ class ApplicationMenu extends Component {
     onCollapse: PropTypes.func.isRequired,
     logo: PropTypes.string.isRequired,
     menuData: PropTypes.array.isRequired,
-    // userData: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
   };
 

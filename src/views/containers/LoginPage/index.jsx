@@ -9,10 +9,7 @@ import { Form, Input, Button } from 'antd';
 
 import hasErrors from '../../../utils/hasErrorsForm';
 
-import {
-  authActions,
-  authUtils,
-} from '../../../state/ducks/auth';
+import { userActions, userUtils, userSelectors } from '../../../state/ducks/user';
 
 import './style.less';
 
@@ -30,19 +27,18 @@ class LoginPage extends Component {
     const { validateFields } = form;
 
     validateFields(async (err, values) => {
-      console.log("values", values)
+      console.log('values', values);
       if (err) return;
 
       const result = await handleLogin(values);
-
+      console.log(result);
       if (!result.error) {
-        const { discriminator } = userUtils.getUserData(result.payload.token);
-
-        // push(getHomeRoute(discriminator));
+        console.log('aq');
+        push('/orders');
       } else {
         notification.error({
-          message: t('login.loginFailed'),
-          description: t('login.loginFailedMessage'),
+          message: 'Login falhou',
+          description: 'Credenciais incorretas.',
         });
       }
     });
@@ -50,14 +46,15 @@ class LoginPage extends Component {
 
   render() {
     const {
-      form: { getFieldDecorator, getFieldsError, isFieldTouched },
+      form: { getFieldDecorator, getFieldsError, isFieldTouched, verifyIsLoading },
+      userData
     } = this.props;
-    console.log(this.props);
+    console.log(userData);
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item className="form-field" label="Email">
-            {getFieldDecorator('userEmail', {
+            {getFieldDecorator('email', {
               rules: [
                 {
                   type: 'email',
@@ -84,20 +81,19 @@ class LoginPage extends Component {
             <Link to="/forgot-password">Esqueceu sua senha?</Link>
           </Form.Item>
           <Form.Item>
-            <Link to="/home">
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={
-                  hasErrors(getFieldsError()) ||
-                  !isFieldTouched('userEmail') ||
-                  !isFieldTouched('password')
-                }
-                className="form-button"
-              >
-                LOGIN
-              </Button>
-            </Link>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={verifyIsLoading}
+              disabled={
+                hasErrors(getFieldsError()) ||
+                !isFieldTouched('email') ||
+                !isFieldTouched('password')
+              }
+              className="form-button"
+            >
+              LOGIN
+            </Button>
           </Form.Item>
         </Form>
       </div>
@@ -113,10 +109,13 @@ LoginPage.propTypes = {
 };
 
 const mapStateToProps = createStructuredSelector({
+  userData: userSelectors.makeSelectUserData(),
+  verifyIsLoading: userSelectors.makeSelectUserLoading(),
+  error: userSelectors.makeSelectUserError(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(authActions, dispatch),
+  actions: bindActionCreators(userActions, dispatch),
 });
 
 const withForm = Form.create();
@@ -126,4 +125,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withForm, withConnect)(LoginPage);
+export default compose(
+  withForm,
+  withConnect,
+)(LoginPage);

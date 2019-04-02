@@ -23,9 +23,9 @@ function getUserData(token) {
     return null;
   }
 
-  const { companyBranchId, user, UserType } = decodedToken;
+  const { CompanyBranchId, User, UserType } = decodedToken;
 
-  return { companyBranchId, user, token, UserType };
+  return { CompanyBranchId, User, token, UserType };
 }
 
 export default {

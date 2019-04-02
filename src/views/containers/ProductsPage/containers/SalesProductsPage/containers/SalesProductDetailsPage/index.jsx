@@ -13,7 +13,7 @@ import { getHeaderResourceName } from '../../../../../../../utils';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import ProductDataList from './components/ProductDataList';
-import SkuDataList from './components/SkuDataList';
+import SkuDataItem from '../../../../components/SkuDataItem';
 
 class SalesProductDetailsPage extends Component {
   static propTypes = {
@@ -64,7 +64,7 @@ class SalesProductDetailsPage extends Component {
         <PrivatePageSection
           isLoading={channelProductIsLoading || channelProductsIsLoading}
         >
-          <SkuDataList channelProduct={channelProduct} />
+          <SkuDataItem product={channelProduct} />
         </PrivatePageSection>
       </Fragment>
     );

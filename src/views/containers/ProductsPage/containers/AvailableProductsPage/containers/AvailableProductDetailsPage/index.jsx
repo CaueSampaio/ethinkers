@@ -13,7 +13,7 @@ import { getHeaderResourceName } from '../../../../../../../utils';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 
-import SkuDataItem from './components/SkuDataItem';
+import SkuDataItem from '../../../../components/SkuDataItem';
 import ProductDataItem from './components/ProductDataItem';
 
 class AvailableProductDetailsPage extends Component {
@@ -45,7 +45,6 @@ class AvailableProductDetailsPage extends Component {
 
   render() {
     const { product, productIsLoading } = this.props;
-    console.log(product);
     return (
       <Fragment>
         <PrivatePageHeader
