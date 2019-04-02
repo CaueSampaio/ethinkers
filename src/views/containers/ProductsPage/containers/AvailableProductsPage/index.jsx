@@ -145,7 +145,9 @@ class AvailableProductsPage extends Component {
   renderItemsMenu = (product) => (
     <Menu>
       <Menu.Item>
-        <span className="btn-edit">Editar</span>
+        <Link to={`/products/available/${product.idProduct}/edit`}>
+          <span className="btn-edit">Editar</span>
+        </Link>
       </Menu.Item>
       {isEmpty(product.channels) && (
         <Menu.Item onClick={(e) => this.showConfirmRemoveProduct(e, product)}>

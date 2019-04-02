@@ -86,6 +86,42 @@ const makeSelectRemoveProductError = () =>
     ({ error }) => error,
   );
 
+// FIND PRODUCT
+const selectFindProduct = ({ products: { findProduct } }) => findProduct;
+const makeSelectFindProduct = () =>
+  createSelector(
+    selectFindProduct,
+    ({ data }) => data,
+  );
+const makeSelectFindProductIsLoading = () =>
+  createSelector(
+    selectFindProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectFindProductError = () =>
+  createSelector(
+    selectFindProduct,
+    ({ error }) => error,
+  );
+
+// EDIT PRODUCT
+const selectEditProduct = ({ products: { editProduct } }) => editProduct;
+const makeSelectEditProduct = () =>
+  createSelector(
+    selectEditProduct,
+    ({ data }) => data,
+  );
+const makeSelectEditProductIsLoading = () =>
+  createSelector(
+    selectEditProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectEditProductError = () =>
+  createSelector(
+    selectEditProduct,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectProducts,
@@ -115,4 +151,16 @@ export default {
   selectRemoveProduct,
   makeSelectRemoveProductIsLoading,
   makeSelectRemoveProductError,
+
+  // FIND PRODUCT
+  selectFindProduct,
+  makeSelectFindProduct,
+  makeSelectFindProductIsLoading,
+  makeSelectFindProductError,
+
+  // EDIT PRODUCT
+  selectEditProduct,
+  makeSelectEditProduct,
+  makeSelectEditProductIsLoading,
+  makeSelectEditProductError,
 };

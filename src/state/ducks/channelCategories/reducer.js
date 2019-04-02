@@ -5,7 +5,7 @@ import types from './types';
 const listChannelCategoriesAttributesInitialState = {
   error: null,
   isLoading: false,
-  data: {},
+  data: [],
 };
 function listChannelCategoriesAttributesReducer(
   state = listChannelCategoriesAttributesInitialState,

@@ -95,7 +95,6 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    console.log(orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
@@ -117,17 +116,17 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    console.log('order-resukts', orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
 
-  renderOrderNumberStatus = (orderNumber, status) => (
+  renderOrderNumberStatus = (orderNumber, status, channel) => (
     <div>
-      <Row type="flex">
+      <Row>
         <div className="order-number">
           #{orderNumber} <span>({status})</span>
         </div>
+        <h2>{channel.name}</h2>
       </Row>
       <Row className="order-actions" type="flex">
         <PrivatePageHeaderButton>Faturar</PrivatePageHeaderButton>
@@ -139,16 +138,27 @@ class OrderDetailsPage extends Component {
   render() {
     const {
       slide,
-      order: { customer, delivery, payment, orderItems, orderNumber, status },
+      order: {
+        channel,
+        customer,
+        delivery,
+        payment,
+        orderItems,
+        orderNumber,
+        status,
+      },
     } = this.state;
+    console.log('State', orderItems);
 
     return (
       <Fragment>
-        <PrivatePageHeader
-          title="Detalhes do Pedido"
-          content={this.renderOrderNumberStatus(orderNumber, status)}
-          resourceMap={this.renderResourceMap()}
-        />
+        {!isEmpty(channel) ? (
+          <PrivatePageHeader
+            title="Detalhes do Pedido"
+            content={this.renderOrderNumberStatus(orderNumber, status, channel)}
+            resourceMap={this.renderResourceMap()}
+          />
+        ) : null}
 
         <Row type="flex" justify="center">
           {isEmpty(orderItems) ? (
@@ -266,7 +276,9 @@ class OrderDetailsPage extends Component {
                 <Icon type="right" />
               </Button>
             </Row>
-            {orderItems ? <ProductsList products={orderItems} /> : null}
+            {orderItems ? (
+              <ProductsList props={this.props} products={orderItems} />
+            ) : null}
           </Animated>
         ) : null}
       </Fragment>

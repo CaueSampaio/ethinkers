@@ -53,6 +53,55 @@ class SynchronizeProducts extends Component {
     }
   };
 
+  synchronizeSelectedProducts = async () => {
+    const {
+      actions: { synchronizeChannelProduct },
+      selectedProducts,
+      synchronizeProductsError,
+    } = this.props;
+
+    const filters = {
+      idsCompanies: [],
+      idsBrands: [],
+      idsCategories: [],
+      refsProducts: [],
+      idsProducts: [],
+      idsChannels: [],
+      status: [],
+    };
+
+    await selectedProducts.map((product) => { // eslint-disable-line
+      return (
+        filters.idsCompanies.push(product.company.id),
+        filters.idsBrands.push(product.brand.id),
+        filters.idsCategories.push(product.category.id),
+        filters.refsProducts.push(product.refProduct),
+        filters.idsProducts.push(product.idProduct),
+        filters.idsChannels.push(product.channel.id),
+        filters.status.push(product.status)
+      );
+    });
+
+    const params = {
+      status: 4,
+      filters,
+    };
+    const result = synchronizeChannelProduct(params);
+    if (!result.error) {
+      notification.success({
+        message: 'Sucesso',
+        description: 'Productos sincronizados com sucesso!',
+      });
+    } else {
+      const { message: errorMessage, errors } = synchronizeProductsError;
+
+      notification.error({
+        message: errorMessage,
+        description: <BadRequestNotificationBody errors={errors} />,
+      });
+    }
+  };
+
   render() {
     const { selectedProducts, synchronizeProductsIsLoading } = this.props;
     return (
@@ -101,7 +150,12 @@ class SynchronizeProducts extends Component {
                       <span>Produto(s) Selecionado(s)</span>
                     </Col>
                     <Col offset={7}>
-                      <Button className="btn-synchronize">Sincronizar</Button>
+                      <Button
+                        onClick={this.synchronizeSelectedProducts}
+                        className="btn-synchronize"
+                      >
+                        <span>Sincronizar</span>
+                      </Button>
                     </Col>
                   </Row>
                 )}

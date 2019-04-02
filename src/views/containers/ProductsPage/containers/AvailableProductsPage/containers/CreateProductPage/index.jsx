@@ -18,13 +18,12 @@ import BadRequestNotificationBody from '../../../../../../components/BadRequestN
 class CreateProductPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
 
     createProductIsLoading: PropTypes.bool.isRequired,
     createProductError: PropTypes.object,
   };
 
-  state = {};
+  state = { createSkuAction: true };
 
   getFormRef = (ref) => {
     this.formRef = ref;
@@ -33,7 +32,6 @@ class CreateProductPage extends Component {
   onSubmit = (e) => {
     e.preventDefault();
     const {
-      history: { push },
       actions: { createProduct },
       createProductError,
     } = this.props;
@@ -47,7 +45,9 @@ class CreateProductPage extends Component {
           message: 'Sucesso',
           description: 'Produto cadastrado com sucesso',
         });
-        push('/products/available');
+        await this.setState({
+          createSkuAction: false,
+        });
       } else {
         const { message: errorMessage, errors } = createProductError;
         notification.error({
@@ -60,6 +60,7 @@ class CreateProductPage extends Component {
 
   render() {
     const { createProductIsLoading } = this.props;
+    const { createSkuAction } = this.state;
 
     return (
       <Fragment>
@@ -69,6 +70,7 @@ class CreateProductPage extends Component {
             ref={this.getFormRef}
             isLoading={createProductIsLoading}
             onSubmit={this.onSubmit}
+            createSkuAction={createSkuAction}
           />
         </PrivatePageSection>
       </Fragment>

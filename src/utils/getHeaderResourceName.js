@@ -8,9 +8,10 @@ import { isEmpty } from 'lodash';
  * @param {String} paramName Name of the parameter to check in the url params.
  */
 function getHeaderResourceName(obj, objParam, paramName) {
+  console.log(obj);
   return {
     paramName,
-    value: isEmpty(obj) ? 'Carregando' : obj[objParam],
+    value: isEmpty(obj) ? 'Carregando...' : obj[objParam],
   };
 }
 
