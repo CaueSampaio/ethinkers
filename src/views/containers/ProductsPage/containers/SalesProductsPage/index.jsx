@@ -366,7 +366,11 @@ class SalesProductsPage extends Component {
         });
       },
       getCheckboxProps: (record) => ({
-        disabled: record.status === 23 || record.status === 19,
+        disabled:
+          record.status === 23 ||
+          record.status === 19 ||
+          record.status === 3 ||
+          record.status === 10,
       }),
     };
 

@@ -131,7 +131,7 @@ class SendProductToChannelCard extends Component {
                 className="btn-synchronize-all"
                 onClick={this.handleSendAllToChannel}
               >
-                Enviar p/ canal
+                <span>Enviar p/ canal</span>
               </Button>
             </Row>
           </Col>

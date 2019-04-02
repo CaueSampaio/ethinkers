@@ -50,7 +50,7 @@ class SynchronizeProducts extends Component {
     if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: 'Productos sincronizados com sucesso!',
+        description: 'Produtos sincronizados com sucesso!',
       });
       await this.setState({
         synchronizeAllIsLoading: false,
@@ -91,7 +91,7 @@ class SynchronizeProducts extends Component {
     if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: 'Productos sincronizados com sucesso!',
+        description: 'Produtos sincronizados com sucesso!',
       });
       await this.setState({
         synchronizeSelectedIsLoading: false,
@@ -130,9 +130,7 @@ class SynchronizeProducts extends Component {
               <Row type="flex" justify="center">
                 <Col>
                   <span className="amount-total">{totalProducts}</span>
-                  <span className="label-amount">
-                    &ensp;Produtos encontrados
-                  </span>
+                  <span className="label-amount"> Produtos encontrados</span>
                 </Col>
               </Row>
               <Row type="flex" justify="center">

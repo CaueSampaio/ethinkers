@@ -72,6 +72,7 @@ class UpdateSpreadsheetButtons extends Component {
         confirmLoading={uploadingFile}
         footer={[]}
       >
+        {/*  eslint-disable-next-line react/jsx-one-expression-per-line */}
         <p>
           Exporte a planilha, faça as devidas alterações e em seguida, faça o
           Upload da mesma.
