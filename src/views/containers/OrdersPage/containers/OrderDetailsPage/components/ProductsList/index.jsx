@@ -85,24 +85,32 @@ class ProductList extends Component {
         product.isChecked = event.target.checked;
     });
     this.setState({ products: products });
-    console.log("target", event);
   };
 
   showConfirmInvoiceProductsSKU = (event, products) => {
-    console.log(this.props)
     const {
-      actions: { invoiceOrderProductsSKU },
+      actions: { invoiceOrder },
       editStatusError,
     } = this.props.props;
-    const data = this.getSelectedProducts(products);
-    console.log("DATA", data);
+    const selectedProducts = this.getIdSelectedProducts(products);
+    const data = {
+      idOrder: '',
+      number: '',
+      series: '',
+      key: '',
+      idOrderItems: selectedProducts,
+      tracking: {
+        code: '',
+        url: '',
+      },
+    };
 
     confirm({
       title: 'Deseja realmente faturar os produtos selecionados?',
       okText: 'Confirmar',
       content: 'Ao faturar, sera gerado um invoice dos produtos selecionados',
       onOk: async () => {
-        const result = await invoiceOrderProductsSKU(data);
+        const result = await invoiceOrder(data);
         if (!result.error) {
           await notification.success({
             message: 'Sucesso',
@@ -119,9 +127,53 @@ class ProductList extends Component {
     });
   };
 
-  getSelectedProducts = (productsList) => (
-    productsList.filter(product => product.isChecked)
-  );
+  showConfirmCancelOrderItems = (event, products) => {
+    const {
+      // match: {
+      //   params: { id },
+      // },
+      actions: { cancelOrderItems },
+      editStatusError,
+    } = this.props.props;
+    const selectedProducts = this.getIdSelectedProducts(products);
+    const data = {
+      idOrderItens: selectedProducts,
+      status: 4,
+      reason: 'Cancelado pelo usuário',
+    };
+
+    confirm({
+      title: 'Deseja realmente cancelar os itens selecionados?',
+      okText: 'Confirmar',
+      content: 'Ao confirmar os itens selecionados serão cancelados.',
+      onOk: async () => {
+        const result = await cancelOrderItems(data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Itens cancelados com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  setInvoiceData = () => {};
+
+  getIdSelectedProducts = (productsList) => {
+    const selectedProducts = productsList.filter(
+      (product) => product.isChecked,
+    );
+    let productsId = [];
+    selectedProducts.forEach((item) => productsId.push(item.Id));
+    return productsId;
+  };
 
   render() {
     const { products } = this.state;
@@ -131,11 +183,21 @@ class ProductList extends Component {
         <PrivatePageSection>
           <h3>Produtos</h3>
           <Row type="flex">
-            <PrivatePageHeaderButton onClick={(e) => this.showConfirmInvoiceProductsSKU(e, products)}>Faturar SKUS</PrivatePageHeaderButton>
-            <PrivatePageHeaderButton onClick={(e) => this.sendProductsSKU(e, products)}>
+            <PrivatePageHeaderButton
+              onClick={(e) => this.showConfirmInvoiceProductsSKU(e, products)}
+            >
+              Faturar SKUS
+            </PrivatePageHeaderButton>
+            <PrivatePageHeaderButton
+            // onClick={(e) => this.sendProductsSKU(e, products)}
+            >
               Enviar tracking dos SKUS
             </PrivatePageHeaderButton>
-            <PrivatePageHeaderButton onClick={(e) => this.cancelProducts(e, product)}>Cancelar produto</PrivatePageHeaderButton>
+            <PrivatePageHeaderButton
+              onClick={(e) => this.showConfirmCancelOrderItems(e, products)}
+            >
+              Cancelar produto
+            </PrivatePageHeaderButton>
           </Row>
           <Row>
             <Col className="space-bottom">

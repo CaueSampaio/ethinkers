@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Card, Row, Col, Button, Icon, Spin } from 'antd';
+import { Card, Row, Col, Button, Icon, Spin, Modal, notification } from 'antd';
 import { isEmpty } from 'lodash';
 import { getHeaderResourceName } from '../../../../../utils';
 import { formatCurrency } from '../../../../../utils/masks/formatCurrency';
@@ -23,6 +23,8 @@ import { Animated } from 'react-animated-css';
 import './style.less';
 
 let i = 0;
+
+const { confirm } = Modal;
 
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
@@ -120,20 +122,103 @@ class OrderDetailsPage extends Component {
     return orders.results[i];
   }
 
-  renderOrderNumberStatus = (orderNumber, status, channel) => (
-    <div>
-      <Row>
-        <div className="order-number">
-          #{orderNumber} <span>({status})</span>
-        </div>
-        <h2>{channel.name}</h2>
-      </Row>
-      <Row className="order-actions" type="flex">
-        <PrivatePageHeaderButton>Faturar</PrivatePageHeaderButton>
-        <PrivatePageHeaderButton>Cancelar</PrivatePageHeaderButton>
-      </Row>
-    </div>
-  );
+  showConfirmInvoiceOrder = (event, order) => {
+    const {
+      actions: { invoiceOrder },
+      editStatusError,
+    } = this.props;
+    const data = {
+      idOrder: '',
+      number: '',
+      series: '',
+      key: '',
+      tracking: {
+        code: '',
+        url: '',
+      },
+    };
+
+    confirm({
+      title: 'Deseja realmente faturar o pedido selecionado?',
+      okText: 'Confirmar',
+      content: 'Ao faturar, sera gerado um invoice do pedido.',
+      onOk: async () => {
+        const result = await invoiceOrder(data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Pedido faturado com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  showConfirmCancelOrder = (event) => {
+    const {
+      match: {
+        params: { id },
+      },
+      actions: { cancelOrder },
+      editStatusError,
+    } = this.props;
+    const data = {
+      status: 4,
+    };
+
+    confirm({
+      title: 'Deseja realmente cancelar o pedido?',
+      okText: 'Confirmar',
+      content: 'Este pedido sera cancelado.',
+      onOk: async () => {
+        const result = await cancelOrder(id, data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Pedido cancelado com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  renderOrderNumberStatus = (orderNumber, status, channel) => {
+    const { order } = this.props;
+    return (
+      <div>
+        <Row>
+          <div className="order-number">
+            #{orderNumber} <span>({status})</span>
+          </div>
+          <h2>{channel.name}</h2>
+        </Row>
+        <Row className="order-actions" type="flex">
+          <PrivatePageHeaderButton
+            onClick={(e) => this.showConfirmInvoiceOrder(e, order)}
+          >
+            Faturar
+          </PrivatePageHeaderButton>
+          <PrivatePageHeaderButton
+            onClick={(e) => this.showConfirmCancelOrder(e, order)}
+          >
+            Cancelar
+          </PrivatePageHeaderButton>
+        </Row>
+      </div>
+    );
+  };
 
   render() {
     const {
@@ -148,7 +233,6 @@ class OrderDetailsPage extends Component {
         status,
       },
     } = this.state;
-    console.log('State', orderItems);
 
     return (
       <Fragment>

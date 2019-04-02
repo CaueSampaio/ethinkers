@@ -1,5 +1,5 @@
 import types from './types';
-import { get, getQueryParams, post } from '../../../utils/request';
+import { get, getQueryParams, post, put } from '../../../utils/request';
 
 function listOrders(data) {
   return {
@@ -22,10 +22,24 @@ function listOrderStatus() {
   };
 }
 
-function invoiceOrderProductsSKU(data) {
+function invoiceOrder(data) {
   return {
-    type: types.INVOICE_ORDER_PRODUCTS_SKUS,
-    promise: post(`orderinvoices`, data),
+    type: types.INVOICE_ORDER,
+    promise: post(`/orderinvoices`, data),
+  };
+}
+
+function cancelOrder(id, data) {
+  return {
+    type: types.CANCEL_ORDER,
+    promise: put(`/orders/${id}/status`, data),
+  };
+}
+
+function cancelOrderItems(data) {
+  return {
+    type: types.CANCEL_ORDER_ITEMS,
+    promise: put(`/orderitems/status`, data),
   };
 }
 
@@ -34,5 +48,7 @@ export default {
   findOrder,
 
   listOrderStatus,
-  invoiceOrderProductsSKU,
+  invoiceOrder,
+  cancelOrder,
+  cancelOrderItems,
 };

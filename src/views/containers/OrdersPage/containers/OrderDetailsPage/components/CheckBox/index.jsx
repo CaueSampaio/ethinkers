@@ -2,7 +2,6 @@
 import React from 'react';
 
 export const CheckBox = (props) => {
-    console.log("PROPS", props)
   return (
     <li>
       <input
