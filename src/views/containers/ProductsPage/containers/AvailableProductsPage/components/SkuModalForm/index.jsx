@@ -14,7 +14,7 @@ import {
   Button,
   Avatar,
   Divider,
-  notification,
+  // notification,
 } from 'antd';
 
 import {
@@ -22,7 +22,7 @@ import {
   skusSelectors,
 } from '../../../../../../../state/ducks/skus';
 
-import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
+// import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 import './style.less';
 
@@ -34,8 +34,7 @@ class SkuModalForm extends Component {
     form: PropTypes.object.isRequired,
     visible: PropTypes.bool.isRequired,
     onCancel: PropTypes.func.isRequired,
-    actions: PropTypes.object.isRequired,
-    createSkuError: PropTypes.object,
+    onSubmitSku: PropTypes.func,
     createSkuIsLoading: PropTypes.bool.isRequired,
   };
 
@@ -72,42 +71,16 @@ class SkuModalForm extends Component {
     });
   };
 
-  handleSubmit = async () => {
-    const {
-      form: { validateFields },
-      actions: { createSku },
-      createSkuError,
-      onCancel,
-    } = this.props;
-
-    validateFields(async (err, values) => {
-      if (err) return;
-      const result = await createSku(values);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'SKU cadastrado com sucesso',
-        });
-        onCancel();
-      } else {
-        const { message: errorMessage, errors } = createSkuError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
-      }
-    });
-  };
-
   render() {
     const {
       form: { getFieldDecorator, getFieldValue },
       visible,
       onCancel,
       createSkuIsLoading,
+      onSubmitSku,
     } = this.props;
     const { previewImage } = this.state;
-
+    console.log(onSubmitSku);
     getFieldDecorator('keys', { initialValue: [] });
     const keys = getFieldValue('keys');
 
@@ -152,7 +125,6 @@ class SkuModalForm extends Component {
         width={930}
         visible={visible}
         onCancel={onCancel}
-        onOk={this.handleSubmit}
         centered
         footer={[
           <Button style={{ borderRadius: 50 }} key="back" onClick={onCancel}>
@@ -161,9 +133,10 @@ class SkuModalForm extends Component {
           <Button
             key="submit"
             type="primary"
+            htmlType="submit"
             loading={createSkuIsLoading}
             style={{ borderRadius: 50 }}
-            onClick={this.handleSubmit}
+            onClick={onSubmitSku}
           >
             <span>Cadastrar</span>
           </Button>,

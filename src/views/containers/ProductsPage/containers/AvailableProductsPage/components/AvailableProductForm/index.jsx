@@ -12,10 +12,15 @@ import {
   Select,
   Button,
   Icon,
-  Tooltip,
   Spin,
+  Divider,
+  notification,
 } from 'antd';
 
+import {
+  skusActions,
+  skusSelectors,
+} from '../../../../../../../state/ducks/skus';
 import {
   categoriesActions,
   categoriesSelectors,
@@ -24,11 +29,17 @@ import {
   brandsActions,
   brandsSelectors,
 } from '../../../../../../../state/ducks/brands';
+import {
+  productsActions,
+  productsSelectors,
+} from '../../../../../../../state/ducks/products';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import SkuModalForm from '../SkuModalForm';
+import SkuDataItem from '../SkuDataItem';
 
 import './style.less';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 const { TextArea } = Input;
 
@@ -37,13 +48,13 @@ class AvailableProductForm extends Component {
     form: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
 
-    onSubmit: PropTypes.func.isRequired,
     categories: PropTypes.array.isRequired,
     categoriesIsLoading: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    createSkuAction: PropTypes.bool.isRequired,
     brands: PropTypes.array.isRequired,
     brandsIsLoading: PropTypes.bool.isRequired,
+    createProductError: PropTypes.object,
+    createSkuError: PropTypes.object,
   };
 
   constructor(props) {
@@ -53,7 +64,7 @@ class AvailableProductForm extends Component {
     this.filterBrands = debounce(this.fetchBrands, 800);
   }
 
-  state = { visibleModal: false };
+  state = { visibleModal: false, skusList: [] };
 
   componentDidMount() {
     this.fetchCategories();
@@ -97,6 +108,13 @@ class AvailableProductForm extends Component {
     this.fetchCategories();
   };
 
+  removeSkuItem = (e, skuIndex) => {
+    e.stopPropagation();
+    this.setState({
+      skusList: this.state.skusList.filter((_, i) => i !== skuIndex), // eslint-disable-line
+    });
+  };
+
   fetchBrands = async () => {
     const {
       actions: { listBrands, clearBrands },
@@ -106,24 +124,106 @@ class AvailableProductForm extends Component {
     await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
   };
 
+  handleSubmitSku = async () => {
+    const { validateFields, resetFields } = this.formRef;
+
+    validateFields(async (err, values) => {
+      if (err) return;
+      this.setState({
+        skusList: [...this.state.skusList, values], // eslint-disable-line
+      });
+      this.handleCancel();
+      resetFields();
+    });
+  };
+
+  onSubmit = (e) => {
+    e.preventDefault();
+    const {
+      actions: { createProduct, createSku },
+      createProductError,
+      createSkuError,
+    } = this.props;
+    const { skusList } = this.state;
+    const {
+      form: { validateFields },
+    } = this.props;
+
+    validateFields(async (err, values) => {
+      if (err) return;
+      const result = await createProduct(values);
+      const {
+        payload: { id },
+      } = result;
+
+      if (!result.error) {
+        await notification.success({
+          message: 'Sucesso',
+          description: 'Produto cadastrado com sucesso',
+        });
+        const skus = skusList.map((sku) => ({ ...sku, idProduct: id }));
+        const promisesList = skus.map(async (sku) => {
+          const resultSku = await createSku(sku);
+          return resultSku;
+        });
+        Promise.all(promisesList).then((test) => {
+          const error = test.filter((value, index) => {
+            const containsError = Boolean(value.error);
+            if (containsError) {
+              return { index };
+            }
+            return false;
+          });
+          if (!isEmpty(error)) {
+            const { message: errorMessage, errors } = createSkuError;
+            notification.error({
+              message: errorMessage,
+              description: <BadRequestNotificationBody errors={errors} />,
+            });
+          } else {
+            notification.success({
+              message: 'Sucesso',
+              description: 'SKU cadastrado com sucesso',
+            });
+          }
+        });
+      } else {
+        const {
+          message: errorMessageSku,
+          errors: errorsSku,
+        } = createProductError;
+        notification.error({
+          message: errorMessageSku,
+          description: <BadRequestNotificationBody errors={errorsSku} />,
+        });
+      }
+    });
+  };
+
+  getFormRef = (ref) => {
+    this.formRef = ref;
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
       isLoading,
-      onSubmit,
       categories,
       categoriesIsLoading,
-      createSkuAction,
       brands,
       brandsIsLoading,
     } = this.props;
-    const { visibleModal } = this.state;
+    const { visibleModal, skusList } = this.state;
 
     const children = [];
 
+    const genExtra = (skuIndex) => (
+      <Button onClick={(e) => this.removeSkuItem(e, skuIndex)}>Remover</Button>
+    );
+
     return (
       <Fragment>
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={this.onSubmit}>
           <Row className="create-product-form" gutter={24} type="flex">
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
               <StyledFormItem label="Nome">
@@ -279,31 +379,34 @@ class AvailableProductForm extends Component {
               </StyledFormItem>
             </Col>
           </Row>
-          <Row gutter={24}>
-            <Col>
+          <Row type="flex" gutter={10} align="middle">
+            <Col span={21}>
+              <Divider orientation="left">SKUS</Divider>
+            </Col>
+            <Col span={3}>
               <Button
                 style={{ borderRadius: 50 }}
                 type="dashed"
                 onClick={this.showSkuModal}
-                disabled={createSkuAction}
               >
                 <Icon type="plus" />
                 <span>Adicionar SKU</span>
               </Button>
-              {createSkuAction ? (
-                <Tooltip
-                  placement="top"
-                  title="O cadastro do SKU será possível somente após o cadastro do Produto."
-                >
-                  <Icon
-                    type="question-circle"
-                    style={{ marginLeft: 10, fontSize: 16 }}
-                  />
-                </Tooltip>
-              ) : null}
             </Col>
           </Row>
-          <Row type="flex" justify="end" gutter={8}>
+          <Row gutter={24}>
+            {!isEmpty(skusList) &&
+              skusList.map((sku, i) => (
+                <Col span={24} key={sku.refSku}>
+                  <SkuDataItem
+                    sku={sku}
+                    removeSkuItem={this.removeSkuItem}
+                    genExtra={genExtra(i)}
+                  />
+                </Col>
+              ))}
+          </Row>
+          <Row type="flex" justify="end" gutter={8} style={{ marginTop: 30 }}>
             <Col>
               <StyledFormItem>
                 <Button style={{ borderRadius: 50 }}>Cancelar</Button>
@@ -323,7 +426,12 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
         </Form>
-        <SkuModalForm visible={visibleModal} onCancel={this.handleCancel} />
+        <SkuModalForm
+          visible={visibleModal}
+          onCancel={this.handleCancel}
+          ref={this.getFormRef}
+          onSubmitSku={this.handleSubmitSku}
+        />
       </Fragment>
     );
   }
@@ -335,6 +443,10 @@ const mapStateToProps = createStructuredSelector({
 
   brands: brandsSelectors.makeSelectBrands(),
   brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
+
+  createProductError: productsSelectors.makeSelectCreateProductError(),
+
+  createSkuError: skusSelectors.makeSelectCreateSkuError(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -342,6 +454,8 @@ const mapDispatchToProps = (dispatch) => ({
     {
       ...categoriesActions,
       ...brandsActions,
+      ...productsActions,
+      ...skusActions,
     },
     dispatch,
   ),
