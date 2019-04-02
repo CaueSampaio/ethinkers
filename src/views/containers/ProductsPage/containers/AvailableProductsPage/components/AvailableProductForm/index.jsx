@@ -161,32 +161,34 @@ class AvailableProductForm extends Component {
           message: 'Sucesso',
           description: 'Produto cadastrado com sucesso',
         });
-        const skus = skusList.map((sku) => ({ ...sku, idProduct: id }));
-        const promisesList = skus.map(async (sku) => {
-          const resultSku = await createSku(sku);
-          return resultSku;
-        });
-        Promise.all(promisesList).then((test) => {
-          const error = test.filter((value, index) => {
-            const containsError = Boolean(value.error);
-            if (containsError) {
-              return { index };
-            }
-            return false;
+        if (!isEmpty(skusList)) {
+          const skus = skusList.map((sku) => ({ ...sku, idProduct: id }));
+          const promisesList = skus.map(async (sku) => {
+            const resultSku = await createSku(sku);
+            return resultSku;
           });
-          if (!isEmpty(error)) {
-            const { message: errorMessage, errors } = createSkuError;
-            notification.error({
-              message: errorMessage,
-              description: <BadRequestNotificationBody errors={errors} />,
+          Promise.all(promisesList).then((test) => {
+            const error = test.filter((value, index) => {
+              const containsError = Boolean(value.error);
+              if (containsError) {
+                return { index };
+              }
+              return false;
             });
-          } else {
-            notification.success({
-              message: 'Sucesso',
-              description: 'SKU cadastrado com sucesso',
-            });
-          }
-        });
+            if (!isEmpty(error)) {
+              const { message: errorMessage, errors } = createSkuError;
+              notification.error({
+                message: errorMessage,
+                description: <BadRequestNotificationBody errors={errors} />,
+              });
+            } else {
+              notification.success({
+                message: 'Sucesso',
+                description: 'SKU cadastrado com sucesso',
+              });
+            }
+          });
+        }
       } else {
         const {
           message: errorMessageSku,
