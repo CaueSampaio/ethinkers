@@ -1,20 +1,49 @@
+/*eslint-disable*/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { compose } from 'redux';
+import { compose, bindActionCreators } from 'redux';
+import { createStructuredSelector } from 'reselect';
+import { connect } from 'react-redux';
 import { Form, Input, Button } from 'antd';
 
 import hasErrors from '../../../utils/hasErrorsForm';
+
+import {
+  authActions,
+  authUtils,
+} from '../../../state/ducks/auth';
 
 import './style.less';
 
 class LoginPage extends Component {
   handleSubmit = (e) => {
-    const { validateFields } = this.props;
     e.preventDefault();
-    validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+    const {
+      t,
+      form,
+      actions,
+      history: { push },
+    } = this.props;
+
+    const { handleLogin } = actions;
+    const { validateFields } = form;
+
+    validateFields(async (err, values) => {
+      console.log("values", values)
+      if (err) return;
+
+      const result = await handleLogin(values);
+
+      if (!result.error) {
+        const { discriminator } = userUtils.getUserData(result.payload.token);
+
+        // push(getHomeRoute(discriminator));
+      } else {
+        notification.error({
+          message: t('login.loginFailed'),
+          description: t('login.loginFailedMessage'),
+        });
       }
     });
   };
@@ -23,6 +52,7 @@ class LoginPage extends Component {
     const {
       form: { getFieldDecorator, getFieldsError, isFieldTouched },
     } = this.props;
+    console.log(this.props);
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">
@@ -76,11 +106,24 @@ class LoginPage extends Component {
 }
 
 LoginPage.propTypes = {
-  form: PropTypes.object,
   validateFields: PropTypes.func,
-  // getFieldDecorator: PropTypes.func,
+  form: PropTypes.object.isRequired,
+  actions: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
+
+const mapStateToProps = createStructuredSelector({
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  actions: bindActionCreators(authActions, dispatch),
+});
 
 const withForm = Form.create();
 
-export default compose(withForm)(LoginPage);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(withForm, withConnect)(LoginPage);
