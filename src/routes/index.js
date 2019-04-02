@@ -1,8 +1,9 @@
 import { isEmpty } from 'lodash';
 
 import privateRoutes from './private';
+import publicRoutes from './public';
 
-const routes = [...privateRoutes];
+const routes = [...privateRoutes, ...publicRoutes];
 
 export const getBreadcrumbMap = () => {
   const result = {};
