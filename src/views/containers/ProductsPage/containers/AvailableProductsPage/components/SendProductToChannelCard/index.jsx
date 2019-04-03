@@ -142,11 +142,11 @@ class SendProductToChannelCard extends Component {
             <Row type="flex" align="middle" justify="center" gutter={16}>
               <Col>
                 {isEmpty(selectedProducts) ? (
-                  <Row type="flex" align="middle">
+                  <Row type="flex" justify="center" align="middle">
                     <Col span={24} className="synchronize-description">
-                      <span>OU SINCRONIZE UM OU MAIS PRODUTOS</span>
+                      <span>OU ENVIE UM OU MAIS PRODUTOS</span>
                     </Col>
-                    <Col className="sub-description" span={24} offset={2}>
+                    <Col className="sub-description" span={24}>
                       <span>NENHUM PRODUTO SELECIONADO AINDA</span>
                     </Col>
                   </Row>
@@ -167,7 +167,7 @@ class SendProductToChannelCard extends Component {
                         onClick={this.handleSendSelectedToChannel}
                         className="btn-synchronize"
                       >
-                        <span>Sincronizar</span>
+                        <span>Enviar p/ canal</span>
                       </Button>
                     </Col>
                   </Row>

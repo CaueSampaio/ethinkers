@@ -53,7 +53,7 @@ class SkuDataItem extends Component {
               </Col>
             </Row>
             <p style={{ marginTop: 10 }} className="label-gallery">
-              Medidas
+              <span>Medidas</span>
             </p>
             <Row gutter={16}>
               <Col span={4}>

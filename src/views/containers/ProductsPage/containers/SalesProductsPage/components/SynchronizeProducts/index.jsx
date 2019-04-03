@@ -46,14 +46,23 @@ class SynchronizeProducts extends Component {
       filters: [filterValues],
     };
     const result = await synchronizeChannelProduct(params);
+    await this.setState({
+      synchronizeAllIsLoading: false,
+    });
 
-    if (!result.error) {
+    const {
+      payload: { notsynchronized, synchronized },
+    } = result;
+
+    if (!result.error && notsynchronized === 0) {
       await notification.success({
         message: 'Sucesso',
         description: 'Produtos sincronizados com sucesso!',
       });
-      await this.setState({
-        synchronizeAllIsLoading: false,
+    } else if (notsynchronized > 1) {
+      await notification.warning({
+        message: 'Aviso',
+        description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar os outros ${notsynchronized} produtos.`,
       });
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
@@ -88,13 +97,22 @@ class SynchronizeProducts extends Component {
       filter,
     };
     const result = await synchronizeChannelProduct(params);
-    if (!result.error) {
+    const {
+      payload: { notsynchronized, synchronized },
+    } = result;
+
+    await this.setState({
+      synchronizeSelectedIsLoading: false,
+    });
+    if (!result.error && notsynchronized === 0) {
       await notification.success({
         message: 'Sucesso',
         description: 'Produtos sincronizados com sucesso!',
       });
-      await this.setState({
-        synchronizeSelectedIsLoading: false,
+    } else if (notsynchronized > 1) {
+      await notification.warning({
+        message: 'Aviso',
+        description: `Foram sincronizados ${synchronized} produtos com sucesso. Não foi possível sincronizar ${notsynchronized} produtos.`,
       });
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
@@ -151,11 +169,11 @@ class SynchronizeProducts extends Component {
               <Row type="flex" align="middle" justify="center" gutter={16}>
                 <Col>
                   {isEmpty(selectedProducts) ? (
-                    <Row type="flex" align="middle">
+                    <Row type="flex" justify="center" align="middle">
                       <Col span={24} className="synchronize-description">
                         <span>OU SINCRONIZE UM OU MAIS PRODUTOS</span>
                       </Col>
-                      <Col className="sub-description" span={24} offset={2}>
+                      <Col className="sub-description" span={24}>
                         <span>NENHUM PRODUTO SELECIONADO AINDA</span>
                       </Col>
                     </Row>
