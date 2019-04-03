@@ -17,6 +17,7 @@ import {
   notification,
 } from 'antd';
 import { isEmpty } from 'lodash';
+import { Animated } from 'react-animated-css';
 import { getHeaderResourceName } from '../../../../../utils';
 import { formatCurrency } from '../../../../../utils/masks/formatCurrency';
 import {
@@ -30,8 +31,6 @@ import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderBut
 import ProductsList from './components/ProductsList';
 import InvoiceList from './components/InvoiceList';
 
-import { Animated } from 'react-animated-css';
-
 import './style.less';
 
 let i = 0;
@@ -41,24 +40,27 @@ const { confirm } = Modal;
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 class OrderDetailsPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: props.order,
-      slide: true,
-      orderModal: false,
-    };
-  }
-
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
-    orders: PropTypes.object,
+    order: PropTypes.object.isRequired,
+    orders: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
   };
 
-  state = {};
+  constructor(props) {
+    super(props);
+    this.state = {
+      order: props.order,
+      slide: {
+        active: true,
+        gettingIn: 'fadeIn',
+        gettingOut: 'fadeOut',
+      },
+      orderModal: false,
+    };
+  }
 
   componentWillMount() {
     const {
@@ -77,10 +79,7 @@ class OrderDetailsPage extends Component {
 
   componentDidMount() {
     const {
-      match: {
-        params: { id },
-      },
-      actions: { findOrder, listOrders },
+      actions: { listOrders },
     } = this.props;
     // findOrder(id);
     listOrders();
@@ -92,120 +91,7 @@ class OrderDetailsPage extends Component {
     return [getHeaderResourceName(consumer, 'name', 'id')];
   };
 
-  prevItem() {
-    this.setState({
-      slide: false,
-    });
-    const {
-      orders,
-      actions: { findOrder },
-      history: { push },
-    } = this.props;
-    if (i === 0) {
-      i = orders.results.length;
-    }
-    i -= 1;
-    findOrder(orders.results[i].orderNumber).then((response) => {
-      this.setState({
-        slide: true,
-        order: response.payload,
-      });
-    });
-    push(`./${orders.results[i].orderNumber}`);
-    return orders.results[i];
-  }
-
-  nextItem() {
-    this.setState({
-      slide: false,
-    });
-    const {
-      orders,
-      actions: { findOrder },
-      history: { push },
-    } = this.props;
-    i += 1;
-    i %= orders.results.length;
-    findOrder(orders.results[i].orderNumber).then((response) => {
-      this.setState({
-        slide: true,
-        order: response.payload,
-      });
-    });
-    push(`./${orders.results[i].orderNumber}`);
-    return orders.results[i];
-  }
-
-  renderInvoiceOrderForm = () => {
-    console.log('LOOKTHEPROPS', this.props);
-    const {
-      form: {
-        getFieldDecorator,
-        getFieldsError,
-        getFIeldError,
-        isFieldTouched,
-      },
-    } = this.props;
-
-    const numberError = isFieldTouched('number') && getFIeldError('userName');
-    return (
-      <div>
-        <Form layout="inline">
-          <Form.Item
-            validateStatus={numberError ? 'error' : ''}
-            help={numberError || ''}
-          />
-          {getFieldDecorator('number', {
-            rules: [{ required: true, message: 'Por favor insira um numero.' }],
-          })(<Input />)}
-        </Form>
-      </div>
-    );
-  };
-
-  showInvoiceOrderModal = (event, order) => {
-    const {
-      actions: { invoiceOrder },
-      editStatusError,
-    } = this.props;
-    const data = {
-      idOrder: '',
-      number: '',
-      series: '',
-      key: '',
-      tracking: {
-        code: '',
-        url: '',
-      },
-    };
-    this.setState({
-      orderModal: !this.state.orderModal,
-    });
-
-    confirm({
-      title: 'Para faturar o pedido, insira os dados:',
-      okText: 'Confirmar',
-      content: this.renderInvoiceOrderForm(),
-      onOk: async () => {
-        console.log('CONTENT', content);
-        const result = await invoiceOrder(data);
-        if (!result.error) {
-          await notification.success({
-            message: 'Sucesso',
-            description: 'Pedido faturado com sucesso',
-          });
-        } else {
-          const { message: errorMessage, errors } = editStatusError;
-          notification.error({
-            message: errorMessage,
-            description: <BadRequestNotificationBody errors={errors} />,
-          });
-        }
-      },
-    });
-  };
-
-  showConfirmCancelOrder = (event) => {
+  showConfirmCancelOrder = () => {
     const {
       match: {
         params: { id },
@@ -232,46 +118,169 @@ class OrderDetailsPage extends Component {
           const { message: errorMessage, errors } = editStatusError;
           notification.error({
             message: errorMessage,
-            description: <BadRequestNotificationBody errors={errors} />,
+            description: <div {...errors} />,
           });
         }
       },
     });
   };
 
-  renderOrderNumberStatus = (orderNumber, status, channel) => {
+  handleCloseInvoiceOrderModal = () => {
+    this.setState({
+      orderModal: false,
+    });
+  };
+
+  handleInvoiceOrder = () => {
     const {
-      order,
-      form: {
-        getFieldDecorator,
-        getFieldsError,
-        getFIeldError,
-        isFieldTouched,
+      match: {
+        params: { id },
       },
+      actions: { invoiceOrder },
     } = this.props;
+    const {
+      form: { validateFields, resetFields },
+    } = this.props;
+    validateFields(async (err, value) => {
+      if (err) return;
+      const data = {
+        idOrder: id,
+        ...value,
+      };
+      const result = await invoiceOrder(data);
+      if (!result.error) {
+        await notification.success({
+          message: 'Sucesso',
+          description: 'Pedido faturado com sucesso',
+        });
+        this.handleCloseInvoiceOrderModal();
+        resetFields();
+      }
+    });
+  };
+
+  showInvoiceOrderModal = () => {
+    this.setState({
+      orderModal: true,
+    });
+  };
+
+  renderInvoiceOrderForm = () => {
+    const {
+      form: { getFieldDecorator },
+    } = this.props;
+
+    return (
+      <div>
+        <Form>
+          <Form.Item label="Number">
+          {getFieldDecorator('number', {
+            rules: [{ required: true, message: 'Por favor insira um number.' }],
+          })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Series">
+          {getFieldDecorator('series', {
+            rules: [{ required: true, message: 'Por favor insira series.' }],
+          })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Key">
+          {getFieldDecorator('key', {
+            rules: [{ required: true, message: 'Por favor insira key.' }],
+          })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Código de rastreio">
+            {getFieldDecorator('tracking.code', {})(<Input />)}
+          </Form.Item>
+          <Form.Item label="Url">
+            {getFieldDecorator('tracking.url', {})(<Input />)}
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  nextItem() {
+    this.setState({
+      slide:  {
+        active: false,
+        gettingOut: 'slideOutLeft',
+        gettingIn: 'slideInRight',
+      },
+    });
+    const {
+      orders,
+      actions: { findOrder },
+      history: { push },
+    } = this.props;
+    i += 1;
+    i %= orders.results.length;
+    findOrder(orders.results[i].orderNumber).then((response) => {
+      this.setState({
+        slide: {
+          active: true,
+        },
+        order: response.payload,
+      });
+    });
+    push(`./${orders.results[i].orderNumber}`);
+    return orders.results[i];
+  }
+
+  prevItem() {
+    this.setState({
+      slide:  {
+        active: false,
+        gettingOut: 'slideOutLeft',
+        gettingIn: 'slideInLeft',
+      },
+    });
+    const {
+      orders,
+      actions: { findOrder },
+      history: { push },
+    } = this.props;
+    if (i === 0) {
+      i = orders.results.length;
+    }
+    i -= 1;
+    findOrder(orders.results[i].orderNumber).then((response) => {
+      this.setState({
+        slide: {
+          active: true,
+          gettingIn: 'slideInLeft',
+        },
+        order: response.payload,
+      });
+    });
+    push(`./${orders.results[i].orderNumber}`);
+    return orders.results[i];
+  }
+
+  renderOrderNumberStatus = (orderNumber, status, channel) => {
+    const { order } = this.props;
+    const { orderModal } = this.state;
     return (
       <div>
         <Row>
           <div className="order-number">
-            #{orderNumber} <span>({status})</span>
+            #{orderNumber}
+            <span>({status})</span>
           </div>
           <h2>{channel.name}</h2>
         </Row>
         <Row className="order-actions" type="flex">
           <PrivatePageHeaderButton
-            onClick={(e) => this.showConfirmInvoiceOrder(e, order)}
+            onClick={(e) => this.showInvoiceOrderModal(e, order)}
           >
             Faturar
           </PrivatePageHeaderButton>
           <Modal
             title="Faturar pedido"
-            visible={this.state.orderModal}
-            onOk={this.handleOk}
-            onCancel={this.handleCancel}
+            visible={orderModal}
+            onOk={this.handleInvoiceOrder}
+            onCancel={this.handleCloseInvoiceOrderModal}
           >
-            <p>Some contents...</p>
-            <p>Some contents...</p>
-            <p>Some contents...</p>
+            {this.renderInvoiceOrderForm()}
           </Modal>
           <PrivatePageHeaderButton
             onClick={(e) => this.showConfirmCancelOrder(e, order)}
@@ -285,7 +294,11 @@ class OrderDetailsPage extends Component {
 
   render() {
     const {
-      slide,
+      slide: {
+        active,
+        gettingIn,
+        gettingOut,
+      },
       order: {
         channel,
         customer,
@@ -298,9 +311,7 @@ class OrderDetailsPage extends Component {
       },
     } = this.state;
     const {
-      actions: {
-        trackSkus,
-      }
+      actions: { trackSkus },
     } = this.props;
     return (
       <Fragment>
@@ -319,9 +330,9 @@ class OrderDetailsPage extends Component {
         </Row>
         {orderItems ? (
           <Animated
-            animationIn="zoomIn"
-            animationOut="zoomOut"
-            isVisible={slide}
+            animationIn={gettingIn}
+            animationOut={gettingOut}
+            isVisible={active}
           >
             <PrivatePageSection className="content-client-data">
               <Row type="flex" gutter={24} justify="space-around">
@@ -421,7 +432,11 @@ class OrderDetailsPage extends Component {
               </Button>
             </Row>
             {invoices ? (
-              <InvoiceList invoiceList={invoices} products={orderItems} trackSkus={trackSkus} />
+              <InvoiceList
+                invoiceList={invoices}
+                products={orderItems}
+                trackSkus={trackSkus}
+              />
             ) : null}
             {orderItems ? (
               <ProductsList props={this.props} products={orderItems} />

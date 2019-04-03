@@ -204,6 +204,8 @@ class ProductList extends Component {
     );
   };
 
+  //TODO checar number que esta sendo passado
+
   handleInvoiceProducts = () => {
     const products = this.getIdSelectedProducts(products);
     const {
@@ -348,7 +350,7 @@ class ProductList extends Component {
             <PrivatePageHeaderButton
               onClick={(e) => this.showCancelProductsModal()}
             >
-              Cancelar produto
+              Cancelar produtos
             </PrivatePageHeaderButton>
             <Modal
               title="Cancelar itens selecionados."
@@ -358,7 +360,7 @@ class ProductList extends Component {
               centered={true}
               okText="Cancelar produtos"
             >
-            {this.renderCancelReasonForm()}
+              {this.renderCancelReasonForm()}
             </Modal>
           </Row>
           <Row>
