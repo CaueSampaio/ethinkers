@@ -18,7 +18,7 @@ export default [
     path: '/configurations/account',
     exact: true,
     component: AccountPage,
-    breadcrumb: 'Configuração',
+    breadcrumb: 'Alterar Senha',
     layout: PrivateRoute,
   },
 ];

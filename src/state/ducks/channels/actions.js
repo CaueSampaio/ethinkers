@@ -27,10 +27,19 @@ function clearChannelsStatus() {
   };
 }
 
+function listAllBrandsPerChannelId(id, data) {
+  return {
+    type: types.LIST_ALL_BRANDS_PER_CHANNEL_ID,
+    promise: get(`channels/${id}/brands${getQueryParams(data)}`),
+  };
+}
+
 export default {
   listChannels,
   clearChannels,
 
   listChannelsStatus,
   clearChannelsStatus,
+
+  listAllBrandsPerChannelId,
 };

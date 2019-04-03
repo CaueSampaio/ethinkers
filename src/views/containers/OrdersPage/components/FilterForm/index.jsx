@@ -59,7 +59,7 @@ class FilterForm extends Component {
     } = this.props;
 
     return (
-      <div className="form-filter">
+      <div className="form-filter-container">
         <Row type="flex" justify="space-between">
           <h3>Filtros</h3>
           <Button className="btn-clear" onClick={this.clearAllFields}>
@@ -69,7 +69,7 @@ class FilterForm extends Component {
         <Form layout="vertical">
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Código:">
+              <StyledFormItem label="Número do Pedido:">
                 {getFieldDecorator('orderNumber', {
                   initialValue: '',
                 })(<Input style={{ width: '100%' }} />)}

@@ -307,6 +307,16 @@ class SalesProductsPage extends Component {
         key: 'channel',
       },
       {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+      },
+      {
+        title: 'Status Atualizado',
+        dataIndex: 'updatestatus',
+        key: 'updatestatus',
+      },
+      {
         key: 'actions',
         render: (record) => (
           <Dropdown overlay={this.getItemMenu(record)}>

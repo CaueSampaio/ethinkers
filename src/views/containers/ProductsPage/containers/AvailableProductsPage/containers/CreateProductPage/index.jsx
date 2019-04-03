@@ -30,7 +30,6 @@ class CreateProductPage extends Component {
         <PrivatePageSection>
           <AvailableProductForm
             isLoading={createProductIsLoading}
-            onSubmit={this.onSubmit}
             createSkuAction={createSkuAction}
           />
         </PrivatePageSection>

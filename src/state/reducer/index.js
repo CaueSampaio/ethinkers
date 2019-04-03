@@ -12,6 +12,7 @@ import channelCategories from '../ducks/channelCategories';
 import channelSkus from '../ducks/channelSkus';
 import skus from '../ducks/skus';
 import user from '../ducks/user';
+import loggedUser from '../ducks/loggedUser';
 
 export function createRootReducer() {
   return combineReducers({
@@ -27,5 +28,6 @@ export function createRootReducer() {
     products,
     skus,
     user,
+    loggedUser,
   });
 }

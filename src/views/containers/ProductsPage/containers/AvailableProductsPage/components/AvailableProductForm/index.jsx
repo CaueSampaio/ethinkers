@@ -15,6 +15,7 @@ import {
   Spin,
   Divider,
   notification,
+  Empty,
 } from 'antd';
 
 import {
@@ -37,9 +38,9 @@ import {
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import SkuModalForm from '../SkuModalForm';
 import SkuDataItem from '../SkuDataItem';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 import './style.less';
-import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 const { TextArea } = Input;
 
@@ -77,10 +78,12 @@ class AvailableProductForm extends Component {
     });
   };
 
-  handleCancel = () => {
-    this.setState({
+  handleCancel = async () => {
+    const { resetFields } = this.formRef;
+    await this.setState({
       visibleModal: false,
     });
+    resetFields();
   };
 
   fetchCategories = async () => {
@@ -220,7 +223,13 @@ class AvailableProductForm extends Component {
     const children = [];
 
     const genExtra = (skuIndex) => (
-      <Button onClick={(e) => this.removeSkuItem(e, skuIndex)}>Remover</Button>
+      <button
+        type="submit"
+        onClick={(e) => this.removeSkuItem(e, skuIndex)}
+        className="btn-remove-sku"
+      >
+        Remover
+      </button>
     );
 
     return (
@@ -390,6 +399,7 @@ class AvailableProductForm extends Component {
                 style={{ borderRadius: 50 }}
                 type="dashed"
                 onClick={this.showSkuModal}
+                className="add-sku"
               >
                 <Icon type="plus" />
                 <span>Adicionar SKU</span>
@@ -397,7 +407,7 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            {!isEmpty(skusList) &&
+            {!isEmpty(skusList) ? (
               skusList.map((sku, i) => (
                 <Col span={24} key={sku.refSku}>
                   <SkuDataItem
@@ -406,7 +416,13 @@ class AvailableProductForm extends Component {
                     genExtra={genExtra(i)}
                   />
                 </Col>
-              ))}
+              ))
+            ) : (
+              <Empty
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                description="A lista de SKUS está vazia"
+              />
+            )}
           </Row>
           <Row type="flex" justify="end" gutter={8} style={{ marginTop: 30 }}>
             <Col>

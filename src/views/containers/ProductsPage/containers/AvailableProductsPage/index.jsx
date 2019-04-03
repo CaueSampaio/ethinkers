@@ -147,7 +147,7 @@ class AvailableProductsPage extends Component {
 
   renderItemsMenu = (product) => (
     <Menu>
-      <Menu.Item>
+      <Menu.Item onClick={(e) => e.domEvent.stopPropagation()}>
         <Link to={`/products/available/${product.idProduct}/edit`}>
           <span className="btn-edit">Editar</span>
         </Link>
@@ -162,7 +162,7 @@ class AvailableProductsPage extends Component {
           <span className="btn-disable-enable">Habilitar</span>
         </Menu.Item>
       )}
-      {!isEmpty(product.channels) && (
+      {!isEmpty(product.channels) && product.status === 1 && (
         <Menu.Item onClick={(e) => this.showConfirmDisableProduct(e, product)}>
           <span className="btn-disable-enable">Desabilitar</span>
         </Menu.Item>
@@ -251,6 +251,7 @@ class AvailableProductsPage extends Component {
     });
   };
   showConfirmDisableProduct = (e, product) => {
+    e.domEvent.stopPropagation();
     const {
       actions: { editProductStatus },
       editStatusError,
@@ -286,6 +287,7 @@ class AvailableProductsPage extends Component {
       removeProductError,
     } = this.props;
     const { idProduct } = product;
+    e.domEvent.stopPropagation();
 
     confirm({
       title: 'Deseja realmente remover este produto?',
@@ -316,6 +318,7 @@ class AvailableProductsPage extends Component {
       editStatusError,
     } = this.props;
     const { idProduct, status } = product;
+    e.domEvent.stopPropagation();
 
     confirm({
       title: 'Deseja realmente habilitar este produto?',
@@ -401,7 +404,7 @@ class AvailableProductsPage extends Component {
       },
     };
     console.log(productsIsLoading);
-  
+
     return (
       <div>
         <PrivatePageHeader
@@ -422,7 +425,8 @@ class AvailableProductsPage extends Component {
                 rowSelection={rowSelection}
                 dataSource={results}
                 columns={this.getTableColumns()}
-                onRow={(record) => { // eslint-disable-line
+                onRow={(record) => {
+                  // eslint-disable-line
                   return {
                     onClick: () =>
                       push(`/products/available/${record.idProduct}`),

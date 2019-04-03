@@ -68,38 +68,34 @@ class SkuDataItem extends Component {
                 <span className="label term">Peso</span>
                 <span className="detail">{sku.weight}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Peso real</span>
-                <span className="detail">{sku.realWeight}</span>
-              </Col>
+              {!isEmpty(sku.realWeight) && (
+                <Col span={4}>
+                  <span className="label term">Peso real</span>
+                  <span className="detail">{sku.realWeight}</span>
+                </Col>
+              )}
             </Row>
             <Row type="flex" gutter={16}>
               <Col span={4}>
                 <span className="label term">Altura</span>
                 <span className="detail">{sku.height}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Altura real</span>
-                <span className="detail">{sku.realHeight}</span>
-              </Col>
+              {!isEmpty(sku.realWidth) && (
+                <Col span={4}>
+                  <span className="label term">Altura real</span>
+                  <span className="detail">{sku.realHeight}</span>
+                </Col>
+              )}
               <Col span={4}>
                 <span className="label term">Largura</span>
                 <span className="detail">{sku.width}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Largura real</span>
-                <span className="detail">{sku.realWidth}</span>
-              </Col>
-            </Row>
-            <Row type="flex" gutter={16}>
-              <Col span={4}>
-                <span className="label term">Tamanho</span>
-                <span className="detail">{sku.lenght}</span>
-              </Col>
-              <Col span={4}>
-                <span className="label term">Tamanho real</span>
-                <span className="detail">{sku.realLenght}</span>
-              </Col>
+              {!isEmpty(sku.realWidth) && (
+                <Col span={4}>
+                  <span className="label term">Largura real</span>
+                  <span className="detail">{sku.realWidth}</span>
+                </Col>
+              )}
             </Row>
           </Panel>
         </Collapse>

@@ -23,7 +23,7 @@ import {
 } from '../../../../../../../state/ducks/skus';
 
 // import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
-
+import CurrencyFormField from '../../../../../../components/CurrencyFormField';
 import './style.less';
 
 let id = 0;
@@ -43,6 +43,10 @@ class SkuModalForm extends Component {
   remove = async (k) => {
     const { form } = this.props;
     const keys = form.getFieldValue('keys');
+
+    if (keys.length === 1) {
+      return;
+    }
 
     await this.setState({
       previewImage: '',
@@ -78,50 +82,74 @@ class SkuModalForm extends Component {
       onCancel,
       createSkuIsLoading,
       onSubmitSku,
+      form,
     } = this.props;
     const { previewImage } = this.state;
-    console.log(onSubmitSku);
-    getFieldDecorator('keys', { initialValue: [] });
+
+    getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
 
     const formItemsImages = keys.map((k) => (
       <Fragment key={k}>
         <Col span={6}>
-          <Form.Item label="URL da Imagem" required={false}>
+          <Form.Item label="URL da Imagem" required>
             {getFieldDecorator(`images[${k}].url`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher a imagem!',
+                  whitespace: true,
+                },
+              ],
               validateTrigger: ['onChange', 'onBlur'],
             })(<Input onChange={this.handleChangeImage} />)}
           </Form.Item>
         </Col>
         <Col span={6}>
-          <Form.Item label="Nome" required={false}>
+          <Form.Item label="Nome" required>
             {getFieldDecorator(`images[${k}].name`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher o Nome!',
+                  whitespace: true,
+                },
+              ],
               validateTrigger: ['onChange', 'onBlur'],
             })(<Input />)}
           </Form.Item>
         </Col>
         <Col span={9}>
-          <Form.Item label="Descrição" required={false}>
+          <Form.Item label="Descrição" required>
             {getFieldDecorator(`images[${k}].description`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher Descrição!',
+                  whitespace: true,
+                },
+              ],
               validateTrigger: ['onChange', 'onBlur'],
             })(<Input.TextArea autosize />)}
           </Form.Item>
         </Col>
-        <Col span={3}>
-          <button
-            className="remove-image"
-            type="submit"
-            onClick={() => this.remove(k)}
-          >
-            <span>Remover</span>
-          </button>
-        </Col>
+        {keys.length > 1 ? (
+          <Col span={3}>
+            <button
+              className="remove-image"
+              type="submit"
+              onClick={() => this.remove(k)}
+            >
+              <span>Remover</span>
+            </button>
+          </Col>
+        ) : null}
       </Fragment>
     ));
 
     return (
       <Modal
-        title="Cadastrar SKU"
+        title="Adicionar SKU"
         width={930}
         visible={visible}
         onCancel={onCancel}
@@ -138,7 +166,7 @@ class SkuModalForm extends Component {
             style={{ borderRadius: 50 }}
             onClick={onSubmitSku}
           >
-            <span>Cadastrar</span>
+            <span>Adicionar</span>
           </Button>,
         ]}
       >
@@ -170,75 +198,144 @@ class SkuModalForm extends Component {
               </Col>
             </Col>
           </Row>
-          <Divider orientation="left">SKU</Divider>
+          <Divider orientation="left">Detalhes</Divider>
           <Row type="flex" gutter={24}>
             <Col span={6}>
               <Form.Item label="REF">
-                {getFieldDecorator('refSku', {})(<Input />)}
+                {getFieldDecorator('refSku', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a REF!',
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
               </Form.Item>
             </Col>
             <Col span={6}>
               <Form.Item label="EAN">
-                {getFieldDecorator('ean', {})(<Input />)}
+                {getFieldDecorator('ean', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher EAN!',
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col span={6}>
+              <CurrencyFormField
+                form={form}
+                precision="2"
+                fieldName="priceOf"
+                label="Preço de"
+              />
+            </Col>
+            <Col span={6}>
+              <CurrencyFormField
+                form={form}
+                precision="2"
+                fieldName="priceBy"
+                label="Preço por"
+              />
+            </Col>
+          </Row>
+          <Row gutter={24}>
+            <Col span={24}>
               <Form.Item label="Descrição">
-                {getFieldDecorator('description', {})(<Input />)}
+                {getFieldDecorator('description', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Descrição!',
+                      whitespace: true,
+                    },
+                  ],
+                })(<Input />)}
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={24}>
+          <Divider orientation="left">Medidas</Divider>
+          <Row type="flex" gutter={24}>
             <Col span={6}>
-              <Form.Item label="Preço de">
-                {getFieldDecorator('priceOf', {})(<Input />)}
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item label="Preço por">
-                {getFieldDecorator('priceBy', {})(<Input />)}
-              </Form.Item>
-            </Col>
-            <Col span={3}>
               <Form.Item label="Peso">
-                {getFieldDecorator('weight', {})(<InputNumber />)}
+                {getFieldDecorator('weight', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Altura!',
+                    },
+                  ],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col span={6}>
               <Form.Item label="Peso real">
-                {getFieldDecorator('realWeight', {})(<InputNumber />)}
+                {getFieldDecorator('realWeight', {})(
+                  <InputNumber style={{ width: '100%' }} />,
+                )}
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col span={6}>
               <Form.Item label="Altura">
-                {getFieldDecorator('height', {})(<InputNumber />)}
+                {getFieldDecorator('height', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Altura!',
+                    },
+                  ],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={3}>
+            <Col span={6}>
               <Form.Item label="Altura real">
-                {getFieldDecorator('realHeight', {})(<InputNumber />)}
+                {getFieldDecorator('realHeight', {})(
+                  <InputNumber style={{ width: '100%' }} />,
+                )}
               </Form.Item>
             </Col>
           </Row>
-          <Row gutter={24}>
-            <Col span={3}>
+          <Row type="flex" gutter={24}>
+            <Col span={6}>
               <Form.Item label="Largura">
-                {getFieldDecorator('width', {})(<InputNumber />)}
+                {getFieldDecorator('width', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Largura!',
+                    },
+                  ],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={3}>
-              <Form.Item label="Altura real">
-                {getFieldDecorator('realHeight', {})(<InputNumber />)}
+            <Col span={6}>
+              <Form.Item label="Largura real">
+                {getFieldDecorator('realWidth', {})(
+                  <InputNumber style={{ width: '100%' }} />,
+                )}
               </Form.Item>
             </Col>
-            <Col span={4}>
+            <Col span={6}>
               <Form.Item label="Comprimento">
-                {getFieldDecorator('length', {})(<InputNumber />)}
+                {getFieldDecorator('length', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Favor, preencher a Altura!',
+                    },
+                  ],
+                })(<InputNumber style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={4}>
+            <Col span={6}>
               <Form.Item label="Comprimento real">
-                {getFieldDecorator('realLength', {})(<InputNumber />)}
+                {getFieldDecorator('realLength', {})(
+                  <InputNumber style={{ width: '100%' }} />,
+                )}
               </Form.Item>
             </Col>
           </Row>

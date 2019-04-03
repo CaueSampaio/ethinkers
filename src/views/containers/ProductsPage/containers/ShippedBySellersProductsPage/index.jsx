@@ -135,6 +135,8 @@ class ShippedBySellersProductsPage extends Component {
     } = this.props;
     const { idProduct, status } = product;
 
+    e.domEvent.stopPropagation();
+
     confirm({
       title: 'Deseja realmente aceitar este produto?',
       okText: 'Confirmar',
@@ -164,6 +166,8 @@ class ShippedBySellersProductsPage extends Component {
       editStatusError,
     } = this.props;
     const { idProduct, status } = product;
+
+    e.domEvent.stopPropagation();
 
     confirm({
       title: 'Deseja realmente recusar este produto?',

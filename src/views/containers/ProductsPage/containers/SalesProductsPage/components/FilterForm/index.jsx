@@ -177,22 +177,35 @@ class FilterForm extends Component {
     const children = [];
 
     return (
-      <div className="form-filter">
+      <div className="form-filter-container">
         <Row type="flex" justify="space-between">
           <h3>Filtros</h3>
           <Button className="btn-clear" onClick={this.clearFields}>
             <span>Limpar</span>
           </Button>
         </Row>
-        <Form className="form-filters" layout="vertical">
+        <Form className="form-filter-container" layout="vertical">
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
-              <StyledFormItem label="Código do produto:">
+              <StyledFormItem label="Códigos dos produtos:">
                 {getFieldDecorator('idsProducts', { initialValue: [] })(
                   <Select
-                    mode="multiple"
+                    mode="tags"
                     style={{ width: '100%' }}
-                    // onChange={handleChange}
+                    tokenSeparators={[',']}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
+              <StyledFormItem label="Referências do Produto:">
+                {getFieldDecorator('refsProducts', { initialValue: [] })(
+                  <Select
+                    mode="tags"
+                    style={{ width: '100%' }}
+                    tokenSeparators={[',']}
                   >
                     {children}
                   </Select>,
@@ -249,7 +262,7 @@ class FilterForm extends Component {
           </Row>
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
-              <StyledFormItem label="Canal de Venda:">
+              <StyledFormItem label="Canais de Venda:">
                 {getFieldDecorator('idsChannels', { initialValue: [] })(
                   <Select
                     mode="multiple"
@@ -269,23 +282,10 @@ class FilterForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
-              <StyledFormItem label="Ref do Produto:">
-                {getFieldDecorator('refsProducts', { initialValue: [] })(
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    // onChange={handleChange}
-                  >
-                    {children}
-                  </Select>,
-                )}
-              </StyledFormItem>
-            </Col>
           </Row>
           <Row gutter={24}>
             <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
-              <StyledFormItem label="Empresa fornecedora:">
+              <StyledFormItem label="Empresas fornecedoras:">
                 {getFieldDecorator('idsCompanies', { initialValue: [] })(
                   <Select
                     mode="multiple"

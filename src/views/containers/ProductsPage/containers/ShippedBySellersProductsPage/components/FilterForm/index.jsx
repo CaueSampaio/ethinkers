@@ -120,7 +120,7 @@ class FilterForm extends Component {
     } = this.props;
 
     return (
-      <div className="form-filter">
+      <div className="form-filter-container">
         <Row type="flex" justify="space-between">
           <h3>Filtros</h3>
           <Button className="btn-clear">Limpar</Button>
@@ -198,7 +198,7 @@ class FilterForm extends Component {
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={24}>
-              <StyledFormItem label="Dono do produto:">
+              <StyledFormItem label="Empresas Fornecedoras:">
                 {getFieldDecorator('status', { initialValue: '' })(<Input />)}
               </StyledFormItem>
             </Col>

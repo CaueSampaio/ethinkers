@@ -16,13 +16,13 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
       skus.map((sku) => (
         <Collapse key={sku.refSku} style={{ marginTop: 15 }}>
           <Panel header={sku.description}>
-            <Row type="flex" gutter={16} align="middle">
+            <Row type="flex" gutter={5} align="middle">
               <Col span={24}>
                 <p className="label-gallery">IMAGENS:</p>
               </Col>
               {!isEmpty(sku.images) &&
                 sku.images.map((image) => (
-                  <Col span={4} key={image} className="gallery-container">
+                  <Col span={3} key={image} className="gallery-container">
                     <Avatar
                       size={120}
                       shape="square"
@@ -37,13 +37,23 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
               <Col span={24}>
                 <p className="label-gallery">DETALHES</p>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <span className="label term">REF</span>
                 <span className="detail">{sku.refSku}</span>
               </Col>
-              <Col span={8}>
+              <Col span={6}>
                 <span className="label term">EAN</span>
                 <span className="detail">{sku.ean}</span>
+              </Col>
+            </Row>
+            <Row type="flex" gutter={16}>
+              <Col span={6}>
+                <span className="label term">Preço de</span>
+                <span className="detail">{formatCurrency(sku.priceOf)}</span>
+              </Col>
+              <Col span={6}>
+                <span className="label term">Preço por</span>
+                <span className="detail">{formatCurrency(sku.priceBy)}</span>
               </Col>
             </Row>
             <Row gutter={16}>
@@ -65,50 +75,48 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
               <span> Medidas</span>
             </p>
             <Row gutter={16}>
-              <Col span={4}>
-                <span className="label term">Preço de</span>
-                <span className="detail">{formatCurrency(sku.priceOf)}</span>
-              </Col>
-              <Col span={4}>
-                <span className="label term">Preço por</span>
-                <span className="detail">{formatCurrency(sku.priceBy)}</span>
-              </Col>
-              <Col span={4}>
+              <Col span={3}>
                 <span className="label term">Peso</span>
                 <span className="detail">{sku.weight}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Peso real</span>
-                <span className="detail">{sku.realWeight}</span>
-              </Col>
-            </Row>
-            <Row type="flex" gutter={16}>
-              <Col span={4}>
+              {!isEmpty(sku.realWeight) && (
+                <Col span={3}>
+                  <span className="label term">Peso real</span>
+                  <span className="detail">{sku.realWeight}</span>
+                </Col>
+              )}
+              <Col span={3}>
                 <span className="label term">Altura</span>
                 <span className="detail">{sku.height}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Altura real</span>
-                <span className="detail">{sku.realHeight}</span>
-              </Col>
-              <Col span={4}>
+              {!isEmpty(sku.realHeight) && (
+                <Col span={3}>
+                  <span className="label term">Altura real</span>
+                  <span className="detail">{sku.realHeight}</span>
+                </Col>
+              )}
+            </Row>
+            <Row type="flex" gutter={16}>
+              <Col span={3}>
                 <span className="label term">Largura</span>
                 <span className="detail">{sku.width}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Largura real</span>
-                <span className="detail">{sku.realWidth}</span>
-              </Col>
-            </Row>
-            <Row type="flex" gutter={16}>
-              <Col span={4}>
+              {!isEmpty(sku.realWeight) && (
+                <Col span={3}>
+                  <span className="label term">Largura real</span>
+                  <span className="detail">{sku.realWeight}</span>
+                </Col>
+              )}
+              <Col span={3}>
                 <span className="label term">Tamanho</span>
                 <span className="detail">{sku.lenght}</span>
               </Col>
-              <Col span={4}>
-                <span className="label term">Tamanho real</span>
-                <span className="detail">{sku.realLenght}</span>
-              </Col>
+              {!isEmpty(sku.realLenght) && (
+                <Col span={3}>
+                  <span className="label term">Tamanho real</span>
+                  <span className="detail">{sku.realLenght}</span>
+                </Col>
+              )}
             </Row>
           </Panel>
         </Collapse>

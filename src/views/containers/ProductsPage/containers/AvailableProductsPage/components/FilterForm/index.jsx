@@ -170,15 +170,41 @@ class FilterForm extends Component {
     const children = [];
 
     return (
-      <div className="form-filter">
+      <div className="form-filter-container">
         <Row type="flex" justify="space-between">
           <h3>Filtros</h3>
           <Button className="btn-clear" onClick={this.clearFields}>
             <span>Limpar</span>
           </Button>
         </Row>
-        <Form className="form-filters" layout="vertical">
+        <Form layout="vertical" className="form-filters">
           <Row gutter={24}>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
+              <StyledFormItem label="Código do produto:">
+                {getFieldDecorator('idsProducts', { initialValue: [] })(
+                  <Select
+                    mode="tags"
+                    style={{ width: '100%' }}
+                    tokenSeparators={[',']}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
+            <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
+              <StyledFormItem label="Referências do Produto:">
+                {getFieldDecorator('refsProducts', { initialValue: [] })(
+                  <Select
+                    mode="tags"
+                    style={{ width: '100%' }}
+                    tokenSeparators={[',']}
+                  >
+                    {children}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24}>
               <StyledFormItem label="Nome:">
                 {getFieldDecorator('name', { initialValue: '' })(<Input />)}
@@ -249,32 +275,6 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Ref do Produto:">
-                {getFieldDecorator('refsProducts', { initialValue: [] })(
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    // onChange={handleChange}
-                  >
-                    {children}
-                  </Select>,
-                )}
-              </StyledFormItem>
-            </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={24}>
-              <StyledFormItem label="Código do produto:">
-                {getFieldDecorator('idsProducts', { initialValue: [] })(
-                  <Select
-                    mode="multiple"
-                    style={{ width: '100%' }}
-                    // onChange={handleChange}
-                  >
-                    {children}
-                  </Select>,
-                )}
-              </StyledFormItem>
-            </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Status:">
                 {getFieldDecorator('status', { initialValue: [] })(

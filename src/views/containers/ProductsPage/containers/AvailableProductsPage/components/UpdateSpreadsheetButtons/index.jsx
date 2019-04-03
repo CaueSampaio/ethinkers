@@ -96,7 +96,7 @@ UpdateSpreadsheetButtons.propTypes = {
   form: PropTypes.object.isRequired,
   textChildren: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
-  visible: PropTypes.bool.isRequired,
+  visible: PropTypes.bool,
 };
 
 const withForm = Form.create();
