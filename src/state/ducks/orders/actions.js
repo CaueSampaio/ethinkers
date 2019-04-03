@@ -36,10 +36,17 @@ function cancelOrder(id, data) {
   };
 }
 
-function cancelOrderItems(data) {
+function cancelOrderItems(id, data) {
   return {
     type: types.CANCEL_ORDER_ITEMS,
-    promise: put(`/orderitems/status`, data),
+    promise: put(`/orderitems/${id}/status`, data),
+  };
+}
+
+function trackSkus(id, data) {
+  return {
+    type: types.TRACK_SKUS,
+    promise: put(`/orderinvoices/${id}`, data),
   };
 }
 
@@ -51,4 +58,5 @@ export default {
   invoiceOrder,
   cancelOrder,
   cancelOrderItems,
+  trackSkus,
 };

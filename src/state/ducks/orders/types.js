@@ -2,6 +2,7 @@ const LIST_ORDERS = 'orders/LIST_ORDERS';
 const FIND_ORDER = 'orders/FIND_ORDER';
 const LIST_ORDER_STATUS = 'orders/LIST_ORDER_STATUS';
 const INVOICE_ORDER = 'orders/INVOICE';
+const TRACK_SKUS = 'orders/TRACK_SKUS';
 const CANCEL_ORDER = 'orders/CANCEL_ORDER';
 const CANCEL_ORDER_ITEMS = 'orders/CANCEL_ORDER_ITEMS';
 
@@ -11,6 +12,7 @@ export default {
 
   LIST_ORDER_STATUS,
   INVOICE_ORDER,
+  TRACK_SKUS,
   CANCEL_ORDER,
   CANCEL_ORDER_ITEMS,
 };

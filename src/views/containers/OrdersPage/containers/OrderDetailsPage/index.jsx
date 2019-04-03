@@ -4,7 +4,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Card, Row, Col, Button, Icon, Spin, Modal, notification } from 'antd';
+import {
+  Form,
+  Input,
+  Card,
+  Row,
+  Col,
+  Button,
+  Icon,
+  Spin,
+  Modal,
+  notification,
+} from 'antd';
 import { isEmpty } from 'lodash';
 import { getHeaderResourceName } from '../../../../../utils';
 import { formatCurrency } from '../../../../../utils/masks/formatCurrency';
@@ -17,6 +28,7 @@ import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
 import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderButton';
 import ProductsList from './components/ProductsList';
+import InvoiceList from './components/InvoiceList';
 
 import { Animated } from 'react-animated-css';
 
@@ -34,6 +46,7 @@ class OrderDetailsPage extends Component {
     this.state = {
       order: props.order,
       slide: true,
+      orderModal: false,
     };
   }
 
@@ -42,6 +55,7 @@ class OrderDetailsPage extends Component {
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     orders: PropTypes.object,
+    form: PropTypes.object.isRequired,
   };
 
   state = {};
@@ -122,7 +136,34 @@ class OrderDetailsPage extends Component {
     return orders.results[i];
   }
 
-  showConfirmInvoiceOrder = (event, order) => {
+  renderInvoiceOrderForm = () => {
+    console.log('LOOKTHEPROPS', this.props);
+    const {
+      form: {
+        getFieldDecorator,
+        getFieldsError,
+        getFIeldError,
+        isFieldTouched,
+      },
+    } = this.props;
+
+    const numberError = isFieldTouched('number') && getFIeldError('userName');
+    return (
+      <div>
+        <Form layout="inline">
+          <Form.Item
+            validateStatus={numberError ? 'error' : ''}
+            help={numberError || ''}
+          />
+          {getFieldDecorator('number', {
+            rules: [{ required: true, message: 'Por favor insira um numero.' }],
+          })(<Input />)}
+        </Form>
+      </div>
+    );
+  };
+
+  showInvoiceOrderModal = (event, order) => {
     const {
       actions: { invoiceOrder },
       editStatusError,
@@ -137,12 +178,16 @@ class OrderDetailsPage extends Component {
         url: '',
       },
     };
+    this.setState({
+      orderModal: !this.state.orderModal,
+    });
 
     confirm({
-      title: 'Deseja realmente faturar o pedido selecionado?',
+      title: 'Para faturar o pedido, insira os dados:',
       okText: 'Confirmar',
-      content: 'Ao faturar, sera gerado um invoice do pedido.',
+      content: this.renderInvoiceOrderForm(),
       onOk: async () => {
+        console.log('CONTENT', content);
         const result = await invoiceOrder(data);
         if (!result.error) {
           await notification.success({
@@ -195,7 +240,15 @@ class OrderDetailsPage extends Component {
   };
 
   renderOrderNumberStatus = (orderNumber, status, channel) => {
-    const { order } = this.props;
+    const {
+      order,
+      form: {
+        getFieldDecorator,
+        getFieldsError,
+        getFIeldError,
+        isFieldTouched,
+      },
+    } = this.props;
     return (
       <div>
         <Row>
@@ -210,6 +263,16 @@ class OrderDetailsPage extends Component {
           >
             Faturar
           </PrivatePageHeaderButton>
+          <Modal
+            title="Faturar pedido"
+            visible={this.state.orderModal}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+          >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
           <PrivatePageHeaderButton
             onClick={(e) => this.showConfirmCancelOrder(e, order)}
           >
@@ -231,9 +294,14 @@ class OrderDetailsPage extends Component {
         orderItems,
         orderNumber,
         status,
+        invoices,
       },
     } = this.state;
-
+    const {
+      actions: {
+        trackSkus,
+      }
+    } = this.props;
     return (
       <Fragment>
         {!isEmpty(channel) ? (
@@ -284,33 +352,25 @@ class OrderDetailsPage extends Component {
                     <Row type="flex" className="address-info" gutter={5}>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Logradouro: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.street}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].street}</span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Número: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.number}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].number}</span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Complemento: </span>
                         <span>
-                          {!isEmpty(delivery) && delivery.address.complement}
+                          {!isEmpty(delivery) && delivery[0].complement}
                         </span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Cidade: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.city}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].city}</span>
                       </Col>
                       <Col span={24}>
                         <span className="label-info">Estado: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.state}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].state}</span>
                       </Col>
                     </Row>
                   </Card>
@@ -360,6 +420,9 @@ class OrderDetailsPage extends Component {
                 <Icon type="right" />
               </Button>
             </Row>
+            {invoices ? (
+              <InvoiceList invoiceList={invoices} products={orderItems} trackSkus={trackSkus} />
+            ) : null}
             {orderItems ? (
               <ProductsList props={this.props} products={orderItems} />
             ) : null}
@@ -369,6 +432,8 @@ class OrderDetailsPage extends Component {
     );
   }
 }
+
+const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   orders: ordersSelectors.makeSelectOrders(),
@@ -386,4 +451,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(OrderDetailsPage);
+export default compose(
+  withForm,
+  withConnect,
+)(OrderDetailsPage);
