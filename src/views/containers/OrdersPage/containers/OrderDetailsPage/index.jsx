@@ -4,7 +4,18 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Card, Row, Col, Button, Icon, Spin } from 'antd';
+import {
+  Form,
+  Input,
+  Card,
+  Row,
+  Col,
+  Button,
+  Icon,
+  Spin,
+  Modal,
+  notification,
+} from 'antd';
 import { isEmpty } from 'lodash';
 import { getHeaderResourceName } from '../../../../../utils';
 import { formatCurrency } from '../../../../../utils/masks/formatCurrency';
@@ -17,12 +28,15 @@ import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
 import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderButton';
 import ProductsList from './components/ProductsList';
+import InvoiceList from './components/InvoiceList';
 
 import { Animated } from 'react-animated-css';
 
 import './style.less';
 
 let i = 0;
+
+const { confirm } = Modal;
 
 const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
@@ -32,6 +46,7 @@ class OrderDetailsPage extends Component {
     this.state = {
       order: props.order,
       slide: true,
+      orderModal: false,
     };
   }
 
@@ -40,6 +55,7 @@ class OrderDetailsPage extends Component {
     history: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
     orders: PropTypes.object,
+    form: PropTypes.object.isRequired,
   };
 
   state = {};
@@ -95,7 +111,6 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    console.log(orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
@@ -117,38 +132,185 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    console.log('order-resukts', orders.results[i]);
     push(`./${orders.results[i].orderNumber}`);
     return orders.results[i];
   }
 
-  renderOrderNumberStatus = (orderNumber, status) => (
-    <div>
-      <Row type="flex">
-        <div className="order-number">
-          #{orderNumber} <span>({status})</span>
-        </div>
-      </Row>
-      <Row className="order-actions" type="flex">
-        <PrivatePageHeaderButton>Faturar</PrivatePageHeaderButton>
-        <PrivatePageHeaderButton>Cancelar</PrivatePageHeaderButton>
-      </Row>
-    </div>
-  );
+  renderInvoiceOrderForm = () => {
+    console.log('LOOKTHEPROPS', this.props);
+    const {
+      form: {
+        getFieldDecorator,
+        getFieldsError,
+        getFIeldError,
+        isFieldTouched,
+      },
+    } = this.props;
+
+    const numberError = isFieldTouched('number') && getFIeldError('userName');
+    return (
+      <div>
+        <Form layout="inline">
+          <Form.Item
+            validateStatus={numberError ? 'error' : ''}
+            help={numberError || ''}
+          />
+          {getFieldDecorator('number', {
+            rules: [{ required: true, message: 'Por favor insira um numero.' }],
+          })(<Input />)}
+        </Form>
+      </div>
+    );
+  };
+
+  showInvoiceOrderModal = (event, order) => {
+    const {
+      actions: { invoiceOrder },
+      editStatusError,
+    } = this.props;
+    const data = {
+      idOrder: '',
+      number: '',
+      series: '',
+      key: '',
+      tracking: {
+        code: '',
+        url: '',
+      },
+    };
+    this.setState({
+      orderModal: !this.state.orderModal,
+    });
+
+    confirm({
+      title: 'Para faturar o pedido, insira os dados:',
+      okText: 'Confirmar',
+      content: this.renderInvoiceOrderForm(),
+      onOk: async () => {
+        console.log('CONTENT', content);
+        const result = await invoiceOrder(data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Pedido faturado com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  showConfirmCancelOrder = (event) => {
+    const {
+      match: {
+        params: { id },
+      },
+      actions: { cancelOrder },
+      editStatusError,
+    } = this.props;
+    const data = {
+      status: 4,
+    };
+
+    confirm({
+      title: 'Deseja realmente cancelar o pedido?',
+      okText: 'Confirmar',
+      content: 'Este pedido sera cancelado.',
+      onOk: async () => {
+        const result = await cancelOrder(id, data);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Pedido cancelado com sucesso',
+          });
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
+      },
+    });
+  };
+
+  renderOrderNumberStatus = (orderNumber, status, channel) => {
+    const {
+      order,
+      form: {
+        getFieldDecorator,
+        getFieldsError,
+        getFIeldError,
+        isFieldTouched,
+      },
+    } = this.props;
+    return (
+      <div>
+        <Row>
+          <div className="order-number">
+            #{orderNumber} <span>({status})</span>
+          </div>
+          <h2>{channel.name}</h2>
+        </Row>
+        <Row className="order-actions" type="flex">
+          <PrivatePageHeaderButton
+            onClick={(e) => this.showConfirmInvoiceOrder(e, order)}
+          >
+            Faturar
+          </PrivatePageHeaderButton>
+          <Modal
+            title="Faturar pedido"
+            visible={this.state.orderModal}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+          >
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+            <p>Some contents...</p>
+          </Modal>
+          <PrivatePageHeaderButton
+            onClick={(e) => this.showConfirmCancelOrder(e, order)}
+          >
+            Cancelar
+          </PrivatePageHeaderButton>
+        </Row>
+      </div>
+    );
+  };
 
   render() {
     const {
       slide,
-      order: { customer, delivery, payment, orderItems, orderNumber, status },
+      order: {
+        channel,
+        customer,
+        delivery,
+        payment,
+        orderItems,
+        orderNumber,
+        status,
+        invoices,
+      },
     } = this.state;
-
+    const {
+      actions: {
+        trackSkus,
+      }
+    } = this.props;
     return (
       <Fragment>
-        <PrivatePageHeader
-          title="Detalhes do Pedido"
-          content={this.renderOrderNumberStatus(orderNumber, status)}
-          resourceMap={this.renderResourceMap()}
-        />
+        {!isEmpty(channel) ? (
+          <PrivatePageHeader
+            title="Detalhes do Pedido"
+            content={this.renderOrderNumberStatus(orderNumber, status, channel)}
+            resourceMap={this.renderResourceMap()}
+          />
+        ) : null}
 
         <Row type="flex" justify="center">
           {isEmpty(orderItems) ? (
@@ -190,33 +352,25 @@ class OrderDetailsPage extends Component {
                     <Row type="flex" className="address-info" gutter={5}>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Logradouro: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.street}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].street}</span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Número: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.number}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].number}</span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Complemento: </span>
                         <span>
-                          {!isEmpty(delivery) && delivery.address.complement}
+                          {!isEmpty(delivery) && delivery[0].complement}
                         </span>
                       </Col>
                       <Col xs={24} sm={24} md={12} lg={12} xl={24}>
                         <span className="label-info">Cidade: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.city}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].city}</span>
                       </Col>
                       <Col span={24}>
                         <span className="label-info">Estado: </span>
-                        <span>
-                          {!isEmpty(delivery) && delivery.address.state}
-                        </span>
+                        <span>{!isEmpty(delivery) && delivery[0].state}</span>
                       </Col>
                     </Row>
                   </Card>
@@ -266,13 +420,20 @@ class OrderDetailsPage extends Component {
                 <Icon type="right" />
               </Button>
             </Row>
-            {orderItems ? <ProductsList products={orderItems} /> : null}
+            {invoices ? (
+              <InvoiceList invoiceList={invoices} products={orderItems} trackSkus={trackSkus} />
+            ) : null}
+            {orderItems ? (
+              <ProductsList props={this.props} products={orderItems} />
+            ) : null}
           </Animated>
         ) : null}
       </Fragment>
     );
   }
 }
+
+const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   orders: ordersSelectors.makeSelectOrders(),
@@ -290,4 +451,7 @@ const withConnect = connect(
   mapDispatchToProps,
 );
 
-export default compose(withConnect)(OrderDetailsPage);
+export default compose(
+  withForm,
+  withConnect,
+)(OrderDetailsPage);

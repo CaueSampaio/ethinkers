@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { parse } from 'content-disposition';
 import { saveAs } from 'file-saver';
-
+import { stringify } from 'query-string';
 import axios from './axios';
 import defaultRequestHandlers from './requestHandlers';
 import { API } from './constants';
@@ -124,15 +124,16 @@ export const request = (
  */
 export const getQueryParams = (params) => {
   if (isEmpty(params)) return '';
-  const urlParams = new URLSearchParams();
+  // const urlParams = new URLSearchParams();
 
-  Object.keys(params).forEach((key) => {
-    const item = params[key].toString();
+  // Object.keys(params).forEach((key) => {
+  //   const item = params[key].toString();
 
-    if (!isEmpty(item)) urlParams.append(key, params[key]);
-  });
+  //   if (!isEmpty(item)) urlParams.append(key, params[key]);
+  // });
+  const urlParams = stringify(params);
 
-  return `?${urlParams.toString()}`;
+  return `?${urlParams}`;
 };
 
 export const defaultUploadProps = () => ({
