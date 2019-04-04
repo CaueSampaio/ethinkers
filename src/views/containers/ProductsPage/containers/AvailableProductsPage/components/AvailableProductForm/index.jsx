@@ -266,7 +266,7 @@ class AvailableProductForm extends Component {
                   rules: [
                     {
                       required: true,
-                      message: `Favor, preencher o campo Marca!`,
+                      message: 'Favor, preencher o campo Marca!',
                     },
                   ],
                 })(
