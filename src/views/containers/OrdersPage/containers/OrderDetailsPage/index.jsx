@@ -88,9 +88,9 @@ class OrderDetailsPage extends Component {
   }
 
   renderResourceMap = () => {
-    const consumer = { name: 'oi', id: '123' };
+    const { order } = this.props;
 
-    return [getHeaderResourceName(consumer, 'name', 'id')];
+    return [getHeaderResourceName(order, 'orderNumber', 'id')];
   };
 
   showConfirmCancelOrder = () => {

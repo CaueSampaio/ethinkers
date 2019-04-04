@@ -1,15 +1,7 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import { compose } from 'redux';
-import {
-  Form,
-  Input,
-  Card,
-  List,
-  Modal,
-  Collapse,
-  notification,
-} from 'antd';
+import { Form, Input, Card, List, Modal, Collapse, notification } from 'antd';
 import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
@@ -124,7 +116,7 @@ class InvoiceList extends Component {
     validateFields(async (err, value) => {
       if (err) return;
       const data = {
-        ...value
+        ...value,
       };
       const result = await trackSkus(id, data);
       if (!result.error) {
@@ -134,7 +126,7 @@ class InvoiceList extends Component {
         });
         this.handleCancel();
         resetFields();
-      };
+      }
     });
     this.setState({
       invoiceModal: false,
@@ -148,6 +140,7 @@ class InvoiceList extends Component {
   };
 
   showTrackInvoiceModal = (e, item) => {
+    e.stopPropagation();
     this.setState({
       invoiceModal: true,
     });
@@ -176,7 +169,7 @@ class InvoiceList extends Component {
         <PrivatePageSection>
           <h3>Invoices</h3>
           <List
-            rowKey="id"
+            rowKey={"id"}
             grid={{ gutter: 24, lg: 1, md: 1, sm: 1, xs: 1 }}
             dataSource={[...invoiceList]}
             renderItem={(item) => (
@@ -184,21 +177,9 @@ class InvoiceList extends Component {
                 <Collapse>
                   <Panel
                     header={`${item.number}-${item.series}`}
-                    key="1"
+                    key={item.id}
                     extra={this.renderExtra(item)}
                   >
-                    <Modal
-                      title={`Adicionar tracking ao pedido ${item.number}-${
-                        item.series
-                      }`}
-                      visible={this.state.invoiceModal}
-                      onOk={() => this.handleOk(item)}
-                      onCancel={this.handleCancel}
-                      centered={true}
-                      okText="Enviar tracking"
-                    >
-                      {this.renderTrackingForm(item)}
-                    </Modal>
                     <List
                       rowKey="id"
                       grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
@@ -217,6 +198,16 @@ class InvoiceList extends Component {
                     />
                   </Panel>
                 </Collapse>
+                <Modal
+                  title={`Adicionar tracking ao pedido ${item.number}-${item.series}`}
+                  visible={this.state.invoiceModal}
+                  onOk={() => this.handleOk(item)}
+                  onCancel={this.handleCancel}
+                  centered={true}
+                  okText="Enviar tracking"
+                >
+                  {this.renderTrackingForm(item)}
+                </Modal>
               </List.Item>
             )}
           />
