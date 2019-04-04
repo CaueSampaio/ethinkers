@@ -54,6 +54,8 @@ class OrderDetailsPage extends Component {
     this.state = {
       order: props.order,
       slide: {
+        isLoadingRight: false,
+        isLoadingLeft: false,
         active: true,
         gettingIn: 'fadeIn',
         gettingOut: 'fadeOut',
@@ -174,19 +176,21 @@ class OrderDetailsPage extends Component {
       <div>
         <Form>
           <Form.Item label="Number">
-          {getFieldDecorator('number', {
-            rules: [{ required: true, message: 'Por favor insira um number.' }],
-          })(<Input />)}
+            {getFieldDecorator('number', {
+              rules: [
+                { required: true, message: 'Por favor insira um number.' },
+              ],
+            })(<Input />)}
           </Form.Item>
           <Form.Item label="Series">
-          {getFieldDecorator('series', {
-            rules: [{ required: true, message: 'Por favor insira series.' }],
-          })(<Input />)}
+            {getFieldDecorator('series', {
+              rules: [{ required: true, message: 'Por favor insira series.' }],
+            })(<Input />)}
           </Form.Item>
           <Form.Item label="Key">
-          {getFieldDecorator('key', {
-            rules: [{ required: true, message: 'Por favor insira key.' }],
-          })(<Input />)}
+            {getFieldDecorator('key', {
+              rules: [{ required: true, message: 'Por favor insira key.' }],
+            })(<Input />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
@@ -201,10 +205,8 @@ class OrderDetailsPage extends Component {
 
   nextItem() {
     this.setState({
-      slide:  {
-        active: false,
-        gettingOut: 'slideOutLeft',
-        gettingIn: 'slideInRight',
+      slide: {
+        isLoadingRight: true,
       },
     });
     const {
@@ -217,6 +219,14 @@ class OrderDetailsPage extends Component {
     findOrder(orders.results[i].orderNumber).then((response) => {
       this.setState({
         slide: {
+          active: false,
+          gettingOut: 'slideOutLeft',
+          gettingIn: 'slideInRight',
+        },
+      });
+      this.setState({
+        slide: {
+          isLoadingRight: false,
           active: true,
         },
         order: response.payload,
@@ -228,10 +238,8 @@ class OrderDetailsPage extends Component {
 
   prevItem() {
     this.setState({
-      slide:  {
-        active: false,
-        gettingOut: 'slideOutLeft',
-        gettingIn: 'slideInLeft',
+      slide: {
+        isLoadingLeft: true,
       },
     });
     const {
@@ -246,8 +254,15 @@ class OrderDetailsPage extends Component {
     findOrder(orders.results[i].orderNumber).then((response) => {
       this.setState({
         slide: {
-          active: true,
+          active: false,
+          gettingOut: 'slideOutLeft',
           gettingIn: 'slideInLeft',
+        },
+      });
+      this.setState({
+        slide: {
+          isLoadingLeft: false,
+          active: true,
         },
         order: response.payload,
       });
@@ -294,11 +309,8 @@ class OrderDetailsPage extends Component {
 
   render() {
     const {
-      slide: {
-        active,
-        gettingIn,
-        gettingOut,
-      },
+      order,
+      slide: { isLoadingRight, isLoadingLeft, active, gettingIn, gettingOut },
       order: {
         channel,
         customer,
@@ -324,7 +336,7 @@ class OrderDetailsPage extends Component {
         ) : null}
 
         <Row type="flex" justify="center">
-          {isEmpty(orderItems) ? (
+          {isEmpty(order) ? (
             <Spin indicator={antIcon} tip="Carregando" />
           ) : null}
         </Row>
@@ -424,11 +436,15 @@ class OrderDetailsPage extends Component {
               align="middle"
               style={{ top: 400, width: '100%', marginLeft: 1 }}
             >
-              <Button className="btn-prev" onClick={() => this.prevItem()}>
-                <Icon type="left" />
+              <Button className="btn-prev" loading={isLoadingLeft} onClick={() => this.prevItem()}>
+                {!isLoadingLeft ? <Icon type="left" /> : null}
               </Button>
-              <Button className="btn-next" onClick={() => this.nextItem()}>
-                <Icon type="right" />
+              <Button
+                className="btn-next"
+                loading={isLoadingRight}
+                onClick={() => this.nextItem()}
+              >
+                {!isLoadingRight ? <Icon type="right" /> : null}
               </Button>
             </Row>
             {invoices ? (

@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import {
-  Row,
   Form,
   Input,
   Card,
@@ -11,13 +10,11 @@ import {
   Collapse,
   notification,
 } from 'antd';
-import { isEmpty } from 'lodash';
 import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
-import CheckBox from '../CheckBox';
+import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
 
 import './style.less';
-import { consoleTestResultHandler } from 'tslint/lib/test';
 
 const { Panel } = Collapse;
 
@@ -70,7 +67,7 @@ class InvoiceList extends Component {
   renderDescription = (item) => (
     <div className="product-description">
       <h3>
-        Preço: <span>{item.netValue}</span>
+        Preço: <span>{formatCurrency(item.netValue)}</span>
       </h3>
       <h3>
         SKU: <span>{item.channelSku.refSku}</span>
@@ -127,10 +124,8 @@ class InvoiceList extends Component {
     validateFields(async (err, value) => {
       if (err) return;
       const data = {
-        tracking: {
-          ...value
-        }
-      }
+        ...value
+      };
       const result = await trackSkus(id, data);
       if (!result.error) {
         await notification.success({
@@ -139,7 +134,7 @@ class InvoiceList extends Component {
         });
         this.handleCancel();
         resetFields();
-      }
+      };
     });
     this.setState({
       invoiceModal: false,
@@ -162,7 +157,7 @@ class InvoiceList extends Component {
     const orderItems = [...this.state.orderItems];
     let auxList = [];
     orderItems.forEach((orderItem) => {
-      if (idOrderItems.some((item) => item == orderItem.Id)) {
+      if (idOrderItems.some((item) => item == orderItem.id)) {
         auxList.push(orderItem);
       }
     });
