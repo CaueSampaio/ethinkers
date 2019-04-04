@@ -54,14 +54,9 @@ class SynchronizeProducts extends Component {
       payload: { notsynchronized, synchronized },
     } = result;
 
-    if (!result.error && notsynchronized === 0) {
+    if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: 'Produtos sincronizados com sucesso!',
-      });
-    } else if (notsynchronized > 1) {
-      await notification.warning({
-        message: 'Aviso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar os outros ${notsynchronized} produtos.`,
       });
     } else {
@@ -104,14 +99,9 @@ class SynchronizeProducts extends Component {
     await this.setState({
       synchronizeSelectedIsLoading: false,
     });
-    if (!result.error && notsynchronized === 0) {
+    if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: 'Produtos sincronizados com sucesso!',
-      });
-    } else if (notsynchronized > 1) {
-      await notification.warning({
-        message: 'Aviso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. Não foi possível sincronizar ${notsynchronized} produtos.`,
       });
     } else {
@@ -155,7 +145,7 @@ class SynchronizeProducts extends Component {
                 <Button
                   disabled={synchronizeSelectedIsLoading}
                   loading={synchronizeAllIsLoading}
-                  className="btn-synchronize-all"
+                  className="btn-synchronize synchronize-all"
                   onClick={this.handleSynchronizeAll}
                 >
                   <span>Sincronizar todos</span>

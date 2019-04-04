@@ -38,7 +38,7 @@ class SkuModalForm extends Component {
     createSkuIsLoading: PropTypes.bool.isRequired,
   };
 
-  state = { previewImage: '' };
+  state = { skuImages: [] };
 
   remove = async (k) => {
     const { form } = this.props;
@@ -49,7 +49,7 @@ class SkuModalForm extends Component {
     }
 
     await this.setState({
-      previewImage: '',
+      // previewImage: '',
     });
 
     form.setFieldsValue({
@@ -67,12 +67,16 @@ class SkuModalForm extends Component {
     });
   };
 
-  handleChangeImage = (e) => {
+  handleChangeImage = async (e, k) => {
     e.persist();
-
-    this.setState({
-      previewImage: e.target.value,
-    });
+    const { skuImages } = this.state;
+    // setar a url na mesma posicao do input
+    await this.setState((prevState) => ({
+      skuImages: [
+        { ...prevState.skuImages, [k]: e.target.value }, // eslint-disable-line
+      ],
+    }));
+    console.log(skuImages);
   };
 
   render() {
@@ -84,66 +88,77 @@ class SkuModalForm extends Component {
       onSubmitSku,
       form,
     } = this.props;
-    const { previewImage } = this.state;
+    const { skuImages } = this.state;
 
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
+    console.log(skuImages);
 
     const formItemsImages = keys.map((k) => (
       <Fragment key={k}>
-        <Col span={6}>
-          <Form.Item label="URL da Imagem" required>
-            {getFieldDecorator(`images[${k}].url`, {
-              rules: [
-                {
-                  required: true,
-                  message: 'Favor, preencher a imagem!',
-                  whitespace: true,
-                },
-              ],
-              validateTrigger: ['onChange', 'onBlur'],
-            })(<Input onChange={this.handleChangeImage} />)}
-          </Form.Item>
-        </Col>
-        <Col span={6}>
-          <Form.Item label="Nome" required>
-            {getFieldDecorator(`images[${k}].name`, {
-              rules: [
-                {
-                  required: true,
-                  message: 'Favor, preencher o Nome!',
-                  whitespace: true,
-                },
-              ],
-              validateTrigger: ['onChange', 'onBlur'],
-            })(<Input />)}
-          </Form.Item>
-        </Col>
-        <Col span={9}>
-          <Form.Item label="Descrição" required>
-            {getFieldDecorator(`images[${k}].description`, {
-              rules: [
-                {
-                  required: true,
-                  message: 'Favor, preencher Descrição!',
-                  whitespace: true,
-                },
-              ],
-              validateTrigger: ['onChange', 'onBlur'],
-            })(<Input.TextArea autosize />)}
-          </Form.Item>
-        </Col>
-        {keys.length > 1 ? (
-          <Col span={3}>
-            <button
-              className="remove-image"
-              type="submit"
-              onClick={() => this.remove(k)}
-            >
-              <span>Remover</span>
-            </button>
+        <Row type="flex" align="middle" gutter={16}>
+          <Col span={2}>
+            <Avatar
+              // className="avatar-sku create-sku"
+              shape="square"
+              src={skuImages[k]}
+              icon="picture"
+            />
           </Col>
-        ) : null}
+          <Col span={4}>
+            <Form.Item label="URL da Imagem" required>
+              {getFieldDecorator(`images[${k}].url`, {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Favor, preencher a imagem!',
+                    whitespace: true,
+                  },
+                ],
+                validateTrigger: ['onChange', 'onBlur'],
+              })(<Input onChange={(e) => this.handleChangeImage(e, k)} />)}
+            </Form.Item>
+          </Col>
+          <Col span={4}>
+            <Form.Item label="Nome" required>
+              {getFieldDecorator(`images[${k}].name`, {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Favor, preencher o Nome!',
+                    whitespace: true,
+                  },
+                ],
+                validateTrigger: ['onChange', 'onBlur'],
+              })(<Input />)}
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item label="Descrição" required>
+              {getFieldDecorator(`images[${k}].description`, {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Favor, preencher Descrição!',
+                    whitespace: true,
+                  },
+                ],
+                validateTrigger: ['onChange', 'onBlur'],
+              })(<Input.TextArea autosize />)}
+            </Form.Item>
+          </Col>
+          {keys.length > 1 ? (
+            <Col span={3}>
+              <button
+                className="remove-image"
+                type="submit"
+                onClick={() => this.remove(k)}
+              >
+                <span>Remover</span>
+              </button>
+            </Col>
+          ) : null}
+        </Row>
       </Fragment>
     ));
 
@@ -172,22 +187,6 @@ class SkuModalForm extends Component {
       >
         <Form onSubmit={this.handleSubmit} className="add-sku-form">
           <Row type="flex" gutter={10} align="middle">
-            {keys.length >= 1 ? (
-              <Col span={4}>
-                <Col span={24}>
-                  <span className="label-avatar">VISUALIZE A IMAGEM: </span>
-                </Col>
-                <Col>
-                  <Avatar
-                    className="avatar-sku create-sku"
-                    shape="square"
-                    src={previewImage}
-                    icon="picture"
-                    size={135}
-                  />
-                </Col>
-              </Col>
-            ) : null}
             <Col span={20}>
               {formItemsImages}
               <Col span={24}>

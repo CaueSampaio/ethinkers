@@ -9,7 +9,11 @@ import { Form, Input, Button } from 'antd';
 
 import hasErrors from '../../../utils/hasErrorsForm';
 
-import { userActions, userUtils, userSelectors } from '../../../state/ducks/user';
+import {
+  userActions,
+  userUtils,
+  userSelectors,
+} from '../../../state/ducks/user';
 
 import './style.less';
 
@@ -17,7 +21,6 @@ class LoginPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const {
-      t,
       form,
       actions,
       history: { push },
@@ -31,9 +34,7 @@ class LoginPage extends Component {
       if (err) return;
 
       const result = await handleLogin(values);
-      console.log(result);
       if (!result.error) {
-        console.log('aq');
         push('/orders');
       } else {
         notification.error({
@@ -46,10 +47,14 @@ class LoginPage extends Component {
 
   render() {
     const {
-      form: { getFieldDecorator, getFieldsError, isFieldTouched, verifyIsLoading },
-      userData
+      form: {
+        getFieldDecorator,
+        getFieldsError,
+        isFieldTouched,
+        verifyIsLoading,
+      },
     } = this.props;
-    console.log(userData);
+    console.log(verifyIsLoading);
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">

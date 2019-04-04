@@ -312,7 +312,7 @@ class SalesProductsPage extends Component {
         key: 'status',
       },
       {
-        title: 'Status Atualizado',
+        title: 'Status Atualização',
         dataIndex: 'updatestatus',
         key: 'updatestatus',
       },
@@ -402,7 +402,7 @@ class SalesProductsPage extends Component {
               channelProducts={channelProducts}
               channelsProductsIsLoading={channelsProductsIsLoading}
             />
-            <PrivatePageSection>
+            <PrivatePageSection className="table-sales-products">
               <StandardTable
                 minWidth={1000}
                 onRow={(record) => {
@@ -419,6 +419,7 @@ class SalesProductsPage extends Component {
                 pagination={this.state.pagination}
                 onChange={this.onTableChange}
                 loading={channelsProductsIsLoading && spinnerAtrr}
+               
               />
             </PrivatePageSection>
           </Col>

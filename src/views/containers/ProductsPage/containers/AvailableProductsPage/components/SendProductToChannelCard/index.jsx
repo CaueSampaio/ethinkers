@@ -128,7 +128,7 @@ class SendProductToChannelCard extends Component {
               <Button
                 disabled={sendSelectedsIsLoading}
                 loading={sendAllIsLoading}
-                className="btn-synchronize-all"
+                className="btn-synchronize"
                 onClick={this.handleSendAllToChannel}
               >
                 <span>Enviar p/ canal</span>

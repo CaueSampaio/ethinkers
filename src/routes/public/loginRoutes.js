@@ -3,7 +3,7 @@ import PublicLayout from '../../views/layouts/PublicRoute/PublicLayout';
 
 export default [
   {
-    path: '/login',
+    path: '/',
     exact: true,
     component: LoginPage,
     layout: PublicLayout,

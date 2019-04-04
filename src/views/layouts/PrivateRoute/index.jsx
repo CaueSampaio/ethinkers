@@ -30,7 +30,7 @@ class PrivateRoute extends React.Component {
         {...rest}
         render={(props) =>
           isEmpty(userData) ? (
-            <Redirect to="/login" />
+            <Redirect to="/" />
           ) : (
             <PrivateLayout
               component={component}
