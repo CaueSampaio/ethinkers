@@ -162,7 +162,7 @@ class InvoiceList extends Component {
     const orderItems = [...this.state.orderItems];
     let auxList = [];
     orderItems.forEach((orderItem) => {
-      if (idOrderItems.some((item) => item == orderItem.Id)) {
+      if (idOrderItems.some((item) => item == orderItem.id)) {
         auxList.push(orderItem);
       }
     });
@@ -175,6 +175,7 @@ class InvoiceList extends Component {
 
   render() {
     const { invoiceList } = this.state;
+  console.log("invoiceList", invoiceList)
 
     return (
       <div>

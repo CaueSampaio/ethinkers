@@ -187,7 +187,6 @@ class OrderDetailsPage extends Component {
       okText: 'Confirmar',
       content: this.renderInvoiceOrderForm(),
       onOk: async () => {
-        console.log('CONTENT', content);
         const result = await invoiceOrder(data);
         if (!result.error) {
           await notification.success({
