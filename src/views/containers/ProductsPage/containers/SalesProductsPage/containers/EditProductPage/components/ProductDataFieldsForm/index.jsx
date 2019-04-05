@@ -4,7 +4,17 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty, debounce } from 'lodash';
-import { Form, Divider, Row, Col, Input, Select, Button, Spin } from 'antd';
+import {
+  Form,
+  Divider,
+  Row,
+  Col,
+  Input,
+  Select,
+  Button,
+  Spin,
+  Checkbox,
+} from 'antd';
 
 import {
   categoriesActions,
@@ -221,6 +231,11 @@ class EditProductPage extends Component {
             </Col>
           </Row>
           <Row gutter={24} className="input-multiple-product">
+            <Col span={4}>
+              <Form.Item label="Situação">
+                {getFieldDecorator('cured', {})(<Checkbox>Curado</Checkbox>)}
+              </Form.Item>
+            </Col>
             <Col span={8}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
@@ -241,7 +256,7 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={6}>
               <Form.Item label="Categoria">
                 {getFieldDecorator('category', {
                   initialValue: category.name,
@@ -275,7 +290,7 @@ class EditProductPage extends Component {
             </Col>
             {!isEmpty(attributes) &&
               attributes.map((attribute) => (
-                <Col span={8} key={attribute.id}>
+                <Col span={6} key={attribute.id}>
                   <Form.Item label="Atributo 1">
                     {getFieldDecorator('attributProduct', {})(<Input />)}
                   </Form.Item>

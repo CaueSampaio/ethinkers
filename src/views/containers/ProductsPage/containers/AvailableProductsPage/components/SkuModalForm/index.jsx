@@ -71,12 +71,10 @@ class SkuModalForm extends Component {
     e.persist();
     const { skuImages } = this.state;
     // setar a url na mesma posicao do input
-    await this.setState((prevState) => ({
-      skuImages: [
-        { ...prevState.skuImages, [k]: e.target.value }, // eslint-disable-line
-      ],
-    }));
-    console.log(skuImages);
+    const newItems = [...skuImages];
+    newItems[k] = e.target.value;
+    await this.setState({ skuImages: newItems });
+    console.log(this.state);
   };
 
   render() {
@@ -96,16 +94,17 @@ class SkuModalForm extends Component {
 
     const formItemsImages = keys.map((k) => (
       <Fragment key={k}>
-        <Row type="flex" align="middle" gutter={16}>
-          <Col span={2}>
+        <Row type="flex" align="middle" gutter={24}>
+          <Col span={3}>
             <Avatar
-              // className="avatar-sku create-sku"
+              className="avatar-sku create-sku"
               shape="square"
               src={skuImages[k]}
               icon="picture"
+              size={70}
             />
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <Form.Item label="URL da Imagem" required>
               {getFieldDecorator(`images[${k}].url`, {
                 rules: [
@@ -119,7 +118,7 @@ class SkuModalForm extends Component {
               })(<Input onChange={(e) => this.handleChangeImage(e, k)} />)}
             </Form.Item>
           </Col>
-          <Col span={4}>
+          <Col span={5}>
             <Form.Item label="Nome" required>
               {getFieldDecorator(`images[${k}].name`, {
                 rules: [
@@ -133,7 +132,7 @@ class SkuModalForm extends Component {
               })(<Input />)}
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={9}>
             <Form.Item label="Descrição" required>
               {getFieldDecorator(`images[${k}].description`, {
                 rules: [
@@ -148,7 +147,7 @@ class SkuModalForm extends Component {
             </Form.Item>
           </Col>
           {keys.length > 1 ? (
-            <Col span={3}>
+            <Col span={2}>
               <button
                 className="remove-image"
                 type="submit"

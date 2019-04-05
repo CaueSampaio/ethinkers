@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
-import { Form, Button, Input, Row, Col, Select, Spin, Radio } from 'antd';
+import { Form, Button, Input, Row, Col, Select, Spin } from 'antd';
 
 import {
   categoriesActions,
@@ -16,7 +16,6 @@ import {
 } from '../../../../../../../../../state/ducks/brands';
 
 const { TextArea } = Input;
-const RadioGroup = Radio.Group;
 
 class ProductDataForm extends Component {
   static propTypes = {
@@ -192,7 +191,7 @@ class ProductDataForm extends Component {
             gutter={24}
             className="input-multiple-product"
           >
-            <Col span={7}>
+            <Col span={8}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
                   initialValue: product.keyWords,
@@ -212,7 +211,7 @@ class ProductDataForm extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={7}>
+            <Col span={8}>
               <Form.Item label="Meta tags">
                 {getFieldDecorator('metaTags', {
                   initialValue: product.metaTags,
@@ -232,7 +231,7 @@ class ProductDataForm extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={5}>
+            <Col span={8}>
               <Form.Item label="Categoria">
                 {getFieldDecorator('category', {
                   initialValue: category.name,
@@ -261,16 +260,6 @@ class ProductDataForm extends Component {
                       </Select.Option>
                     ))}
                   </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={5}>
-              <Form.Item label="Situação">
-                {getFieldDecorator('cured', {})(
-                  <RadioGroup>
-                    <Radio value={1}>Curado</Radio>
-                    <Radio value={2}>Não Curado</Radio>
-                  </RadioGroup>,
                 )}
               </Form.Item>
             </Col>
