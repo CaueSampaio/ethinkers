@@ -66,7 +66,7 @@ class AvailableProductForm extends Component {
     this.filterBrands = debounce(this.fetchBrands, 800);
   }
 
-  state = { visibleModal: false, skusList: [] };
+  state = { visibleModal: false, skusList: [], showImageSku: true };
 
   componentDidMount() {
     this.fetchCategories();
@@ -76,15 +76,19 @@ class AvailableProductForm extends Component {
   showSkuModal = () => {
     this.setState({
       visibleModal: true,
+      showImageSku: true,
     });
   };
 
   handleCancel = async () => {
-    const { resetFields } = this.formRef;
+    const { resetFields, setFieldsValue } = this.formRef;
     await this.setState({
       visibleModal: false,
     });
     resetFields();
+    setFieldsValue({
+      avatar: '',
+    });
   };
 
   fetchCategories = async () => {
@@ -138,6 +142,9 @@ class AvailableProductForm extends Component {
       });
       this.handleCancel();
       resetFields();
+      this.setState({
+        showImageSku: false,
+      });
     });
   };
 
@@ -219,7 +226,7 @@ class AvailableProductForm extends Component {
       brands,
       brandsIsLoading,
     } = this.props;
-    const { visibleModal, skusList } = this.state;
+    const { visibleModal, skusList, showImageSku } = this.state;
 
     const children = [];
 
@@ -229,7 +236,8 @@ class AvailableProductForm extends Component {
         onClick={(e) => this.removeSkuItem(e, skuIndex)}
         className="btn-remove-sku"
       >
-        Remover
+        <Icon type="delete" />
+        remover
       </button>
     );
 
@@ -450,6 +458,7 @@ class AvailableProductForm extends Component {
           onCancel={this.handleCancel}
           ref={this.getFormRef}
           onSubmitSku={this.handleSubmitSku}
+          showImage={showImageSku}
         />
       </Fragment>
     );

@@ -1,8 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { isEmpty } from 'lodash';
 import {
   Modal,
   Form,
@@ -27,7 +28,6 @@ import CurrencyFormField from '../../../../../../components/CurrencyFormField';
 import './style.less';
 
 let id = 0;
-// const imagesList = [];
 
 class SkuModalForm extends Component {
   static propTypes = {
@@ -71,6 +71,11 @@ class SkuModalForm extends Component {
     e.persist();
     const { skuImages } = this.state;
     // setar a url na mesma posicao do input
+    if (!isEmpty(e.target.value)) {
+      await this.setState({
+        showImage: true,
+      });
+    }
     const newItems = [...skuImages];
     newItems[k] = e.target.value;
     await this.setState({ skuImages: newItems });
@@ -87,84 +92,91 @@ class SkuModalForm extends Component {
       form,
     } = this.props;
     const { skuImages } = this.state;
-
+    console.log(this.props);
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
-    console.log(skuImages);
 
     const formItemsImages = keys.map((k) => (
-      <Fragment key={k}>
-        <Row type="flex" align="middle" gutter={24}>
-          <Col span={3}>
-            <Avatar
-              className="avatar-sku create-sku"
-              shape="square"
-              src={skuImages[k]}
-              icon="picture"
-              size={70}
-            />
+      <Row
+        type="flex"
+        align="middle"
+        gutter={10}
+        key={k}
+        className="content-sku-img"
+      >
+        <Col span={3}>
+          <Form.Item>
+            {getFieldDecorator('avatar', {})(
+              <Avatar
+                className="avatar-sku create-sku"
+                shape="square"
+                src={skuImages[k]}
+                icon="picture"
+                size={100}
+              />,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={5}>
+          <Form.Item label="URL da Imagem" required>
+            {getFieldDecorator(`images[${k}].url`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher a imagem!',
+                  whitespace: true,
+                },
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+            })(<Input onChange={(e) => this.handleChangeImage(e, k)} />)}
+          </Form.Item>
+        </Col>
+        <Col span={5}>
+          <Form.Item label="Nome" required>
+            {getFieldDecorator(`images[${k}].name`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher o Nome!',
+                  whitespace: true,
+                },
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+            })(<Input />)}
+          </Form.Item>
+        </Col>
+        <Col span={9}>
+          <Form.Item label="Descrição" required>
+            {getFieldDecorator(`images[${k}].description`, {
+              rules: [
+                {
+                  required: true,
+                  message: 'Favor, preencher Descrição!',
+                  whitespace: true,
+                },
+              ],
+              validateTrigger: ['onChange', 'onBlur'],
+            })(<Input.TextArea autosize />)}
+          </Form.Item>
+        </Col>
+        {keys.length > 1 ? (
+          <Col span={2}>
+            <button
+              className="remove-image"
+              type="submit"
+              onClick={() => this.remove(k)}
+            >
+              <span>Remover</span>
+            </button>
           </Col>
-          <Col span={5}>
-            <Form.Item label="URL da Imagem" required>
-              {getFieldDecorator(`images[${k}].url`, {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Favor, preencher a imagem!',
-                    whitespace: true,
-                  },
-                ],
-                validateTrigger: ['onChange', 'onBlur'],
-              })(<Input onChange={(e) => this.handleChangeImage(e, k)} />)}
-            </Form.Item>
-          </Col>
-          <Col span={5}>
-            <Form.Item label="Nome" required>
-              {getFieldDecorator(`images[${k}].name`, {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Favor, preencher o Nome!',
-                    whitespace: true,
-                  },
-                ],
-                validateTrigger: ['onChange', 'onBlur'],
-              })(<Input />)}
-            </Form.Item>
-          </Col>
-          <Col span={9}>
-            <Form.Item label="Descrição" required>
-              {getFieldDecorator(`images[${k}].description`, {
-                rules: [
-                  {
-                    required: true,
-                    message: 'Favor, preencher Descrição!',
-                    whitespace: true,
-                  },
-                ],
-                validateTrigger: ['onChange', 'onBlur'],
-              })(<Input.TextArea autosize />)}
-            </Form.Item>
-          </Col>
-          {keys.length > 1 ? (
-            <Col span={2}>
-              <button
-                className="remove-image"
-                type="submit"
-                onClick={() => this.remove(k)}
-              >
-                <span>Remover</span>
-              </button>
-            </Col>
-          ) : null}
-        </Row>
-      </Fragment>
+        ) : null}
+      </Row>
     ));
 
     return (
       <Modal
         title="Adicionar SKU"
-        width={930}
+        width={1000}
         visible={visible}
         onCancel={onCancel}
         centered
@@ -186,7 +198,7 @@ class SkuModalForm extends Component {
       >
         <Form onSubmit={this.handleSubmit} className="add-sku-form">
           <Row type="flex" gutter={10} align="middle">
-            <Col span={20}>
+            <Col span={24}>
               {formItemsImages}
               <Col span={24}>
                 <Button className="add-image" type="dashed" onClick={this.add}>
