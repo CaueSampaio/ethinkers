@@ -5,7 +5,7 @@ metadata:
   name: it4-front
   namespace: core
 spec:
-  replicas: 1
+  replicas: REPLICA_SIZE
   template:
     metadata:
       labels:
@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: it4-front
-        image: acr360.azurecr.io/it4-front:0.0.10
+        image: IMAGE_NAME
         ports:
         - name: http
           containerPort: 80
