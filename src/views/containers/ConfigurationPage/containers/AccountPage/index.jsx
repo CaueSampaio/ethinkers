@@ -35,7 +35,6 @@ class AccountPage extends Component {
     } = this.props;
     validateFields(async (err, values) => {
       if (err) return;
-      console.log(this.props);
       const params = {
         ...values,
         token,
@@ -58,7 +57,6 @@ class AccountPage extends Component {
   };
 
   render() {
-    console.log(this.props);
     const { form, updateIsLoading } = this.props;
     return (
       <Fragment>

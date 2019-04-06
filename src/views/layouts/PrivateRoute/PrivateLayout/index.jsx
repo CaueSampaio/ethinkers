@@ -144,7 +144,6 @@ class PrivateLayout extends React.Component {
       ...rest
     } = this.props;
 
-    console.log(userData);
     return (
       <ContainerQuery query={query}>
         {(params) => (

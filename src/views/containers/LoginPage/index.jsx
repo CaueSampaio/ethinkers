@@ -30,7 +30,6 @@ class LoginPage extends Component {
     const { validateFields } = form;
 
     validateFields(async (err, values) => {
-      console.log('values', values);
       if (err) return;
 
       const result = await handleLogin(values);
@@ -54,7 +53,7 @@ class LoginPage extends Component {
         verifyIsLoading,
       },
     } = this.props;
-    console.log(verifyIsLoading);
+
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">

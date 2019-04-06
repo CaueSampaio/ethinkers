@@ -136,8 +136,8 @@ class FilterForm extends Component {
                     }
                   >
                     {status.map((item) => (
-                      <Option key={item.Id} value={item.Description}>
-                        {item.Description}
+                      <Option key={item.id} value={item.description}>
+                        {item.description}
                       </Option>
                     ))}
                   </Select>,

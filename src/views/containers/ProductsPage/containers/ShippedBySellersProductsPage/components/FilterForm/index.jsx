@@ -18,6 +18,10 @@ import {
   categoriesActions,
   categoriesSelectors,
 } from '../../../../../../../state/ducks/categories';
+import {
+  companiesActions,
+  companiesSelectors,
+} from '../../../../../../../state/ducks/companies';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import StyledButtonFilter from '../../../../../../components/StyledButtonFilter';
@@ -37,6 +41,9 @@ class FilterForm extends Component {
     channels: PropTypes.array.isRequired,
     channelsIsLoading: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
+    companies: PropTypes.array.isRequired,
+    companiesIsLoading: PropTypes.bool.isRequired,
+    idCompany: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -52,6 +59,7 @@ class FilterForm extends Component {
     this.fetchBrands();
     this.fetchCategories();
     this.fetchChannels();
+    this.fetchCompanies();
   }
 
   handleBrandSelectSearch = async (value) => {
@@ -73,6 +81,26 @@ class FilterForm extends Component {
       channelSearch: isEmpty(value) ? null : value,
     });
     this.fetchChannels();
+  };
+
+  handleCompanySelectSearch = async (value) => {
+    await this.setState({
+      companySearch: isEmpty(value) ? null : value,
+    });
+    this.fetchCompanies();
+  };
+
+  fetchCompanies = async () => {
+    const {
+      actions: { listCompanies, clearCompanies },
+      idCompany,
+    } = this.props;
+    const { companySearch } = this.state;
+    await clearCompanies();
+    await listCompanies(
+      idCompany,
+      isEmpty(companySearch) ? null : { search: companySearch },
+    );
   };
 
   fetchBrands = async () => {
@@ -106,6 +134,13 @@ class FilterForm extends Component {
     );
   };
 
+  clearFields = () => {
+    const {
+      form: { resetFields },
+    } = this.props;
+    resetFields();
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
@@ -117,13 +152,17 @@ class FilterForm extends Component {
       channelsIsLoading,
       onSubmit,
       loading,
+      companies,
+      companiesIsLoading,
     } = this.props;
 
     return (
       <div className="form-filter-container">
         <Row type="flex" justify="space-between">
           <h3>Filtros</h3>
-          <Button className="btn-clear">Limpar</Button>
+          <Button className="btn-clear" onClick={this.clearFields}>
+            <span>Limpar</span>
+          </Button>
         </Row>
         <Form className="form-filters" layout="vertical">
           <Row gutter={24}>
@@ -197,9 +236,25 @@ class FilterForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
               <StyledFormItem label="Empresas Fornecedoras:">
-                {getFieldDecorator('status', { initialValue: '' })(<Input />)}
+                {getFieldDecorator('idsCompanies', { initialValue: [] })(
+                  <Select
+                    mode="multiple"
+                    filterOption={false}
+                    notFoundContent={
+                      companiesIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleCompanySelectSearch}
+                    style={{ width: '100%' }}
+                  >
+                    {companies.map((company) => (
+                      <Option key={company.id} title={company.name}>
+                        {company.name}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
               </StyledFormItem>
             </Col>
           </Row>
@@ -227,6 +282,9 @@ const mapStateToProps = createStructuredSelector({
 
   channels: channelsSelectors.makeSelectChannels(),
   channelsIsLoading: channelsSelectors.makeSelectChannelsIsLoading(),
+
+  companies: companiesSelectors.makeSelectCompanies(),
+  companiesIsLoading: companiesSelectors.makeSelectCompaniesIsLoading(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
@@ -234,6 +292,7 @@ const mapDispatchToProps = (dispatch) => ({
       ...brandsActions,
       ...categoriesActions,
       ...channelsActions,
+      ...companiesActions,
     },
     dispatch,
   ),

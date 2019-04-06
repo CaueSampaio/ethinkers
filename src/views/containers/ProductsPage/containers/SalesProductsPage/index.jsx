@@ -21,6 +21,7 @@ import {
   channelProductsActions,
   channelProductsSelectors,
 } from '../../../../../state/ducks/channelProducts';
+import { userActions, userSelectors } from '../../../../../state/ducks/user';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
@@ -339,6 +340,17 @@ class SalesProductsPage extends Component {
 
   render() {
     const {
+      channelProducts,
+      channelsProductsIsLoading,
+      productsSummary,
+      history: { push },
+      productsSummaryIsLoading,
+      userData: {
+        User: { Id: idCompany },
+      },
+    } = this.props;
+
+    const {
       selectedProducts,
       idsProducts,
       idsBrands,
@@ -360,14 +372,7 @@ class SalesProductsPage extends Component {
       status,
       name,
     };
-
-    const {
-      channelProducts,
-      channelsProductsIsLoading,
-      productsSummary,
-      history: { push },
-      productsSummaryIsLoading,
-    } = this.props;
+    console.log(this.props)
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
@@ -419,7 +424,6 @@ class SalesProductsPage extends Component {
                 pagination={this.state.pagination}
                 onChange={this.onTableChange}
                 loading={channelsProductsIsLoading && spinnerAtrr}
-               
               />
             </PrivatePageSection>
           </Col>
@@ -429,6 +433,7 @@ class SalesProductsPage extends Component {
                 ref={this.getFormRef}
                 onSubmit={this.handleSubmitFilters}
                 loading={this.state.loadingSubmit}
+                idCompany={idCompany}
               />
             </PrivatePageSection>
           </Col>
@@ -462,9 +467,14 @@ const mapStateToProps = createStructuredSelector({
 
   productsSummary: channelProductsSelectors.makeSelectListChannelProductSummary(),
   productsSummaryIsLoading: channelProductsSelectors.makeSelectListChannelProductSummaryIsLoading(),
+
+  userData: userSelectors.makeSelectUserData(),
 });
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(channelProductsActions, dispatch),
+  actions: bindActionCreators(
+    { ...channelProductsActions, ...userActions },
+    dispatch,
+  ),
 });
 
 const withConnect = connect(

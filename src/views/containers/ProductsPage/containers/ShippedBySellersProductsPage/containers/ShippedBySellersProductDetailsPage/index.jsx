@@ -86,7 +86,6 @@ class ShippedBySellersProductDetailsPage extends Component {
         });
       },
     );
-    console.log(channelProducts.results[i]);
     push(`./${channelProducts.results[i].idProduct}`);
     return channelProducts.results[i];
   }
@@ -110,7 +109,6 @@ class ShippedBySellersProductDetailsPage extends Component {
         });
       },
     );
-    console.log('order-resukts', channelProducts.results[i]);
     push(`./${channelProducts.results[i].idProduct}`);
     return channelProducts.results[i];
   }

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { isEmpty } from 'lodash';
 import {
   Modal,
   Form,
@@ -71,15 +70,14 @@ class SkuModalForm extends Component {
     e.persist();
     const { skuImages } = this.state;
     // setar a url na mesma posicao do input
-    if (!isEmpty(e.target.value)) {
+    /*   if (!isEmpty(e.target.value)) {
       await this.setState({
         showImage: true,
       });
-    }
+    } */
     const newItems = [...skuImages];
     newItems[k] = e.target.value;
     await this.setState({ skuImages: newItems });
-    console.log(this.state);
   };
 
   render() {
@@ -92,7 +90,6 @@ class SkuModalForm extends Component {
       form,
     } = this.props;
     const { skuImages } = this.state;
-    console.log(this.props);
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
 
@@ -112,7 +109,7 @@ class SkuModalForm extends Component {
                 shape="square"
                 src={skuImages[k]}
                 icon="picture"
-                size={100}
+                size={80}
               />,
             )}
           </Form.Item>

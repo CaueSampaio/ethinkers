@@ -14,7 +14,11 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
     <Divider orientation="left">SKUS</Divider>
     {!isEmpty(skus) &&
       skus.map((sku) => (
-        <Collapse key={sku.refSku} style={{ marginTop: 15 }}>
+        <Collapse
+          key={sku.refSku}
+          style={{ marginTop: 15 }}
+          className="collapse-sku"
+        >
           <Panel header={sku.description}>
             <Row type="flex" gutter={5} align="middle">
               <Col span={24}>

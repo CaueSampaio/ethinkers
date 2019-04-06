@@ -42,12 +42,12 @@ class OrdersPage extends Component {
   handleTableChange = async (pagination) => {
     const { pagination: paging } = this.state;
     const { orders } = this.props;
-    const lastId = orders.results[orders.results.length - 1].orderNumber;
+    const lastItem = orders.results.pop();
 
     const currentPagination = { ...paging };
     currentPagination.current = pagination.current;
 
-    await this.setState({ pagination: currentPagination, lastId });
+    await this.setState({ pagination: currentPagination, lastId: lastItem.orderNumber });
 
     this.fetchOrders();
   };
@@ -92,13 +92,14 @@ class OrdersPage extends Component {
       orders: { total },
     } = this.props;
 
+    const lastItem = orders.results.pop();
     const currentPagination = { ...pagination };
     currentPagination.total = total;
     currentPagination.pageSize = 15;
 
     await this.setState({
       pagination: currentPagination,
-      lastId: orders.results[orders.results.length - 1].orderNumber,
+      lastId: lastItem.orderNumber,
     });
   };
 

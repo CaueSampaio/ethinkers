@@ -138,7 +138,7 @@ export const getQueryParams = (params) => {
 
 export const defaultUploadProps = () => ({
   name: 'file',
-  action: `${API}/products/import`,
+  action: `${API}/products/import/error`,
   // headers: {
   //  authorization: `Bearer ${localStorage.getItem('token')}`,
   // },
@@ -154,7 +154,7 @@ export const uploadInventories = () => ({
 
 export const uploadChannelProduct = () => ({
   name: 'file',
-  action: `${API}/channelproducst/import`,
+  action: `${API}/channelproducts/import`,
   // headers: {
   //  authorization: `Bearer ${localStorage.getItem('token')}`,
   // },

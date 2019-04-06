@@ -18,6 +18,10 @@ import {
   channelsActions,
   channelsSelectors,
 } from '../../../../../../../state/ducks/channels';
+import {
+  companiesActions,
+  companiesSelectors,
+} from '../../../../../../../state/ducks/companies';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import StyledButtonFilter from '../../../../../../components/StyledButtonFilter';
@@ -41,6 +45,9 @@ class FilterForm extends Component {
     channelsStatusIsLoading: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
+    companies: PropTypes.array,
+    companiesIsLoading: PropTypes.bool,
+    idCompany: PropTypes.string,
   };
 
   constructor(props) {
@@ -67,6 +74,7 @@ class FilterForm extends Component {
     // refSearch: null,
     // companySearch: null
     statusSearch: null,
+    companySearch: null,
   };
 
   componentDidMount() {
@@ -74,6 +82,7 @@ class FilterForm extends Component {
     this.fetchCategories();
     this.fetchChannels();
     this.fetchChannelsStatus();
+    this.fetchCompanies();
   }
 
   componentWillUnmount() {
@@ -111,6 +120,27 @@ class FilterForm extends Component {
       statusSearch: isEmpty(value) ? null : value,
     });
     this.fetchChannelsStatus();
+  };
+
+  handleCompaniesSelectSearch = async (value) => {
+    await this.setState({
+      companySearch: isEmpty(value) ? null : value,
+    });
+    this.fetchCompanies();
+  };
+
+  fetchCompanies = async () => {
+    const {
+      actions: { listCompanies, clearCompanies },
+      idCompany,
+    } = this.props;
+    const { companySearch } = this.state;
+
+    await clearCompanies();
+    await listCompanies(
+      idCompany,
+      isEmpty(companySearch) ? null : { search: companySearch },
+    );
   };
 
   fetchBrands = async () => {
@@ -171,6 +201,8 @@ class FilterForm extends Component {
       channelsIsLoading,
       channelsStatus,
       channelsStatusIsLoading,
+      companies,
+      companiesIsLoading,
       onSubmit,
       loading,
     } = this.props;
@@ -184,7 +216,7 @@ class FilterForm extends Component {
             <span>Limpar</span>
           </Button>
         </Row>
-        <Form className="form-filter-container" layout="vertical">
+        <Form className="form-filters" layout="vertical">
           <Row gutter={24}>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Códigos dos produtos:">
@@ -289,10 +321,18 @@ class FilterForm extends Component {
                 {getFieldDecorator('idsCompanies', { initialValue: [] })(
                   <Select
                     mode="multiple"
+                    filterOption={false}
+                    notFoundContent={
+                      companiesIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleCompaniesSelectSearch}
                     style={{ width: '100%' }}
-                    // onChange={handleChange}
                   >
-                    {children}
+                    {companies.map((company) => (
+                      <Option key={company.id} title={company.name}>
+                        {company.name}
+                      </Option>
+                    ))}
                   </Select>,
                 )}
               </StyledFormItem>
@@ -346,11 +386,19 @@ const mapStateToProps = createStructuredSelector({
 
   channelsStatus: channelsSelectors.makeSelectChannelsStatus(),
   channelsStatusIsLoading: channelsSelectors.makeSelectChannelsStatusIsLoading(),
+
+  companies: companiesSelectors.makeSelectCompanies(),
+  companiesIsLoading: companiesSelectors.makeSelectCompaniesIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
-    { ...brandsActions, ...categoriesActions, ...channelsActions },
+    {
+      ...brandsActions,
+      ...categoriesActions,
+      ...channelsActions,
+      ...companiesActions,
+    },
     dispatch,
   ),
 });

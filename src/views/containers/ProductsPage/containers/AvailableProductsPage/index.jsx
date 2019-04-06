@@ -56,7 +56,7 @@ class AvailableProductsPage extends Component {
     idsChannels: [],
     refsProducts: [],
     status: [],
-    name: '',
+    name: null,
     loadingSubmit: false,
     pagination: {},
     visibleModalUploadProduct: false,
@@ -369,6 +369,13 @@ class AvailableProductsPage extends Component {
 
   render() {
     const {
+      products,
+      products: { results },
+      history: { push },
+      productsIsLoading,
+    } = this.props;
+
+    const {
       loadingSubmit,
       pagination,
       selectedProducts,
@@ -389,13 +396,6 @@ class AvailableProductsPage extends Component {
       status,
     };
 
-    const {
-      products,
-      products: { results },
-      history: { push },
-      productsIsLoading,
-    } = this.props;
-
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
@@ -403,7 +403,6 @@ class AvailableProductsPage extends Component {
         });
       },
     };
-    console.log(productsIsLoading);
 
     return (
       <div>
@@ -474,7 +473,7 @@ const mapStateToProps = createStructuredSelector({
   removeProductError: productsSelectors.makeSelectRemoveProductError(),
 });
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators(productsActions, dispatch),
+  actions: bindActionCreators({ ...productsActions }, dispatch),
 });
 
 const withConnect = connect(

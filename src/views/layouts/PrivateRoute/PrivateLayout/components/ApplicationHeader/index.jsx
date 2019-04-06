@@ -69,7 +69,6 @@ class ApplicationHeader extends Component {
 
   render() {
     const { isMobile, isCollapsed, userData: { User = {} } } = this.props;
-    console.log(this.props);
 
     return (
       <div className="header">

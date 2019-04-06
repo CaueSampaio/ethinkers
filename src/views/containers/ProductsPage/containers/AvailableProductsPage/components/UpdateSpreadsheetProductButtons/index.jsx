@@ -8,9 +8,13 @@ import {
   defaultUploadProps,
 } from '../../../../../../../utils/request';
 
+import DocumentErrorItemsCard from '../../../../../../components/DocumentErrorItemsCard';
+
 class UpdateSpreadsheetProductButtons extends Component {
   state = {
     uploadingFile: false,
+    errors: [],
+    documentHasError: false,
   };
 
   handleUploadingStatus = async (status) => {
@@ -32,7 +36,7 @@ class UpdateSpreadsheetProductButtons extends Component {
   };
 
   render() {
-    const { uploadingFile } = this.state;
+    const { uploadingFile, documentHasError, errors } = this.state;
     const { textChildren, onCancel, visible } = this.props;
 
     const props = {
@@ -52,7 +56,11 @@ class UpdateSpreadsheetProductButtons extends Component {
             `Upload do arquivo ${file.name} realizado com sucesso!`,
           );
         } else if (file.status === 'error') {
-          const { response: { Errors: errorMessage } = {} } = file;
+          const { response, response: { Errors: errorMessage } = {} } = file;
+          this.setState({
+            errors: response,
+            documentHasError: true,
+          });
 
           const text = errorMessage || 'Clique aqui ou arraste o arq';
 
@@ -72,7 +80,7 @@ class UpdateSpreadsheetProductButtons extends Component {
       >
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
         <p>
-          Exporte a planilha, faça as devidas alterações e em seguida, faça o
+          Exporte a planilha, faça as devidas alterações e em seguida faça o
           Upload da mesma
         </p>
         <Button onClick={this.onDownloadSpreadsheet}>
@@ -85,6 +93,7 @@ class UpdateSpreadsheetProductButtons extends Component {
             <span style={{ marginLeft: 5 }}>{textChildren}</span>
           </Button>
         </Upload>
+        {documentHasError && <DocumentErrorItemsCard errors={errors} />}
       </Modal>
     );
   }
