@@ -114,7 +114,14 @@ class CancelProducts extends Component {
   };
 
   handleCloseCancelProducts = (e) => {
+    const {
+      form: {
+        resetFields,
+      },
+    } = this.props;
+    resetFields();
     this.setState({
+      loading: false,
       cancelModal: false,
     });
   };
@@ -139,6 +146,7 @@ class CancelProducts extends Component {
           title="Cancelar itens selecionados."
           visible={this.state.cancelModal}
           centered={true}
+          onCancel={this.handleCloseCancelProducts}
           okText="Cancelar produtos"
           footer={this.renderFooterFormButtons()}
         >

@@ -137,7 +137,14 @@ class InvoiceProducts extends Component {
   };
 
   handleCloseInvoiceProducts = (e) => {
+    const { 
+      form: {
+        resetFields 
+      }
+    } = this.props;
+    resetFields();
     this.setState({
+      loading: false,
       invoiceModal: false,
     });
   };
@@ -158,6 +165,7 @@ class InvoiceProducts extends Component {
         <Modal
           title="Faturar produtos selecionados."
           visible={this.state.invoiceModal}
+          onCancel={this.handleCloseInvoiceProducts}
           centered={true}
           okText="Faturar produtos"
           footer={this.renderFooterFormButtons()}

@@ -98,7 +98,7 @@ class OrderDetailsPage extends Component {
     const { invoiceLoading } = this.state;
     return (
       <div>
-        <Button key="back" onClick={this.handleCloseCancelProducts}>
+        <Button key="back" onClick={this.handleCloseInvoiceOrderModal}>
           Cancelar
         </Button>
         <Button key="submit" type="primary" loading={invoiceLoading} onClick={this.handleInvoiceOrder}>Faturar pedido</Button>
@@ -141,7 +141,14 @@ class OrderDetailsPage extends Component {
   };
 
   handleCloseInvoiceOrderModal = () => {
+    const {
+      form: {
+        resetFields,
+      },
+    } = this.props;
+    resetFields();
     this.setState({
+      invoiceLoading: false,
       orderModal: false,
     });
   };
