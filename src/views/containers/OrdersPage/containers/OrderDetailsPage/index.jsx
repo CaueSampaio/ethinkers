@@ -52,6 +52,7 @@ class OrderDetailsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      invoiceLoading: false,
       order: props.order,
       slide: {
         isLoadingRight: false,
@@ -91,6 +92,18 @@ class OrderDetailsPage extends Component {
     const { order } = this.props;
 
     return [getHeaderResourceName(order, 'orderNumber', 'id')];
+  };
+
+  renderFooterFormButtons = () => {
+    const { invoiceLoading } = this.state;
+    return (
+      <div>
+        <Button key="back" onClick={this.handleCloseCancelProducts}>
+          Cancelar
+        </Button>
+        <Button key="submit" type="primary" loading={invoiceLoading} onClick={this.handleInvoiceOrder}>Faturar pedido</Button>
+      </div>
+    );
   };
 
   showConfirmCancelOrder = () => {
@@ -134,6 +147,9 @@ class OrderDetailsPage extends Component {
   };
 
   handleInvoiceOrder = () => {
+    this.setState({
+      invoiceLoading: true,
+    });
     const {
       match: {
         params: { id },
@@ -155,7 +171,10 @@ class OrderDetailsPage extends Component {
           message: 'Sucesso',
           description: 'Pedido faturado com sucesso',
         });
-        this.handleCloseInvoiceOrderModal();
+        this.setState({
+          invoiceLoading: false,
+          orderModal: false,
+        });
         resetFields();
       }
     });
@@ -173,7 +192,7 @@ class OrderDetailsPage extends Component {
     } = this.props;
 
     return (
-      <div>
+      <div className="invoice-form">
         <Form>
           <Form.Item label="Number">
             {getFieldDecorator('number', {
@@ -292,8 +311,7 @@ class OrderDetailsPage extends Component {
           <Modal
             title="Faturar pedido"
             visible={orderModal}
-            onOk={this.handleInvoiceOrder}
-            onCancel={this.handleCloseInvoiceOrderModal}
+            footer={this.renderFooterFormButtons()}
           >
             {this.renderInvoiceOrderForm()}
           </Modal>

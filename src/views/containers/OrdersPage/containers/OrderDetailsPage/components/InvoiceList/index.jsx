@@ -83,7 +83,7 @@ class InvoiceList extends Component {
       form: { getFieldDecorator },
     } = this.props;
     return (
-      <div>
+      <div className="tracking-form">
         <Form>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('code', {
