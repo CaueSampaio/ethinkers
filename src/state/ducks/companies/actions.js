@@ -1,10 +1,10 @@
 import types from './types';
 import { get, getQueryParams } from '../../../utils/request';
 
-function listCompanies(idCompany, params) {
+function listCompanies(params) {
   return {
     type: types.LIST_COMPANIES,
-    promise: get(`${idCompany}/sellers${getQueryParams(params)}`),
+    promise: get(`companies/sellers${getQueryParams(params)}`),
   };
 }
 

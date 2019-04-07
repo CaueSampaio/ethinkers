@@ -76,7 +76,7 @@ class AvailableProductForm extends Component {
   showSkuModal = () => {
     this.setState({
       visibleModal: true,
-      showImageSku: true,
+      showImageSku: false,
     });
   };
 
@@ -86,9 +86,6 @@ class AvailableProductForm extends Component {
       visibleModal: false,
     });
     resetFields();
-    setFieldsValue({
-      avatar: '',
-    });
   };
 
   fetchCategories = async () => {
@@ -142,9 +139,6 @@ class AvailableProductForm extends Component {
       });
       this.handleCancel();
       resetFields();
-      this.setState({
-        showImageSku: false,
-      });
     });
   };
 
@@ -400,10 +394,10 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
           <Row type="flex" gutter={10} align="middle">
-            <Col span={21}>
+            <Col span={20}>
               <Divider orientation="left">SKUS</Divider>
             </Col>
-            <Col span={3}>
+            <Col span={4}>
               <Button
                 style={{ borderRadius: 50 }}
                 type="dashed"
@@ -418,7 +412,7 @@ class AvailableProductForm extends Component {
           <Row gutter={24}>
             {!isEmpty(skusList) ? (
               skusList.map((sku, i) => (
-                <Col span={24} key={sku.refSku}>
+                <Col span={24} key={i}>
                   <SkuDataItem
                     sku={sku}
                     removeSkuItem={this.removeSkuItem}

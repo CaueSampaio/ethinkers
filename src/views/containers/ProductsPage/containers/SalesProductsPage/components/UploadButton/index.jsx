@@ -27,7 +27,9 @@ import {
   uploadChannelProduct,
   getQueryParams,
 } from '../../../../../../../utils/request';
+
 import StyledFormItem from '../../../../../../components/StyledFormItem';
+import DocumentErrorItemsCard from '../../../../../../components/DocumentErrorItemsCard';
 
 class UploadButton extends Component {
   static propTypes = {
@@ -41,6 +43,8 @@ class UploadButton extends Component {
     channelSearch: null,
     disableExport: true,
     idChannel: null,
+    errors: [],
+    documentHasError: false,
   };
 
   componentDidMount() {
@@ -95,7 +99,12 @@ class UploadButton extends Component {
   };
 
   render() {
-    const { uploadingFile, disableExport } = this.state;
+    const {
+      uploadingFile,
+      disableExport,
+      errors,
+      documentHasError,
+    } = this.state;
     const {
       channels,
       channelsIsLoading,
@@ -196,6 +205,7 @@ class UploadButton extends Component {
             <span style={{ marginLeft: 5 }}>{textChildren}</span>
           </Button>
         </Upload>
+        {documentHasError && <DocumentErrorItemsCard errors={errors} />}
       </Modal>
     );
   }

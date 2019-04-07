@@ -14,7 +14,6 @@ import {
   Button,
   Avatar,
   Divider,
-  // notification,
 } from 'antd';
 
 import {
@@ -22,7 +21,6 @@ import {
   skusSelectors,
 } from '../../../../../../../state/ducks/skus';
 
-// import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 import CurrencyFormField from '../../../../../../components/CurrencyFormField';
 import './style.less';
 
@@ -35,9 +33,10 @@ class SkuModalForm extends Component {
     onCancel: PropTypes.func.isRequired,
     onSubmitSku: PropTypes.func,
     createSkuIsLoading: PropTypes.bool.isRequired,
+    showImage: PropTypes.bool.isRequired,
   };
 
-  state = { skuImages: [] };
+  state = { skuImages: [], changeUrl: false };
 
   remove = async (k) => {
     const { form } = this.props;
@@ -46,10 +45,6 @@ class SkuModalForm extends Component {
     if (keys.length === 1) {
       return;
     }
-
-    await this.setState({
-      // previewImage: '',
-    });
 
     form.setFieldsValue({
       keys: keys.filter((key) => key !== k),
@@ -69,15 +64,10 @@ class SkuModalForm extends Component {
   handleChangeImage = async (e, k) => {
     e.persist();
     const { skuImages } = this.state;
-    // setar a url na mesma posicao do input
-    /*   if (!isEmpty(e.target.value)) {
-      await this.setState({
-        showImage: true,
-      });
-    } */
     const newItems = [...skuImages];
+
     newItems[k] = e.target.value;
-    await this.setState({ skuImages: newItems });
+    await this.setState({ skuImages: newItems, changeUrl: true });
   };
 
   render() {
@@ -88,10 +78,12 @@ class SkuModalForm extends Component {
       createSkuIsLoading,
       onSubmitSku,
       form,
+      showImage,
     } = this.props;
-    const { skuImages } = this.state;
+    const { skuImages, changeUrl } = this.state;
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
+    console.log(skuImages);
 
     const formItemsImages = keys.map((k) => (
       <Row
@@ -107,7 +99,7 @@ class SkuModalForm extends Component {
               <Avatar
                 className="avatar-sku create-sku"
                 shape="square"
-                src={skuImages[k]}
+                src={!changeUrl ? showImage : skuImages[k]}
                 icon="picture"
                 size={80}
               />,

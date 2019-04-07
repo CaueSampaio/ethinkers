@@ -13,9 +13,9 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
   <Fragment>
     <Divider orientation="left">SKUS</Divider>
     {!isEmpty(skus) &&
-      skus.map((sku) => (
+      skus.map((sku, i) => (
         <Collapse
-          key={sku.refSku}
+          key={i} // eslint-disable-line
           style={{ marginTop: 15 }}
           className="collapse-sku"
         >

@@ -43,7 +43,6 @@ class FilterForm extends Component {
     loading: PropTypes.bool.isRequired,
     companies: PropTypes.array.isRequired,
     companiesIsLoading: PropTypes.bool.isRequired,
-    idCompany: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -93,12 +92,10 @@ class FilterForm extends Component {
   fetchCompanies = async () => {
     const {
       actions: { listCompanies, clearCompanies },
-      idCompany,
     } = this.props;
     const { companySearch } = this.state;
     await clearCompanies();
     await listCompanies(
-      idCompany,
       isEmpty(companySearch) ? null : { search: companySearch },
     );
   };

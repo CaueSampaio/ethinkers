@@ -5,11 +5,11 @@ export const CheckBox = (props) => {
   return (
     <li>
       <input
-        key={props.Id}
+        key={props.id}
         onClick={props.handleCheckChieldElement}
         type="checkbox"
         checked={props.isChecked}
-        value={props.Id}
+        value={props.id}
       />{' '}
       {props.value}
     </li>

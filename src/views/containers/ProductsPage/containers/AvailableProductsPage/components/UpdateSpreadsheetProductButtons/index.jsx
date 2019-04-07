@@ -62,7 +62,8 @@ class UpdateSpreadsheetProductButtons extends Component {
             documentHasError: true,
           });
 
-          const text = errorMessage || 'Clique aqui ou arraste o arq';
+          const text =
+            errorMessage || 'Houve erro durante o upload do arquivo.';
 
           message.error(text);
         }
@@ -76,6 +77,7 @@ class UpdateSpreadsheetProductButtons extends Component {
         onCancel={onCancel}
         onOk={this.handleUploadFile}
         confirmLoading={uploadingFile}
+        width={700}
         footer={[]}
       >
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}

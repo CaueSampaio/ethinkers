@@ -131,6 +131,8 @@ class EditProductPage extends Component {
       product: { attributes = [], brand = {}, category = {} },
     } = this.props;
 
+    console.log(product);
+
     return (
       <Fragment>
         <Divider orientation="left">Dados do Produto</Divider>

@@ -8,11 +8,15 @@ import {
   downloadFile,
 } from '../../../../../../../utils/request';
 
+import DocumentErrorItemsCard from '../../../../../../components/DocumentErrorItemsCard';
+
 import './style.less';
 
 class UpdateSpreadsheetButtons extends Component {
   state = {
     uploadingFile: false,
+    errors: [],
+    documentHasError: false,
   };
 
   handleUploadingStatus = async (status) => {
@@ -34,7 +38,7 @@ class UpdateSpreadsheetButtons extends Component {
   };
 
   render() {
-    const { uploadingFile } = this.state;
+    const { uploadingFile, documentHasError, errors } = this.state;
     const { textChildren, onCancel, visible } = this.props;
 
     const props = {
@@ -54,9 +58,13 @@ class UpdateSpreadsheetButtons extends Component {
             `Upload do arquivo ${file.name} realizado com sucesso!`,
           );
         } else if (file.status === 'error') {
-          const { response: { Errors: errorMessage } = {} } = file;
-
-          const text = errorMessage || 'Clique aqui ou arraste o arq';
+          const { response, response: { Errors: errorMessage } = {} } = file;
+          this.setState({
+            errors: response,
+            documentHasError: true,
+          });
+          const text =
+            errorMessage || 'Houve erro durante o upload do arquivo.';
 
           message.error(text);
         }
@@ -70,6 +78,7 @@ class UpdateSpreadsheetButtons extends Component {
         onCancel={onCancel}
         onOk={this.handleUploadFile}
         confirmLoading={uploadingFile}
+        width={700}
         footer={[]}
       >
         {/*  eslint-disable-next-line react/jsx-one-expression-per-line */}
@@ -87,6 +96,7 @@ class UpdateSpreadsheetButtons extends Component {
             <span style={{ marginLeft: 5 }}>{textChildren}</span>
           </Button>
         </Upload>
+        {documentHasError && <DocumentErrorItemsCard errors={errors} />}
       </Modal>
     );
   }

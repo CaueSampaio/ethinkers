@@ -1,34 +1,20 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  List,
-  Checkbox,
-  Modal,
-  notification,
-  Form,
-  Input,
-} from 'antd';
-import { isEmpty } from 'lodash';
+import { Row, Col, Card, List, Checkbox, Form } from 'antd';
 import { compose } from 'redux';
-import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
+import InvoiceProducts from './components/InvoiceProducts';
+import CancelProducts from './components/CancelProducts';
 import CheckBox from '../CheckBox';
+import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
 
 import './style.less';
-import { consoleTestResultHandler } from 'tslint/lib/test';
-
-const { confirm } = Modal;
 
 class ProductList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       products: [],
-      invoiceModal: false,
-      cancelModal: false,
     };
   }
 
@@ -65,19 +51,13 @@ class ProductList extends Component {
     </div>
   );
 
-  renderNetValue = (item) => (
-    <div style={{ display: 'flex' }}>
-      <span>{item.netValue}}</span>
-    </div>
-  );
-
   renderDescription = (item) => (
     <div className="product-description">
       <h3>
         Quantidade: <span>{item.quantity}</span>
       </h3>
       <h3>
-        Preço: <span>{item.netValue}</span>
+        Preço: <span>{formatCurrency(item.netValue)}</span>
       </h3>
       <h3>
         SKU: <span>{item.channelSku.refSku}</span>
@@ -97,269 +77,34 @@ class ProductList extends Component {
   handleCheckChieldElement = (event) => {
     let { products } = this.state;
     products.forEach((product) => {
-      if (product.Id == event.target.value)
+      if (product.id == event.target.value)
         product.isChecked = event.target.checked;
     });
     this.setState({ products: products });
-  };
-
-  showConfirmCancelOrderItems = (event, products) => {
-    const {
-      match: {
-        params: { id },
-      },
-      actions: { cancelOrderItems },
-      editStatusError,
-    } = this.props.props;
-    const selectedProducts = this.getIdSelectedProducts(products);
-    const data = {
-      idOrderItens: selectedProducts,
-      status: 4,
-      reason: 'Cancelado pelo usuário',
-    };
-
-    confirm({
-      title: 'Deseja realmente cancelar os itens selecionados?',
-      okText: 'Confirmar',
-      content: this.renderCancelReasonForm(),
-      onOk: async () => {
-        const result = await cancelOrderItems(id, data);
-        if (!result.error) {
-          await notification.success({
-            message: 'Sucesso',
-            description: 'Itens cancelados com sucesso',
-          });
-        } else {
-          const { message: errorMessage, errors } = editStatusError;
-          notification.error({
-            message: errorMessage,
-            description: <BadRequestNotificationBody errors={errors} />,
-          });
-        }
-      },
-    });
-  };
-
-  renderCancelReasonForm = () => {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <div>
-        <Form>
-          <Form.Item label="Motivo">
-            {getFieldDecorator('reason', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Motivo é um campo obrigatório.',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
-  renderInvoiceProductsForm = () => {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <div>
-        <Form>
-          <Form.Item label="Number">
-            {getFieldDecorator('number', {
-              rules: [
-                {
-                  required: true,
-                  message: 'Number é um campo obrigatório.',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="Series">
-            {getFieldDecorator('series', {
-              rules: [
-                { required: true, message: 'Series é um campo obrigatório.' },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="Key">
-            {getFieldDecorator('key', {
-              rules: [
-                { required: true, message: 'Keys é um campo obrigatório.' },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="Código de rastreio">
-            {getFieldDecorator('tracking.code', {})(<Input />)}
-          </Form.Item>
-          <Form.Item label="Url">
-            {getFieldDecorator('tracking.url', {})(<Input />)}
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
-  handleInvoiceProducts = () => {
-    const products = this.getIdSelectedProducts(products);
-    const {
-      order,
-      match: {
-        params: { id },
-      },
-      actions: { invoiceOrder },
-    } = this.props.props;
-    let data = {
-      idOrder: id,
-      number: order.number,
-      idOrderItems: products,
-    };
-    const {
-      form: { validateFields, resetFields },
-    } = this.props;
-    validateFields(async (err, value) => {
-      if (err) return;
-      data = {
-        idOrder: id,
-        ...data,
-        ...value,
-      };
-      const result = await invoiceOrder(data);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'Produtos faturados com sucesso',
-        });
-        this.handleCancel();
-        resetFields();
-      } else {
-        const { message: errorMessage, errors } = editStatusError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
-      }
-    });
-    this.setState({
-      invoiceModal: false,
-    });
-  };
-
-  handleCancelProducts = () => {
-    const products = this.getIdSelectedProducts(products);
-    const {
-      match: {
-        params: { id },
-      },
-      actions: { cancelOrderItems },
-    } = this.props.props;
-    let data = {
-      status: 4,
-      idOrderItems: products,
-    };
-    const {
-      form: { validateFields, resetFields },
-    } = this.props;
-    validateFields(async (err, value) => {
-      if (err) return;
-      data = {
-        ...data,
-        ...value,
-      };
-      const result = await cancelOrderItems(id, data);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'Produtos cancelados com sucesso',
-        });
-        this.handleCancel();
-        resetFields();
-      } else {
-        const { message: errorMessage, errors } = editStatusError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
-      }
-    });
-    this.setState({
-      invoiceModal: false,
-    });
-  };
-
-  showInvoiceProductsModal = (e) => {
-    this.setState({
-      invoiceModal: true,
-    });
-  };
-
-  handleCloseInvoiceProducts = (e) => {
-    this.setState({
-      invoiceModal: false,
-    });
-  };
-
-  showCancelProductsModal = (e) => {
-    this.setState({
-      cancelModal: true,
-    });
-  };
-
-  handleCloseCancelProducts = (e) => {
-    this.setState({
-      cancelModal: false,
-    });
   };
 
   getIdSelectedProducts = () => {
     const { products } = this.state;
     const selectedProducts = products.filter((product) => product.isChecked);
     let productsId = [];
-    selectedProducts.forEach((item) => productsId.push(item.Id));
+    selectedProducts.forEach((item) => productsId.push(item.id));
     return productsId;
   };
 
   render() {
     const { products } = this.state;
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props.props;
     return (
       <div>
         <PrivatePageSection>
           <h3>Produtos</h3>
           <Row type="flex">
-            <PrivatePageHeaderButton
-              onClick={(e) => this.showInvoiceProductsModal(e)}
-            >
-              Faturar SKUS
-            </PrivatePageHeaderButton>
-            <Modal
-              title="Faturar produtos selecionados."
-              visible={this.state.invoiceModal}
-              onOk={() => this.handleInvoiceProducts()}
-              onCancel={this.handleCloseInvoiceProducts}
-              centered={true}
-              okText="Faturar produtos"
-            >
-              {this.renderInvoiceProductsForm()}
-            </Modal>
-            <PrivatePageHeaderButton
-              onClick={(e) => this.showCancelProductsModal()}
-            >
-              Cancelar produto
-            </PrivatePageHeaderButton>
-            <Modal
-              title="Cancelar itens selecionados."
-              visible={this.state.cancelModal}
-              onOk={() => this.handleCancelProducts()}
-              onCancel={this.handleCloseCancelProducts}
-              centered={true}
-              okText="Cancelar produtos"
-            >
-            {this.renderCancelReasonForm()}
-            </Modal>
+            <InvoiceProducts products={products} id={id} />
+            <CancelProducts products={products} id={id} />
           </Row>
           <Row>
             <Col className="space-bottom">
