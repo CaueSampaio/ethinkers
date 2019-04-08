@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, notification } from 'antd';
 
 import hasErrors from '../../../utils/hasErrorsForm';
 
