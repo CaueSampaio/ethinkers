@@ -23,13 +23,12 @@ class NotificationsPopover extends Component {
   };
 
   renderHeader = () => {
-    const { t } = this.props;
     return <div style={{ textAlign: 'center' }}>Notificações</div>;
   };
 
   render() {
-    const { items, total } = this.props;
-
+    const { items, items: { totalNotViewed } } = this.props;
+    console.log(items);
     return (
       <Popover
         content={
@@ -46,7 +45,7 @@ class NotificationsPopover extends Component {
         trigger={['click']}
       >
         <span className="action account">
-          <Badge count={total}>
+          <Badge count={totalNotViewed} style={{ backgroundColor:"#ce5652"}}>
             <Icon
               type="bell"
               style={{ fontSize: '14px', padding: '6px', color: '#656565' }}
