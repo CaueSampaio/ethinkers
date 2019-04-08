@@ -20,6 +20,7 @@ import {
 import {
   channelProductsActions,
   channelProductsSelectors,
+  channelProductsConstants,
 } from '../../../../../state/ducks/channelProducts';
 import { userActions, userSelectors } from '../../../../../state/ducks/user';
 
@@ -275,6 +276,8 @@ class SalesProductsPage extends Component {
   };
 
   getTableColumns = () => {
+    const { channelProductStatus } = channelProductsConstants;
+
     return [
       {
         title: 'Imagem',
@@ -311,6 +314,10 @@ class SalesProductsPage extends Component {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
+        render: (text) =>
+          channelProductStatus.map(
+            (item) => item.value === text && item.status,
+          ),
       },
       {
         title: 'Status Atualização',
@@ -319,6 +326,8 @@ class SalesProductsPage extends Component {
       },
       {
         key: 'actions',
+        fixed: 'right',
+        width: 10,
         render: (record) => (
           <Dropdown overlay={this.getItemMenu(record)}>
             <Icon className="ic-config" type="ellipsis" />
@@ -372,7 +381,6 @@ class SalesProductsPage extends Component {
       status,
       name,
     };
-    console.log(this.props)
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
@@ -409,7 +417,7 @@ class SalesProductsPage extends Component {
             />
             <PrivatePageSection className="table-sales-products">
               <StandardTable
-                minWidth={1000}
+                minWidth={1200}
                 onRow={(record) => {
                   return {
                     onClick: (e) => {

@@ -1,5 +1,12 @@
 import types from './types';
-import { get, getQueryParams, remove, put, post } from '../../../utils/request';
+import {
+  get,
+  getQueryParams,
+  patch,
+  remove,
+  put,
+  post,
+} from '../../../utils/request';
 
 function listChannelProducts(params) {
   return {
@@ -29,10 +36,10 @@ function listChannelProductsSummary() {
   };
 }
 
-function editChannelProductStatus(id, status) {
+function editChannelProductStatus(id, data) {
   return {
     type: types.ENABLE_OR_DISABLE_CHANNEL_PRODUCT,
-    promise: put(`channelproducts/${id}/status`, status),
+    promise: patch(`channelproducts/${id}/status`, data),
   };
 }
 

@@ -1,35 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { compose, bindActionCreators } from 'redux';
-import { createStructuredSelector } from 'reselect';
+import { compose } from 'redux';
 import { isEmpty } from 'lodash';
 import {
   Row,
   Col,
   Collapse,
-  Divider,
   Input,
   Icon,
   Form,
   Button,
   Avatar,
-  notification,
   InputNumber,
 } from 'antd';
 import './style.less';
 
-import {
-  skusActions,
-  skusSelectors,
-} from '../../../../../../../../../state/ducks/skus';
-import {
-  productsActions,
-  // productsSelectors,
-} from '../../../../../../../../../state/ducks/products';
-
 import StyledFormItem from '../../../../../../../../components/StyledFormItem';
-import BadRequestNotificationBody from '../../../../../../../../components/BadRequestNotificationBody';
 import SkuModalForm from '../../../../components/SkuModalForm';
 
 const { Panel } = Collapse;
@@ -40,9 +26,8 @@ class SkusDataList extends Component {
   static propTypes = {
     product: PropTypes.object.isRequired,
     form: PropTypes.object.isRequired,
-    actions: PropTypes.object.isRequired,
-    editChannelSkusError: PropTypes.object,
     editSkuIsLoading: PropTypes.bool.isRequired,
+    onSubmit: PropTypes.func,
   };
 
   state = {
@@ -87,32 +72,8 @@ class SkusDataList extends Component {
     });
   };
 
-  handleSubmit = (e, idSku) => {
-    e.preventDefault();
-    const {
-      actions: { editSku, findProduct },
-      form: { validateFields },
-      product: { id: idProduct },
-      editChannelSkusError,
-    } = this.props;
-
-    validateFields(async (err, values) => {
-      if (err) return;
-      const result = await editSku(idSku, values);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'SKU atualizado com sucesso',
-        });
-        await findProduct(idProduct);
-      } else {
-        const { message: errorMessage, errors } = editChannelSkusError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
-      }
-    });
+  getFormRef = (ref) => {
+    this.skuForm = ref;
   };
 
   render() {
@@ -120,6 +81,7 @@ class SkusDataList extends Component {
       product: { skus = [] },
       form: { getFieldDecorator, getFieldValue },
       editSkuIsLoading,
+      onSubmit,
     } = this.props;
     const { visibleModal } = this.state;
 
@@ -164,23 +126,6 @@ class SkusDataList extends Component {
 
     return (
       <Fragment>
-        <Row type="flex" align="middle">
-          <Col span={21}>
-            <Divider orientation="left">
-              <span>SKUS</span>
-            </Divider>
-          </Col>
-          <Col span={3}>
-            <Button
-              className="add-sku"
-              type="dashed"
-              onClick={this.showModalSku}
-            >
-              <Icon type="plus" />
-              <span>Adicionar SKU</span>
-            </Button>
-          </Col>
-        </Row>
         {!isEmpty(skus) &&
           skus.map((sku) => (
             <Collapse key={sku.refSku} style={{ marginBottom: 20 }}>
@@ -189,7 +134,7 @@ class SkusDataList extends Component {
                 key="1"
                 extra={this.renderGenExtra()}
               >
-                <Form onSubmit={(e) => this.handleSubmit(e, sku.refSku)}>
+                <Form onSubmit={(e) => onSubmit(e, sku.refSku)}>
                   <Row>
                     <p className="label-gallery">Imagens:</p>
                   </Row>
@@ -372,6 +317,7 @@ class SkusDataList extends Component {
         <SkuModalForm
           visible={visibleModal}
           onCancel={this.handleCancelSkuModal}
+          ref={this.getFormRef}
         />
       </Fragment>
     );
@@ -379,20 +325,5 @@ class SkusDataList extends Component {
 }
 
 const withForm = Form.create();
-const mapStateToProps = createStructuredSelector({
-  editSkuError: skusSelectors.makeSelectEditSkuError(),
-  editSkuIsLoading: skusSelectors.makeSelectEditSkuIsLoading(),
-});
-const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ ...skusActions, ...productsActions }, dispatch),
-});
 
-const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-);
-
-export default compose(
-  withForm,
-  withConnect,
-)(SkusDataList);
+export default compose(withForm)(SkusDataList);

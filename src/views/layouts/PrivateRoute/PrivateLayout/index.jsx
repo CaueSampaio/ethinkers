@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet';
 import { Layout } from 'antd';
 
 import { getBreadcrumb } from '../../../../routes';
+import { getAllDiscriminators } from '../../../../utils/constants';
 
 import {
   layoutActions,
@@ -63,7 +64,7 @@ class PrivateLayout extends React.Component {
     isCollapsed: PropTypes.bool.isRequired,
     path: PropTypes.string.isRequired,
     userData: PropTypes.object.isRequired,
-    // discriminators: PropTypes.arrayOf(PropTypes.string),
+    discriminators: PropTypes.arrayOf(PropTypes.number),
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
   };
@@ -79,6 +80,11 @@ class PrivateLayout extends React.Component {
     });
 
     this.registerHandlers();
+
+    const { userData, discriminators = getAllDiscriminators() } = this.props;
+    if (!discriminators.includes(userData.UserType)) {
+      console.log('redireciona para 403');
+    }
   }
 
   componentWillUnmount() {

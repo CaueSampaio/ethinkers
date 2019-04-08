@@ -77,7 +77,7 @@ class UpdateSpreadsheetProductButtons extends Component {
         onCancel={onCancel}
         onOk={this.handleUploadFile}
         confirmLoading={uploadingFile}
-        width={700}
+        width={documentHasError ? 700 : 500}
         footer={[]}
       >
         {/* eslint-disable-next-line react/jsx-one-expression-per-line */}

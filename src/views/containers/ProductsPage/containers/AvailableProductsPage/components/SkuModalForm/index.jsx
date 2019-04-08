@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { isEmpty } from 'lodash';
 import {
   Modal,
   Form,
@@ -33,10 +34,11 @@ class SkuModalForm extends Component {
     onCancel: PropTypes.func.isRequired,
     onSubmitSku: PropTypes.func,
     createSkuIsLoading: PropTypes.bool.isRequired,
-    showImage: PropTypes.bool.isRequired,
+    handleChangeImage: PropTypes.func.isRequired,
+    skuImages: PropTypes.array,
   };
 
-  state = { skuImages: [], changeUrl: false };
+  state = { skuImages: [] };
 
   remove = async (k) => {
     const { form } = this.props;
@@ -67,7 +69,7 @@ class SkuModalForm extends Component {
     const newItems = [...skuImages];
 
     newItems[k] = e.target.value;
-    await this.setState({ skuImages: newItems, changeUrl: true });
+    await this.setState({ skuImages: newItems });
   };
 
   render() {
@@ -78,12 +80,12 @@ class SkuModalForm extends Component {
       createSkuIsLoading,
       onSubmitSku,
       form,
-      showImage,
+      handleChangeImage,
+      skuImages,
     } = this.props;
-    const { skuImages, changeUrl } = this.state;
+
     getFieldDecorator('keys', { initialValue: [0] });
     const keys = getFieldValue('keys');
-    console.log(skuImages);
 
     const formItemsImages = keys.map((k) => (
       <Row
@@ -99,7 +101,7 @@ class SkuModalForm extends Component {
               <Avatar
                 className="avatar-sku create-sku"
                 shape="square"
-                src={!changeUrl ? showImage : skuImages[k]}
+                src={isEmpty(skuImages) ? '' : skuImages[k]}
                 icon="picture"
                 size={80}
               />,
@@ -117,7 +119,7 @@ class SkuModalForm extends Component {
                 },
               ],
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input onChange={(e) => this.handleChangeImage(e, k)} />)}
+            })(<Input onChange={(e) => handleChangeImage(e, k)} />)}
           </Form.Item>
         </Col>
         <Col span={5}>

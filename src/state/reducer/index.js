@@ -14,6 +14,7 @@ import skus from '../ducks/skus';
 import user from '../ducks/user';
 import loggedUser from '../ducks/loggedUser';
 import companies from '../ducks/companies';
+import notifications from '../ducks/notifications';
 
 export function createRootReducer() {
   return combineReducers({
@@ -31,5 +32,6 @@ export function createRootReducer() {
     user,
     loggedUser,
     companies,
+    notifications,
   });
 }

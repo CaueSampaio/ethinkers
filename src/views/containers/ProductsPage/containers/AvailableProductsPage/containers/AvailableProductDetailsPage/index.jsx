@@ -16,6 +16,8 @@ import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import SkuDataItem from '../../../../components/SkuDataItem';
 import ProductDataItem from './components/ProductDataItem';
 
+import './style.less';
+
 class AvailableProductDetailsPage extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
@@ -43,6 +45,19 @@ class AvailableProductDetailsPage extends Component {
     return [getHeaderResourceName(product, 'name', 'id')];
   };
 
+  renderHeaderContent = () => {
+    const {
+      product: { id },
+    } = this.props;
+
+    return (
+      <div className="content-disabled-item">
+        <span className="item-disabled">{`#${id}`}</span>
+        <span className="status-disabled">(Desabilitado)</span>
+      </div>
+    );
+  };
+
   render() {
     const { product, productIsLoading } = this.props;
     return (
@@ -50,6 +65,7 @@ class AvailableProductDetailsPage extends Component {
         <PrivatePageHeader
           title="Detalhes do Produto"
           resourceMap={this.renderResourceMap()}
+          content={this.renderHeaderContent()}
         />
         <PrivatePageSection isLoading={productIsLoading}>
           <ProductDataItem product={product} />

@@ -6,7 +6,11 @@ import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { Row, Col } from 'antd';
 
-import { ordersActions, ordersSelectors } from '../../../state/ducks/orders';
+import {
+  ordersActions,
+  ordersSelectors,
+  ordersConstants,
+} from '../../../state/ducks/orders';
 import { formatCurrency } from '../../../utils/masks/formatCurrency';
 
 import PrivatePageHeader from '../../components/PrivatePageHeader';
@@ -47,7 +51,10 @@ class OrdersPage extends Component {
     const currentPagination = { ...paging };
     currentPagination.current = pagination.current;
 
-    await this.setState({ pagination: currentPagination, lastId: lastItem.orderNumber });
+    await this.setState({
+      pagination: currentPagination,
+      lastId: lastItem.orderNumber,
+    });
 
     this.fetchOrders();
   };
@@ -106,6 +113,8 @@ class OrdersPage extends Component {
   render() {
     const { orders, isLoading } = this.props;
     const { pagination, lastId, loadingSubmit } = this.state;
+    const { orderStatusEnum } = ordersConstants;
+    const teste = orderStatusEnum.map((item) => item);
 
     const columns = [
       {
@@ -143,6 +152,8 @@ class OrdersPage extends Component {
         title: 'Status',
         dataIndex: 'status',
         key: 'status',
+        render: (text) =>
+          orderStatusEnum.map((item) => item.value === text && item.status),
       },
     ];
 

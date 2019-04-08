@@ -66,7 +66,12 @@ class AvailableProductForm extends Component {
     this.filterBrands = debounce(this.fetchBrands, 800);
   }
 
-  state = { visibleModal: false, skusList: [], showImageSku: true };
+  state = {
+    visibleModal: false,
+    skusList: [],
+    showImageSku: true,
+    skuImages: [],
+  };
 
   componentDidMount() {
     this.fetchCategories();
@@ -86,6 +91,9 @@ class AvailableProductForm extends Component {
       visibleModal: false,
     });
     resetFields();
+    this.setState({
+      skuImages: [],
+    });
   };
 
   fetchCategories = async () => {
@@ -139,6 +147,9 @@ class AvailableProductForm extends Component {
       });
       this.handleCancel();
       resetFields();
+      this.setState({
+        skuImages: [],
+      });
     });
   };
 
@@ -211,6 +222,15 @@ class AvailableProductForm extends Component {
     this.formRef = ref;
   };
 
+  handleChangeImageSku = async (e, k) => {
+    e.persist();
+    const { skuImages } = this.state;
+    const newItems = [...skuImages];
+
+    newItems[k] = e.target.value;
+    await this.setState({ skuImages: newItems, changeUrl: true });
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
@@ -220,8 +240,7 @@ class AvailableProductForm extends Component {
       brands,
       brandsIsLoading,
     } = this.props;
-    const { visibleModal, skusList, showImageSku } = this.state;
-
+    const { visibleModal, skusList, showImageSku, skuImages } = this.state;
     const children = [];
 
     const genExtra = (skuIndex) => (
@@ -453,6 +472,8 @@ class AvailableProductForm extends Component {
           ref={this.getFormRef}
           onSubmitSku={this.handleSubmitSku}
           showImage={showImageSku}
+          handleChangeImage={this.handleChangeImageSku}
+          skuImages={skuImages}
         />
       </Fragment>
     );

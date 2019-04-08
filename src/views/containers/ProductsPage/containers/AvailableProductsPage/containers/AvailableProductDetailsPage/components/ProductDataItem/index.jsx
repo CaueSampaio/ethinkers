@@ -5,7 +5,13 @@ import { Row, Col, Divider } from 'antd';
 
 const ProductDataItem = ({
   product,
-  product: { brand = {}, category = {}, metaTags, keyWords, attributes = [] },
+  product: {
+    brand = {},
+    category = {},
+    metaTags = [],
+    keyWords = [],
+    attributes = [],
+  },
 }) => (
   <Fragment>
     <Row type="flex" align="middle" gutter={5}>
@@ -35,13 +41,19 @@ const ProductDataItem = ({
       <Col span={8}>
         <span className="label term">Meta Tags</span>
         <span className="detail">
-          <span className="tags-details">{`${metaTags}`}</span>
+          {metaTags.map((tag) => (
+            <span key={tag} className="tags-details">{`${tag}`}</span>
+          ))}
         </span>
       </Col>
       <Col span={8}>
         <span className="label term">Palavras Chave</span>
         <span className="detail">
-          <span className="tags-details">{keyWords}</span>
+          {keyWords.map((keyWord) => (
+            <span key={keyWord} className="tags-details">
+              {keyWord}
+            </span>
+          ))}
         </span>
       </Col>
     </Row>

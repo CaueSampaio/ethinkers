@@ -25,6 +25,7 @@ import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../components/PrivatePageSection';
 import StandardTable from '../../../../components/StandardTable';
 import FilterForm from './components/FilterForm';
+import RefuseProductModal from './components/RefuseProductModal';
 import { spinnerAtrr } from '../../../../components/MySpinner';
 import BadRequestNotificationBody from '../../../../components/BadRequestNotificationBody';
 
@@ -39,6 +40,7 @@ class ShippedBySellersProductsPage extends Component {
     channelProductsIsLoading: PropTypes.bool.isRequired,
     editStatusError: PropTypes.object,
     userData: PropTypes.object.isRequired,
+    editStatusIsLoading: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -49,6 +51,8 @@ class ShippedBySellersProductsPage extends Component {
     name: '',
     loadingSubmit: false,
     pagination: {},
+    visibleModal: false,
+    productSelected: {},
   };
 
   constructor(props) {
@@ -162,40 +166,61 @@ class ShippedBySellersProductsPage extends Component {
     });
   };
 
-  showConfirmRefuseProduct = (e, product) => {
+  handleSubmitRefuse = () => {
     const {
       actions: { editChannelProductStatus },
       editStatusError,
     } = this.props;
-    const { idProduct, status } = product;
+    const {
+      productSelected: { idProduct, status },
+    } = this.state;
+    const { validateFields } = this.formRefuse;
 
+    validateFields(async (err, values) => {
+      if (err) return;
+      const params = {
+        status,
+        values,
+      };
+      const result = await editChannelProductStatus(idProduct, params);
+      if (!result.error) {
+        await notification.success({
+          message: 'Sucesso',
+          description: 'Produto recusado com sucesso',
+        });
+        await this.handleCancelModal();
+        await this.fetchChannelProducts();
+      } else {
+        const { message: errorMessage, errors } = editStatusError;
+        await notification.error({
+          message: errorMessage,
+          description: <BadRequestNotificationBody errors={errors} />,
+        });
+        await this.handleCancelModal();
+      }
+    });
+  };
+
+  showConfirmRefuseProduct = (e, product) => {
     e.domEvent.stopPropagation();
+    this.setState({
+      visibleModal: true,
+      productSelected: product,
+    });
+  };
 
-    confirm({
-      title: 'Deseja realmente recusar este produto?',
-      okText: 'Confirmar',
-      content: 'Ao recusá-lo, este produto não ficará mais disponível',
-      onOk: async () => {
-        const result = await editChannelProductStatus(idProduct, status);
-        if (!result.error) {
-          await notification.success({
-            message: 'Sucesso',
-            description: 'Produto recusado com sucesso',
-          });
-          await this.fetchChannelProducts();
-        } else {
-          const { message: errorMessage, errors } = editStatusError;
-          notification.error({
-            message: errorMessage,
-            description: <BadRequestNotificationBody errors={errors} />,
-          });
-        }
-      },
+  handleCancelModal = () => {
+    this.setState({
+      visibleModal: false,
     });
   };
 
   getFormRef = (ref) => {
     this.filterForm = ref;
+  };
+
+  getFormRefuse = (ref) => {
+    this.formRefuse = ref;
   };
 
   renderItemsMenu = (product) => (
@@ -259,8 +284,9 @@ class ShippedBySellersProductsPage extends Component {
       userData: {
         User: { Id: idCompany },
       },
+      editStatusIsLoading,
     } = this.props;
-    const { loadingSubmit, pagination } = this.state;
+    const { loadingSubmit, pagination, visibleModal } = this.state;
 
     return (
       <div>
@@ -272,7 +298,7 @@ class ShippedBySellersProductsPage extends Component {
                 minWidth={1000}
                 dataSource={channelProducts.results}
                 columns={this.getTableColumns()}
-                onRow={(record) => {// eslint-disable-line
+                onRow={(record) => { // eslint-disable-line
                   return {
                     onClick: () =>
                       push(`/products/shipped/${record.idProduct}`),
@@ -296,6 +322,13 @@ class ShippedBySellersProductsPage extends Component {
             </PrivatePageSection>
           </Col>
         </Row>
+        <RefuseProductModal
+          visible={visibleModal}
+          onSubmit={this.handleSubmitRefuse}
+          onCancel={this.handleCancelModal}
+          editStatusIsLoading={editStatusIsLoading}
+          ref={this.getFormRefuse}
+        />
       </div>
     );
   }

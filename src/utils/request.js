@@ -139,25 +139,25 @@ export const getQueryParams = (params) => {
 export const defaultUploadProps = () => ({
   name: 'file',
   action: `${API}/products/import/error`,
-  // headers: {
-  //  authorization: `Bearer ${localStorage.getItem('token')}`,
-  // },
+  headers: {
+    authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
 });
 
 export const uploadInventories = () => ({
   name: 'file',
   action: `${API}/inventories/import`,
-  // headers: {
-  //  authorization: `Bearer ${localStorage.getItem('token')}`,
-  // },
+  headers: {
+    authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
 });
 
 export const uploadChannelProduct = () => ({
   name: 'file',
   action: `${API}/channelproducts/import`,
-  // headers: {
-  //  authorization: `Bearer ${localStorage.getItem('token')}`,
-  // },
+  headers: {
+    authorization: `Bearer ${localStorage.getItem('token')}`,
+  },
 });
 
 /**

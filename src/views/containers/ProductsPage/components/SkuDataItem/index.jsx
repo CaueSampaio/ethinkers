@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Row, Col, Collapse, Avatar, Divider } from 'antd';
@@ -10,13 +10,14 @@ import './style.less';
 const { Panel } = Collapse;
 
 const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
-  <Fragment>
+  <div className="content-collapse-sku">
     <Divider orientation="left">SKUS</Divider>
     {!isEmpty(skus) &&
       skus.map((sku, i) => (
         <Collapse
-          key={i} // eslint-disable-line
+          key={i+1} // eslint-disable-line
           style={{ marginTop: 15 }}
+          defaultActive={['1']}
           className="collapse-sku"
         >
           <Panel header={sku.description}>
@@ -125,7 +126,7 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
           </Panel>
         </Collapse>
       ))}
-  </Fragment>
+  </div>
 );
 
 SkuDataItem.propTypes = {

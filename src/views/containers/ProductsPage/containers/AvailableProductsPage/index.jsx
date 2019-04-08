@@ -20,6 +20,7 @@ import {
 import {
   productsActions,
   productsSelectors,
+  productsConstants,
 } from '../../../../../state/ducks/products';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
@@ -174,59 +175,64 @@ class AvailableProductsPage extends Component {
     this.filterForm = ref;
   };
 
-  getTableColumns = () => [
-    {
-      title: 'Imagem',
-      dataIndex: 'image',
-      key: 'imagem',
-      render: (text) => <Avatar size="large" shape="square" src={text} />,
-    },
-    {
-      title: 'Código',
-      dataIndex: 'idProduct',
-      key: 'codigo',
-    },
-    {
-      title: 'Nome',
-      dataIndex: 'name',
-      key: 'nome',
-    },
-    {
-      title: 'Marca',
-      dataIndex: 'brand.name',
-      key: 'marca',
-    },
-    {
-      title: 'Categoria',
-      dataIndex: 'category.name',
-      key: 'categoria',
-    },
-    {
-      title: 'Qtd. SKUS',
-      dataIndex: 'amountSkus',
-      key: 'skus',
-    },
-    {
-      title: 'Canais',
-      dataIndex: 'channels',
-      key: 'channels',
-      render: (channels) => channels.map((item) => item.name),
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      key: 'actions',
-      render: (record) => (
-        <Dropdown overlay={this.renderItemsMenu(record)}>
-          <Icon className="ic-config" type="ellipsis" />
-        </Dropdown>
-      ),
-    },
-  ];
+  getTableColumns = () => {
+    const { productStatus } = productsConstants;
 
+    return [
+      {
+        title: 'Imagem',
+        dataIndex: 'image',
+        key: 'imagem',
+        render: (text) => <Avatar size="large" shape="square" src={text} />,
+      },
+      {
+        title: 'Código',
+        dataIndex: 'idProduct',
+        key: 'codigo',
+      },
+      {
+        title: 'Nome',
+        dataIndex: 'name',
+        key: 'nome',
+      },
+      {
+        title: 'Marca',
+        dataIndex: 'brand.name',
+        key: 'marca',
+      },
+      {
+        title: 'Categoria',
+        dataIndex: 'category.name',
+        key: 'categoria',
+      },
+      {
+        title: 'Qtd. SKUS',
+        dataIndex: 'amountSkus',
+        key: 'skus',
+      },
+      {
+        title: 'Canais',
+        dataIndex: 'channels',
+        key: 'channels',
+        render: (channels) => channels.map((item) => item.name),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (text) =>
+          productStatus.map((item) => text === item.value && item.status),
+      },
+      {
+        key: 'actions',
+        render: (record) => (
+          <Dropdown overlay={this.renderItemsMenu(record)}>
+            <Icon className="ic-config" type="ellipsis" />
+          </Dropdown>
+        ),
+      },
+    ];
+  };
   handleCancelUpload = (e) => {
     this.setState({
       visibleModalUpload: false,
@@ -357,6 +363,7 @@ class AvailableProductsPage extends Component {
         <Icon type="upload" />
         <span>Atualizar Estoque</span>
       </button>
+
       <button
         className="private-page-header-button"
         onClick={this.showModalUploadProduct}

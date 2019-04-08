@@ -26,6 +26,17 @@ class PrivatePageHeader extends Component {
 
   state = {};
 
+  renderItemsBreadcrumbs = (url, displayValue) => {
+    switch (url) {
+      case '/products':
+        return <span>{displayValue}</span>;
+      case '/configurations':
+        return <span>{displayValue}</span>;
+      default:
+        return <Link to={url}>{displayValue}</Link>;
+    }
+  };
+
   renderBreadcrumbs = () => {
     const { resourceMap, match } = this.props;
     const breadcrumbMap = getBreadcrumbMap();
@@ -55,7 +66,7 @@ class PrivatePageHeader extends Component {
 
       return (
         <Breadcrumb.Item key={url}>
-          <Link to={url}>{displayValue}</Link>
+          {this.renderItemsBreadcrumbs(url, displayValue)}
         </Breadcrumb.Item>
       );
     });

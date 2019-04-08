@@ -44,6 +44,35 @@ class EditProductPage extends Component {
     findChannelProduct(id);
   };
 
+  getParams = (values) => {
+    const params = {
+      name: values.name,
+      brand: values.brand,
+      category: values.category,
+      keyWords: values.keyWords,
+      longDescription: values.longDescription,
+      metaTags: values.metaTags,
+      shortDescription: values.shortDescription,
+      attributes: values.attributes,
+    };
+
+    const paramsWithCured = {
+      ...values,
+      cured: true,
+    };
+    const paramsWithUncured = {
+      ...values,
+      cured: false,
+    };
+    if (values.cured === true) {
+      return paramsWithCured;
+    }
+    if (values.uncured === true) {
+      return paramsWithUncured;
+    }
+    return params;
+  };
+
   handleSubmitProductData = (e) => {
     e.preventDefault();
     const { validateFields } = this.formRef;
@@ -57,7 +86,11 @@ class EditProductPage extends Component {
 
     validateFields(async (err, values) => {
       if (err) return;
-      const result = await editChannelProduct(idProduct, values);
+
+      const result = await editChannelProduct(
+        idProduct,
+        this.getParams(values),
+      );
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',

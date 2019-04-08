@@ -60,6 +60,7 @@ class EditProductPage extends Component {
   state = {
     categorySearch: null,
     brandSearch: null,
+    checkedCured: false,
   };
 
   componentDidMount() {
@@ -116,6 +117,12 @@ class EditProductPage extends Component {
     listAllCategoryAttributeChannelId(value);
   };
 
+  handleChangeCured = (e) => {
+    this.setState({
+      checkedCured: e.target.checked,
+    });
+  };
+
   render() {
     const {
       onSubmit,
@@ -128,17 +135,16 @@ class EditProductPage extends Component {
       categoriesAttributes,
       // attributesIsLoading,
       product,
-      product: { attributes = [], brand = {}, category = {} },
+      product: { attributes = [], brand = {}, category = {}, status },
     } = this.props;
-
-    console.log(product);
+    const { checkedCured } = this.state;
 
     return (
       <Fragment>
         <Divider orientation="left">Dados do Produto</Divider>
         <Form onSubmit={onSubmit}>
           <Row gutter={24} className="input-multiple-product">
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Nome">
                 {getFieldDecorator('name', {
                   initialValue: product.name,
@@ -152,7 +158,7 @@ class EditProductPage extends Component {
                 })(<Input />)}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Marca:">
                 {getFieldDecorator('brand', {
                   initialValue: brand.name,
@@ -181,7 +187,7 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Form.Item label="Meta tags">
                 {getFieldDecorator('metaTags', {
                   initialValue: product.metaTags,
@@ -203,7 +209,7 @@ class EditProductPage extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <Form.Item label="Descrição Longa">
                 {getFieldDecorator('longDescription', {
                   initialValue: product.longDescription,
@@ -217,7 +223,7 @@ class EditProductPage extends Component {
                 })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <Form.Item label="Descrição curta">
                 {getFieldDecorator('shortDescription', {
                   initialValue: product.shortDescription,
@@ -233,12 +239,35 @@ class EditProductPage extends Component {
             </Col>
           </Row>
           <Row gutter={24} className="input-multiple-product">
-            <Col span={4}>
-              <Form.Item label="Situação">
-                {getFieldDecorator('cured', {})(<Checkbox>Curado</Checkbox>)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
+            {status === 0 && (
+              <Col xs={24} sm={24} md={6} lg={6} xl={4}>
+                <Form.Item label="Situação">
+                  {getFieldDecorator('cured', {})(
+                    <Checkbox
+                      checked={checkedCured}
+                      onChange={this.handleChangeCured}
+                    >
+                      <span>Curado</span>
+                    </Checkbox>,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
+            {status === 1 && (
+              <Col xs={24} sm={24} md={6} lg={6} xl={4}>
+                <Form.Item label="Situação">
+                  {getFieldDecorator('uncured', {})(
+                    <Checkbox
+                      checked={checkedCured}
+                      onChange={this.handleChangeCured}
+                    >
+                      <span>Não Curado</span>
+                    </Checkbox>,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
+            <Col xs={24} sm={24} md={18} lg={18} xl={8}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
                   initialValue: product.keyWords,
@@ -258,7 +287,7 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Categoria">
                 {getFieldDecorator('category', {
                   initialValue: category.name,
@@ -291,10 +320,10 @@ class EditProductPage extends Component {
               </Form.Item>
             </Col>
             {!isEmpty(attributes) &&
-              attributes.map((attribute) => (
-                <Col span={6} key={attribute.id}>
+              attributes.map((attribute, i) => (
+                <Col xs={24} sm={24} md={12} lg={12} xl={6} key={attribute.id}>
                   <Form.Item label="Atributo 1">
-                    {getFieldDecorator('attributProduct', {})(<Input />)}
+                    {getFieldDecorator(`attributes[${i}].value`, {})(<Input />)}
                   </Form.Item>
                 </Col>
               ))}

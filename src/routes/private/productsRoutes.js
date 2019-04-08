@@ -10,12 +10,17 @@ import ShippedBySellersProductDetailsPage from '../../views/containers/ProductsP
 import SalesProductDetailsPage from '../../views/containers/ProductsPage/containers/SalesProductsPage/containers/SalesProductDetailsPage';
 import AvailableProductDetailsPage from '../../views/containers/ProductsPage/containers/AvailableProductsPage/containers/AvailableProductDetailsPage';
 
+import { USER_DISCRIMINATORS } from '../../utils/constants';
+
+const { companyBranch, company } = USER_DISCRIMINATORS;
+
 const routes = [
   {
     path: 'sales',
     name: 'A venda',
     component: SalesProductsPage,
     layout: PrivateRoute,
+    discriminators: [company],
     breadcrumb: 'Produtos disponíveis',
   },
   {
@@ -23,6 +28,7 @@ const routes = [
     name: 'Disponíveis',
     component: AvailableProductsPage,
     layout: PrivateRoute,
+    discriminators: [company, companyBranch],
     breadcrumb: 'Produtos disponíveis',
   },
   {
@@ -30,6 +36,7 @@ const routes = [
     name: 'Enviados por Sellers',
     component: ShippedBySellersProductsPage,
     layout: PrivateRoute,
+    discriminators: [company],
     breadcrumb: 'Produtos disponíveis',
   },
 ];

@@ -22,6 +22,7 @@ class ApplicationMenu extends Component {
     logo: PropTypes.string.isRequired,
     menuData: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
+    // userData: PropTypes.object,
   };
 
   componentDidMount() {
@@ -98,6 +99,11 @@ class ApplicationMenu extends Component {
 
   renderSubMenuOrItem = (item) => {
     const childrenItems = this.renderMenuItems(item.children);
+    /* const {
+      userData: { UserType: userDiscriminator },
+    } = this.props;
+    const { discriminators: menuDiscriminators } = item;
+    if (!menuDiscriminators.includes(userDiscriminator)) return null; */
 
     if (item.children && item.children.some((child) => child.name)) {
       return (

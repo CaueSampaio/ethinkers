@@ -43,11 +43,14 @@ class SendProductToChannelCard extends Component {
       filters: [filterValues],
     };
     const result = await createChannelProduct(params);
+    const {
+      payload: { productsShipped, productsAlreadyOnChannel },
+    } = result;
 
     if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: 'Produtos enviados para o canal com sucesso!',
+        description: `Foram enviados para o canal ${productsShipped} produtos e outros ${productsAlreadyOnChannel} produtos já estão no canal.`,
       });
       await this.setState({
         sendAllIsLoading: false,

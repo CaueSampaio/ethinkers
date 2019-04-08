@@ -1,9 +1,11 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Row, Col, Collapse, Avatar } from 'antd';
 
 import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
+
+import './style.less';
 
 const { Panel } = Collapse;
 
@@ -13,7 +15,7 @@ class SkuDataItem extends Component {
   render() {
     const { sku, genExtra } = this.props;
     return (
-      <Fragment>
+      <div className="content-collapse-sku">
         <Collapse key={sku.refSku} style={{ marginTop: 15 }}>
           <Panel header={sku.description} extra={genExtra}>
             <Row type="flex" gutter={16} align="middle">
@@ -99,7 +101,7 @@ class SkuDataItem extends Component {
             </Row>
           </Panel>
         </Collapse>
-      </Fragment>
+      </div>
     );
   }
 }
