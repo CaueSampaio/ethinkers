@@ -1,7 +1,9 @@
-export const API =
+const constntApi =
   process.env.NODE_ENV === 'development'
     ? 'https://private-ade86f-merhy.apiary-mock.com'
-    : `www.it4360.com.br`;
+    : `www.api.it4360.com.br`;
+
+export const API = constntApi.replace(window.location.origin, '');
 
 export const USER_DISCRIMINATORS = {
   company: 1,
