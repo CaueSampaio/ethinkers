@@ -1,7 +1,7 @@
 const constantApi =
   process.env.NODE_ENV === 'development'
-    ? 'http://www.api.it4360.com.br'
-    : `http://www.api.it4360.com.br`;
+    ? 'http://api.it4360.com.br'
+    : `http://api.it4360.com.br`;
 
 export const API = constantApi.replace(window.location.origin, '');
 console.log(API);
