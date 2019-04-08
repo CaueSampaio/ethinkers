@@ -39,31 +39,53 @@ class NotificationsPopover extends Component {
     const {
       history: { push },
     } = this.props;
-    const { type } = item;
+    const { type, idEntity } = item;
     console.log(type);
-    console.log(push);
+    console.log(idEntity);
     switch (type) {
       case 0:
-        push('/products/shipped');
+        push({
+          pathname: '/products/shipped',
+          state: {
+            seller: idEntity,
+          },
+        });
         break;
       case 1:
-        push('/products/shipped');
+        push({
+          pathname: '/products/shipped',
+          state: {
+            updateStatus: idEntity,
+            seller: 'dsdasd',
+          },
+        });
         break;
       case 2:
-        push('/products/sales');
+        push({
+          pathname: '/products/sales',
+          state: {
+            updateStatus: idEntity,
+            company: 'dsdasd',
+          },
+        });
         break;
       case 3:
-        push('/orders');
+        push(`/orders/${idEntity}`);
         break;
       case 4:
-        push('/orders');
+        push(`/orders/${idEntity}`);
+        break;
+      case 5:
+        push(`/orders/${idEntity}`);
         break;
       case 6:
-        push('/orders');
-        break;
-      case 6:
-        // ir para o pedido, precisa do id dele
-        push('/products/sales');
+        push({
+          pathname: '/products/sales',
+          state: {
+            updateStatus: idEntity,
+            company: 'dsdasd',
+          },
+        });
         break;
       default:
         console.log('aqui');
