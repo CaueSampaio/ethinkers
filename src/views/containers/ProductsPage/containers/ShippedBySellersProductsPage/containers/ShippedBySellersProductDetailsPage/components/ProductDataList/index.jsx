@@ -4,16 +4,7 @@ import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
-import {
-  Row,
-  Col,
-  Divider,
-  Button,
-  notification,
-  Modal,
-  Form,
-  Input,
-} from 'antd';
+import { Row, Col, Divider, Button, notification, Modal, Form } from 'antd';
 
 import {
   channelProductsActions,
@@ -21,6 +12,7 @@ import {
 } from '../../../../../../../../../state/ducks/channelProducts';
 
 import BadRequestNotificationBody from '../../../../../../../../components/BadRequestNotificationBody';
+import RefuseProductModal from '../../../../components/RefuseProductModal';
 
 import './style.less';
 
@@ -69,6 +61,10 @@ class ProductList extends Component {
     });
   };
 
+  getFormRefuse = (ref) => {
+    this.formRefuse = ref;
+  };
+
   handleCancelModalRefuse = () => {
     const {
       form: { resetFields },
@@ -83,10 +79,10 @@ class ProductList extends Component {
   handleConfirmRefuseProduct = () => {
     const {
       actions: { editChannelProductStatus },
-      form: { validateFields, resetFields },
       editStatusError,
       nextProduct,
     } = this.props;
+    const { validateFields, resetFields } = this.formRefuse;
     const { idProduct } = this.state;
     const status = 6;
 
@@ -118,48 +114,16 @@ class ProductList extends Component {
 
   renderModalRefuse = () => {
     const { visibleModalRefuse } = this.state;
-    const {
-      form: { getFieldDecorator },
-      editStatusIsLoading,
-    } = this.props;
+    const { editStatusIsLoading } = this.props;
 
     return (
-      <Modal
-        title="Recusar Produto"
+      <RefuseProductModal
         visible={visibleModalRefuse}
+        editStatusIsLoading={editStatusIsLoading}
         onCancel={this.handleCancelModalRefuse}
-        footer={[
-          <Button key="back" onClick={this.handleCancel}>
-            <span>Cancelar</span>
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={editStatusIsLoading}
-            onClick={this.handleConfirmRefuseProduct}
-          >
-            <span>Confirmar</span>
-          </Button>,
-        ]}
-      >
-        <Form>
-          <Row>
-            <Col>
-              <Form.Item label="Motivo de Recusa">
-                {getFieldDecorator('reason', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Favor, inserir o Motivo de recusa!',
-                      whitespace: true,
-                    },
-                  ],
-                })(<Input />)}
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-      </Modal>
+        onSubmit={this.handleConfirmRefuseProduct}
+        ref={this.getFormRefuse}
+      />
     );
   };
 
