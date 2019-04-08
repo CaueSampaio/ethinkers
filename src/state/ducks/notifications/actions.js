@@ -18,7 +18,7 @@ function clearNotifications() {
 function viewNotification() {
   return {
     type: types.VIEW_NOTIFICATION,
-    promise: patch(`notifications/viewedin`),
+    promise: patch(`viewedin`),
   };
 }
 

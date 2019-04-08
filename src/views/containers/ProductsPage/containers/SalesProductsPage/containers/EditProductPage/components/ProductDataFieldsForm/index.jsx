@@ -155,7 +155,7 @@ class EditProductPage extends Component {
                       whitespace: true,
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={150} />)}
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={8}>
@@ -177,6 +177,7 @@ class EditProductPage extends Component {
                     }
                     onSearch={this.handleBrandSelectSearch}
                     style={{ width: '100%' }}
+                    maxLength={100}
                   >
                     {brands.map((brandItem) => (
                       <Select.Option key={brandItem.id} title={brandItem.name}>
@@ -306,6 +307,7 @@ class EditProductPage extends Component {
                     }
                     onSearch={this.handleCategorySelectSearch}
                     onSelect={this.handleSelectCategory}
+                    maxLength={100}
                   >
                     {categories.map((categoryItem) => (
                       <Select.Option

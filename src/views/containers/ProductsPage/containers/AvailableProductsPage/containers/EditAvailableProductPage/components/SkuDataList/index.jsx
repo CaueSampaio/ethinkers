@@ -128,7 +128,11 @@ class SkusDataList extends Component {
       <Fragment>
         {!isEmpty(skus) &&
           skus.map((sku) => (
-            <Collapse key={sku.refSku} style={{ marginBottom: 20 }}>
+            <Collapse
+              key={sku.refSku}
+              style={{ marginBottom: 20 }}
+              className="content-collapse-sku"
+            >
               <Panel
                 header={`${sku.description}`}
                 key="1"
