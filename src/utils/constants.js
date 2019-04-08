@@ -1,4 +1,7 @@
-export const API = 'https://private-ade86f-merhy.apiary-mock.com';
+export const API =
+  process.env.NODE_ENV === 'development'
+    ? 'https://private-ade86f-merhy.apiary-mock.com'
+    : `www.it4360.com.br`;
 
 export const USER_DISCRIMINATORS = {
   company: 1,
