@@ -177,11 +177,13 @@ class ShippedBySellersProductsPage extends Component {
     const { validateFields } = this.formRefuse;
 
     validateFields(async (err, values) => {
+      const { reason } = values;
       if (err) return;
       const params = {
         status,
-        values,
+        reason,
       };
+
       const result = await editChannelProductStatus(idProduct, params);
       if (!result.error) {
         await notification.success({

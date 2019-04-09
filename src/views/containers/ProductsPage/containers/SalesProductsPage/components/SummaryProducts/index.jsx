@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { Row, Col, Skeleton } from 'antd';
 
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
@@ -11,6 +12,7 @@ class SummaryProducts extends Component {
 
   render() {
     const { productsSummary = [], productsSummaryIsLoading } = this.props;
+    console.log(productsSummary);
 
     return (
       <PrivatePageSection className="summary-content">
@@ -29,24 +31,25 @@ class SummaryProducts extends Component {
             gutter={10}
             className="content-status"
           >
-            {productsSummary.map(({ status, statusName, value }) => (
-              <Col
-                key={status}
-                xs={12}
-                sm={8}
-                md={8}
-                lg={5}
-                xl={5}
-                className="status"
-              >
-                <Row>
-                  <Col>{statusName}</Col>
-                </Row>
-                <Row>
-                  <Col className="quantity">{value}</Col>
-                </Row>
-              </Col>
-            ))}
+            {!isEmpty(productsSummary.response) &&
+              productsSummary.response.map(({ status, statusName, value }) => (
+                <Col
+                  key={status}
+                  xs={12}
+                  sm={8}
+                  md={8}
+                  lg={5}
+                  xl={5}
+                  className="status"
+                >
+                  <Row>
+                    <Col>{statusName}</Col>
+                  </Row>
+                  <Row>
+                    <Col className="quantity">{value}</Col>
+                  </Row>
+                </Col>
+              ))}
           </Row>
         </Skeleton>
       </PrivatePageSection>

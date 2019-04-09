@@ -34,7 +34,7 @@ class SynchronizeProducts extends Component {
 
   handleSynchronizeAll = async () => {
     const {
-      actions: { synchronizeChannelProduct },
+      actions: { synchronizeChannelProduct, listChannelProducts },
       filterValues,
       synchronizeProductsError,
     } = this.props;
@@ -59,6 +59,7 @@ class SynchronizeProducts extends Component {
         message: 'Sucesso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar os outros ${notsynchronized} produtos.`,
       });
+      listChannelProducts();
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
 
@@ -71,7 +72,7 @@ class SynchronizeProducts extends Component {
 
   synchronizeSelectedProducts = async () => {
     const {
-      actions: { synchronizeChannelProduct },
+      actions: { synchronizeChannelProduct, listChannelProducts },
       selectedProducts,
       synchronizeProductsError,
     } = this.props;
@@ -104,6 +105,7 @@ class SynchronizeProducts extends Component {
         message: 'Sucesso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. Não foi possível sincronizar ${notsynchronized} produtos.`,
       });
+      listChannelProducts();
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
       notification.error({

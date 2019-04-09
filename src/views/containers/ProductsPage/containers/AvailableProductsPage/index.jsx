@@ -22,6 +22,11 @@ import {
   productsSelectors,
   productsConstants,
 } from '../../../../../state/ducks/products';
+import {
+  channelProductsActions,
+  channelProductsSelectors,
+  channelProductsConstants,
+} from '../../../../../state/ducks/channelProducts';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
 import PrivatePageHeaderButton from '../../../../components/PrivatePageHeaderButton';
@@ -84,7 +89,7 @@ class AvailableProductsPage extends Component {
       pagination: currentPagination,
       lastId: lastItem.idProduct,
     });
-    this.filterChannelProducts();
+    this.filterProducts();
   };
 
   fetchProducts = async () => {
@@ -381,7 +386,6 @@ class AvailableProductsPage extends Component {
       history: { push },
       productsIsLoading,
     } = this.props;
-
     const {
       loadingSubmit,
       pagination,
@@ -402,7 +406,6 @@ class AvailableProductsPage extends Component {
       refsProducts,
       status,
     };
-
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({
@@ -439,6 +442,7 @@ class AvailableProductsPage extends Component {
                   };
                 }}
                 rowKey={(record) => record.idProduct}
+                onChange={this.onTableChange}
                 pagination={pagination}
                 loading={productsIsLoading && spinnerAtrr}
               />
@@ -478,9 +482,14 @@ const mapStateToProps = createStructuredSelector({
 
   removeProductIsLoading: productsSelectors.makeSelectRemoveProductIsLoading(),
   removeProductError: productsSelectors.makeSelectRemoveProductError(),
+
+  createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
 });
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ ...productsActions }, dispatch),
+  actions: bindActionCreators(
+    { ...productsActions, ...channelProductsActions },
+    dispatch,
+  ),
 });
 
 const withConnect = connect(

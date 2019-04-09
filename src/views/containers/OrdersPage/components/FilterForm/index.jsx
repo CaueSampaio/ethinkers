@@ -127,7 +127,6 @@ class FilterForm extends Component {
                 })(
                   <Select
                     showSearch
-                    placeholder="Select a person"
                     optionFilterProp="children"
                     filterOption={(input, option) =>
                       option.props.children
@@ -136,8 +135,8 @@ class FilterForm extends Component {
                     }
                   >
                     {status.map((item) => (
-                      <Option key={item.id} value={item.description}>
-                        {item.description}
+                      <Option key={item.id} value={item.name}>
+                        {item.name}
                       </Option>
                     ))}
                   </Select>,

@@ -53,12 +53,13 @@ class SalesProductsPage extends Component {
     idsChannels: [],
     refsProducts: [],
     idsCompanies: [],
+    idsUpdateStatus: [],
     status: [],
-    name: '',
+    name: null,
     loadingSubmit: false,
     pagination: {},
     visibleModal: false,
-    idProduct: '',
+    idProduct: null,
     visibleModalUpload: false,
   };
 

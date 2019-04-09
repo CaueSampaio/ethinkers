@@ -29,12 +29,12 @@ class OrdersPage extends Component {
 
   state = {
     pagination: {},
-    lastId: '',
+    lastId: null,
     search: {
-      orderNumber: '',
-      cpf: '',
-      firstName: '',
-      status: '',
+      orderNumber: null,
+      cpf: null,
+      firstName: null,
+      status: null,
     },
     loadingSubmit: false,
   };

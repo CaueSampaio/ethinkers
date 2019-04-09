@@ -275,7 +275,7 @@ class SkuModalForm extends Component {
                       message: 'Favor, preencher a Altura!',
                     },
                   ],
-                })(<InputNumber mini={0} style={{ width: '100%' }} />)}
+                })(<InputNumber min={0} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
             <Col span={6}>

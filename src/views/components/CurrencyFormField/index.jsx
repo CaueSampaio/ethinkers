@@ -13,6 +13,7 @@ class CurrencyFormField extends React.Component {
     fieldName: PropTypes.string,
     validRuleText: PropTypes.string,
     precision: PropTypes.string,
+    initialValue: PropTypes.number,
   };
 
   static defaultProps = {
@@ -20,6 +21,7 @@ class CurrencyFormField extends React.Component {
     label: 'Preço',
     validRuleText: 'common.currencyValidRule',
     precision: '2',
+    initialValue: 0,
   };
 
   handleCurrencyInputChange = async (event, maskedValue, value) => {
@@ -38,6 +40,7 @@ class CurrencyFormField extends React.Component {
       fieldName,
       validRuleText,
       precision,
+      initialValue,
       form: { getFieldDecorator, getFieldValue, getFieldError },
     } = this.props;
 
@@ -50,7 +53,7 @@ class CurrencyFormField extends React.Component {
               message: validRuleText,
             },
           ],
-          initialValue: 0,
+          initialValue,
         })(<Input hidden />)}
         <StyledFormItem
           required
