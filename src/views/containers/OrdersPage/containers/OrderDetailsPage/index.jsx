@@ -15,6 +15,7 @@ import {
   Spin,
   Modal,
   notification,
+  DatePicker
 } from 'antd';
 import { isEmpty } from 'lodash';
 import { Animated } from 'react-animated-css';
@@ -198,6 +199,8 @@ class OrderDetailsPage extends Component {
       form: { getFieldDecorator },
     } = this.props;
 
+    const dateFormat = 'DD/MM/YYYY';
+
     return (
       <div className="invoice-form">
         <Form>
@@ -217,6 +220,11 @@ class OrderDetailsPage extends Component {
             {getFieldDecorator('key', {
               rules: [{ required: true, message: 'Por favor insira key.' }],
             })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Issuance Date">
+            {getFieldDecorator('issuanceDate', {
+              rules: [{ required: true, message: 'Por favor insira uma data.' }],
+            })(<DatePicker placeholder="" format={dateFormat} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
@@ -319,6 +327,7 @@ class OrderDetailsPage extends Component {
             title="Faturar pedido"
             visible={orderModal}
             footer={this.renderFooterFormButtons()}
+            onCancel={this.handleCloseInvoiceOrderModal}
           >
             {this.renderInvoiceOrderForm()}
           </Modal>

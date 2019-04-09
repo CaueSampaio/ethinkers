@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { compose } from 'redux';
 import { Form, Input, Card, List, Modal, Collapse, notification } from 'antd';
+import moment from 'moment';
 import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
@@ -83,7 +84,7 @@ class InvoiceList extends Component {
       form: { getFieldDecorator },
     } = this.props;
     return (
-      <div className="tracking-form">
+      <div>
         <Form>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('code', {
@@ -176,7 +177,7 @@ class InvoiceList extends Component {
               <List.Item key={item.id}>
                 <Collapse>
                   <Panel
-                    header={`${item.number}-${item.series}`}
+                    header={`Invoice ${item.number}-${item.series}, Data de emissão: ${moment().format('DD/MM/YYYY', item.issuanceDate)}`}
                     key={item.id}
                     extra={this.renderExtra(item)}
                   >

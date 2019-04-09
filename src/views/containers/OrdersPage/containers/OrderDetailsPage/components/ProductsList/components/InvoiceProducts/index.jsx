@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { Modal, Form, Input, Button, notification } from 'antd';
+import { Modal, Form, Input, Button, notification, DatePicker } from 'antd';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
@@ -52,6 +52,7 @@ class InvoiceProducts extends Component {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    const dateFormat = 'DD/MM/YYYY';
     return (
       <div className="invoice-form">
         <Form>
@@ -78,6 +79,11 @@ class InvoiceProducts extends Component {
                 { required: true, message: 'Keys é um campo obrigatório.' },
               ],
             })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Issuance Date">
+            {getFieldDecorator('issuanceDate', {
+              rules: [{ required: true, message: 'Por favor insira uma data.' }],
+            })(<DatePicker placeholder="" format={dateFormat} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
