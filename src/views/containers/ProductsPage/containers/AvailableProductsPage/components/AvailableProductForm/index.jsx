@@ -267,7 +267,7 @@ class AvailableProductForm extends Component {
                       message: 'Favor, preencher o nome!',
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={150} />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -279,7 +279,7 @@ class AvailableProductForm extends Component {
                       message: 'Favor, preencher a REF!',
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={200} />)}
               </StyledFormItem>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
@@ -299,6 +299,7 @@ class AvailableProductForm extends Component {
                       brandsIsLoading ? <Spin size="small" /> : null
                     }
                     onSearch={this.handleBrandSelectSearch}
+                    maxLength={100}
                     style={{ width: '100%' }}
                   >
                     {brands.map((brandItem) => (
@@ -401,6 +402,7 @@ class AvailableProductForm extends Component {
                       categoriesIsLoading ? <Spin size="small" /> : null
                     }
                     onSearch={this.handleCategorySelectSearch}
+                    maxLength={100}
                   >
                     {categories.map((item) => (
                       <Select.Option key={item.id} title={item.name}>
