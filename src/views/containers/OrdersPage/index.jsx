@@ -173,7 +173,7 @@ class OrdersPage extends Component {
                       } = this.props;
                       push({
                         state: { lastItem: lastId },
-                        pathname: `/orders/${record.orderNumber}`,
+                        pathname: `/orders/${record.id}`,
                       });
                     }, // click row
                   };

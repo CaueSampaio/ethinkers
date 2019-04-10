@@ -315,7 +315,7 @@ class OrderDetailsPage extends Component {
         channel,
         customer,
         delivery,
-        payment,
+        payment = [],
         orderItems,
         orderNumber,
         status,
@@ -325,6 +325,7 @@ class OrderDetailsPage extends Component {
     const {
       actions: { trackSkus },
     } = this.props;
+    console.log(payment)
     return (
       <Fragment>
         {!isEmpty(channel) ? (
@@ -416,12 +417,13 @@ class OrderDetailsPage extends Component {
                         <span>
                           {' '}
                           {!isEmpty(payment) &&
-                            formatCurrency(payment.paidValue)}
+                            formatCurrency(payment[0].paidValue)}
                         </span>
                       </Col>
                       <span className="total-label">Valor total: </span>
                       <span className="total-value">
-                        {!isEmpty(payment) && formatCurrency(payment.paidValue)}
+                        {!isEmpty(order) &&
+                          formatCurrency(order.totalNetValue)}
                       </span>
                     </Row>
                   </article>
@@ -436,7 +438,11 @@ class OrderDetailsPage extends Component {
               align="middle"
               style={{ top: 400, width: '100%', marginLeft: 1 }}
             >
-              <Button className="btn-prev" loading={isLoadingLeft} onClick={() => this.prevItem()}>
+              <Button
+                className="btn-prev"
+                loading={isLoadingLeft}
+                onClick={() => this.prevItem()}
+              >
                 {!isLoadingLeft ? <Icon type="left" /> : null}
               </Button>
               <Button
