@@ -12,7 +12,6 @@ class SummaryProducts extends Component {
 
   render() {
     const { productsSummary = [], productsSummaryIsLoading } = this.props;
-    console.log(productsSummary);
 
     return (
       <PrivatePageSection className="summary-content">

@@ -101,7 +101,6 @@ class NotificationsPopover extends Component {
         });
         break;
       default:
-        console.log('aqui');
         push('/orders');
     }
   };

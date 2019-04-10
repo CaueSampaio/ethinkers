@@ -206,6 +206,7 @@ class AvailableProductForm extends Component {
           });
         }
       } else {
+        console.log(createProductError);
         const {
           message: errorMessageSku,
           errors: errorsSku,

@@ -37,9 +37,11 @@ class FilterForm extends Component {
   };
 
   fetchChannels = () => {
-    const { actions: { listChannels } } = this.props;
+    const {
+      actions: { listChannels },
+    } = this.props;
     listChannels();
-  }
+  };
 
   clearAllFields = () => {
     const {
@@ -55,7 +57,7 @@ class FilterForm extends Component {
       handleSubmit,
       status,
       channels,
-      loadingSubmit
+      loadingSubmit,
     } = this.props;
 
     return (
@@ -97,7 +99,7 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={24}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24}>
               <StyledFormItem label="Origem (Canal de venda):">
                 {getFieldDecorator('idChannel', {
                   initialValue: '',
@@ -113,7 +115,7 @@ class FilterForm extends Component {
                   >
                     {channels.map((item) => (
                       <Option key={item.id} value={item.id}>
-                        {item.description}
+                        {item.name}
                       </Option>
                     ))}
                   </Select>,
@@ -125,18 +127,10 @@ class FilterForm extends Component {
                 {getFieldDecorator('status', {
                   initialValue: '',
                 })(
-                  <Select
-                    showSearch
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
+                  <Select>
                     {status.map((item) => (
-                      <Option key={item.id} value={item.name}>
-                        {item.name}
+                      <Option key={item.id} value={item.id}>
+                        {item.description}
                       </Option>
                     ))}
                   </Select>,
@@ -145,7 +139,11 @@ class FilterForm extends Component {
             </Col>
           </Row>
           <Form.Item>
-            <StyledButtonFilter loading={loadingSubmit} text="Buscar" onClick={handleSubmit} />
+            <StyledButtonFilter
+              loading={loadingSubmit}
+              text="Buscar"
+              onClick={handleSubmit}
+            />
           </Form.Item>
         </Form>
       </div>
@@ -173,7 +171,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ ...ordersActions, ...channelsActions }, dispatch),
+  actions: bindActionCreators(
+    { ...ordersActions, ...channelsActions },
+    dispatch,
+  ),
 });
 
 const withConnect = connect(

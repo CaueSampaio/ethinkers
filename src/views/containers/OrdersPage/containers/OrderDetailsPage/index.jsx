@@ -325,7 +325,7 @@ class OrderDetailsPage extends Component {
     const {
       actions: { trackSkus },
     } = this.props;
-    console.log(payment)
+
     return (
       <Fragment>
         {!isEmpty(channel) ? (

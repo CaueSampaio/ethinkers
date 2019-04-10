@@ -277,7 +277,7 @@ class FilterForm extends Component {
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Marcas:">
-                {getFieldDecorator('idsBrands', { initialValue: [] })(
+                {getFieldDecorator('idsBrand', { initialValue: [] })(
                   <Select
                     mode="multiple"
                     filterOption={false}
@@ -332,8 +332,8 @@ class FilterForm extends Component {
                     style={{ width: '100%' }}
                   >
                     {channels.map((channel) => (
-                      <Option key={channel.id} title={channel.description}>
-                        {channel.description}
+                      <Option key={channel.id} title={channel.name}>
+                        {channel.name}
                       </Option>
                     ))}
                   </Select>,

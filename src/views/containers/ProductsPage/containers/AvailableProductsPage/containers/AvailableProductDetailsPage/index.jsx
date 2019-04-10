@@ -47,19 +47,22 @@ class AvailableProductDetailsPage extends Component {
 
   renderHeaderContent = () => {
     const {
-      product: { id },
+      product: { idProduct, status },
     } = this.props;
 
-    return (
+    return status === 0 ? (
       <div className="content-disabled-item">
-        <span className="item-disabled">{`#${id}`}</span>
+        <span className="item-disabled">{`#${idProduct}`}</span>
         <span className="status-disabled">(Desabilitado)</span>
       </div>
+    ) : (
+      ''
     );
   };
 
   render() {
     const { product, productIsLoading } = this.props;
+    console.log(productIsLoading);
     return (
       <Fragment>
         <PrivatePageHeader

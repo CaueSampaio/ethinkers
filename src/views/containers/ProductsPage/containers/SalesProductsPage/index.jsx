@@ -80,7 +80,7 @@ class SalesProductsPage extends Component {
     this.filterForm = ref;
   };
 
-  onTableChange = async (pagination) => {
+  onTableChange = async (pagination, filters, sorter, extra) => {
     const { channelProducts } = this.props;
     const currentPagination = { ...this.state.pagination };
     currentPagination.current = pagination.current;
@@ -384,11 +384,8 @@ class SalesProductsPage extends Component {
     };
 
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        this.setState({
-          selectedProducts: selectedRows,
-        });
-      },
+      hideDefaultSelections: true,
+      onChange: (selectedRowKeys, selectedRows) => {},
       getCheckboxProps: (record) => ({
         disabled:
           record.status === 23 ||
@@ -396,6 +393,26 @@ class SalesProductsPage extends Component {
           record.status === 3 ||
           record.status === 10,
       }),
+      onSelect: (record, selected, selectedRows) => {
+        if (selected) {
+          this.setState({
+            selectedProducts: [...this.state.selectedProducts, record],
+          });
+        } else {
+          this.setState({
+            selectedProducts: this.state.selectedProducts.filter(
+              (element, i) => element.idProduct !== record.idProduct,
+            ),
+          });
+        }
+        console.log(this.state.selectedProducts);
+      },
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        console.log(selected, selectedRows, changeRows);
+      },
+      onSelectInvert: (selectedRows) => {
+        console.log(selectedRows);
+      },
     };
 
     return (
