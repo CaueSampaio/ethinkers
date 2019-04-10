@@ -83,7 +83,7 @@ class CancelProducts extends Component {
       if (err) return;
       const data = {
         idOrderItems,
-        status: 4,
+        status: 7,
         ...value,
       };
       const result = await cancelOrderItems(id, data);

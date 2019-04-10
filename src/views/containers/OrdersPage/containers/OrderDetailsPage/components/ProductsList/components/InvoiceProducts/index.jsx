@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { Component } from 'react';
 import { Modal, Form, Input, Button, notification, DatePicker } from 'antd';
+import locale from 'antd/lib/date-picker/locale/pt_BR';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
@@ -78,12 +79,12 @@ class InvoiceProducts extends Component {
               rules: [
                 { required: true, message: 'Keys é um campo obrigatório.' },
               ],
-            })(<Input />)}
+            })(<Input minLength="1" maxLength="2" />)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
               rules: [{ required: true, message: 'Por favor insira uma data.' }],
-            })(<DatePicker placeholder="" format={dateFormat} />)}
+            })(<DatePicker placeholder="" format={dateFormat} locale={locale} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}

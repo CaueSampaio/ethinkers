@@ -17,6 +17,7 @@ import {
   notification,
   DatePicker
 } from 'antd';
+import locale from 'antd/lib/date-picker/locale/pt_BR';
 import { isEmpty } from 'lodash';
 import { Animated } from 'react-animated-css';
 import { getHeaderResourceName } from '../../../../../utils';
@@ -116,7 +117,7 @@ class OrderDetailsPage extends Component {
       editStatusError,
     } = this.props;
     const data = {
-      status: 4,
+      status: 7,
     };
 
     confirm({
@@ -219,12 +220,12 @@ class OrderDetailsPage extends Component {
           <Form.Item label="Key">
             {getFieldDecorator('key', {
               rules: [{ required: true, message: 'Por favor insira key.' }],
-            })(<Input />)}
+            })(<Input minLength="1" maxLength="2"/>)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
               rules: [{ required: true, message: 'Por favor insira uma data.' }],
-            })(<DatePicker placeholder="" format={dateFormat} />)}
+            })(<DatePicker placeholder="" format={dateFormat} locale={locale} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
