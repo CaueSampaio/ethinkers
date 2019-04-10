@@ -57,11 +57,11 @@ class UpdateSpreadsheetProductButtons extends Component {
         if (file.status === 'done') {
           const { name } = file;
 
-          message.success('document.uploadSuccess', { fileName: name });
+          message.success('Sucesso', { fileName: name });
         } else if (file.status === 'error') {
           const { response: { Errors: errorMessage } = {} } = file;
 
-          const text = errorMessage || 'document.uploadMessage';
+          const text = errorMessage || 'Erro durante o upload';
 
           message.error(text);
         }
