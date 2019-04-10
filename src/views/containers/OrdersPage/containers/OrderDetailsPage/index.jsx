@@ -251,7 +251,7 @@ class OrderDetailsPage extends Component {
     } = this.props;
     i += 1;
     i %= orders.results.length;
-    findOrder(orders.results[i].orderNumber).then((response) => {
+    findOrder(orders.results[i].idOrder).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -267,7 +267,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].orderNumber}`);
+    push(`./${orders.results[i].idOrder}`);
     return orders.results[i];
   }
 
@@ -286,7 +286,7 @@ class OrderDetailsPage extends Component {
       i = orders.results.length;
     }
     i -= 1;
-    findOrder(orders.results[i].orderNumber).then((response) => {
+    findOrder(orders.results[i].idOrder).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -302,7 +302,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].orderNumber}`);
+    push(`./${orders.results[i].idOrder}`);
     return orders.results[i];
   }
 

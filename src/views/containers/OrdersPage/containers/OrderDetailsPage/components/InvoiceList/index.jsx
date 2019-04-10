@@ -170,37 +170,48 @@ class InvoiceList extends Component {
         <PrivatePageSection>
           <h3>Invoices</h3>
           <List
-            rowKey={"id"}
+            rowKey={'id'}
             grid={{ gutter: 24, lg: 1, md: 1, sm: 1, xs: 1 }}
             dataSource={[...invoiceList]}
             renderItem={(item) => (
               <List.Item key={item.id}>
-                <Collapse>
-                  <Panel
-                    header={`Invoice ${item.number}-${item.series}, Data de emissão: ${moment().format('DD/MM/YYYY', item.issuanceDate)}`}
-                    key={item.id}
-                    extra={this.renderExtra(item)}
-                  >
-                    <List
-                      rowKey="id"
-                      grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
-                      dataSource={this.filterInvoiceProducts(item.idOrderItems)}
-                      renderItem={(item) => (
-                        <List.Item key={item.id}>
-                          <Card hoverable className="card">
-                            <Card.Meta
-                              avatar={this.renderAvatar(item)}
-                              title={this.renderTitle(item)}
-                              description={this.renderDescription(item)}
-                            />
-                          </Card>
-                        </List.Item>
-                      )}
-                    />
-                  </Panel>
-                </Collapse>
+                <div className="content-collapse-sku">
+                  <Collapse>
+                    <Panel
+                      header={`Invoice ${item.number}-${
+                        item.series
+                      }, Data de emissão: ${moment().format(
+                        'DD/MM/YYYY',
+                        item.issuanceDate,
+                      )}`}
+                      key={item.id}
+                      extra={this.renderExtra(item)}
+                    >
+                      <List
+                        rowKey="id"
+                        grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
+                        dataSource={this.filterInvoiceProducts(
+                          item.idOrderItems,
+                        )}
+                        renderItem={(item) => (
+                          <List.Item key={item.id}>
+                            <Card hoverable className="card">
+                              <Card.Meta
+                                avatar={this.renderAvatar(item)}
+                                title={this.renderTitle(item)}
+                                description={this.renderDescription(item)}
+                              />
+                            </Card>
+                          </List.Item>
+                        )}
+                      />
+                    </Panel>
+                  </Collapse>
+                </div>
                 <Modal
-                  title={`Adicionar tracking ao pedido ${item.number}-${item.series}`}
+                  title={`Adicionar tracking ao pedido ${item.number}-${
+                    item.series
+                  }`}
                   visible={this.state.invoiceModal}
                   onOk={() => this.handleOk(item)}
                   onCancel={this.handleCancel}
