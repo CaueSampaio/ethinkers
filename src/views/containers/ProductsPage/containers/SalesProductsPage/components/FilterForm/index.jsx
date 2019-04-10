@@ -22,6 +22,10 @@ import {
   companiesActions,
   companiesSelectors,
 } from '../../../../../../../state/ducks/companies';
+import {
+  channelProductsActions,
+  channelProductsSelectors,
+} from '../../../../../../../state/ducks/channelProducts';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import StyledButtonFilter from '../../../../../../components/StyledButtonFilter';
@@ -47,6 +51,8 @@ class FilterForm extends Component {
     loading: PropTypes.bool.isRequired,
     companies: PropTypes.array,
     companiesIsLoading: PropTypes.bool,
+    updateStatus: PropTypes.array.isRequired,
+    updateStatusIsLoading: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -74,6 +80,7 @@ class FilterForm extends Component {
     // companySearch: null
     statusSearch: null,
     companySearch: null,
+    updateStatusSearch: null,
   };
 
   componentDidMount() {
@@ -82,6 +89,7 @@ class FilterForm extends Component {
     this.fetchChannels();
     this.fetchChannelsStatus();
     this.fetchCompanies();
+    this.fetchUpdateStatus();
   }
 
   componentWillUnmount() {
@@ -128,6 +136,13 @@ class FilterForm extends Component {
     this.fetchCompanies();
   };
 
+  handleUpdateStatusSelectSearch = async (value) => {
+    await this.setState({
+      updateStatusSearch: isEmpty(value) ? null : value,
+    });
+    this.fetchUpdateStatus();
+  };
+
   fetchCompanies = async () => {
     const {
       actions: { listCompanies, clearCompanies },
@@ -137,6 +152,18 @@ class FilterForm extends Component {
     await clearCompanies();
     await listCompanies(
       isEmpty(companySearch) ? null : { search: companySearch },
+    );
+  };
+
+  fetchUpdateStatus = async () => {
+    const {
+      actions: { listUpdateStatus, clearUpdateStatus },
+    } = this.props;
+    const { updateStatusSearch } = this.state;
+
+    await clearUpdateStatus();
+    await listUpdateStatus(
+      isEmpty(updateStatusSearch) ? null : { search: updateStatusSearch },
     );
   };
 
@@ -202,6 +229,8 @@ class FilterForm extends Component {
       companiesIsLoading,
       onSubmit,
       loading,
+      updateStatus,
+      updateStatusIsLoading,
     } = this.props;
     const children = [];
 
@@ -248,7 +277,7 @@ class FilterForm extends Component {
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={24} className="tags">
               <StyledFormItem label="Marcas:">
-                {getFieldDecorator('idsBrands', { initialValue: [] })(
+                {getFieldDecorator('idsBrand', { initialValue: [] })(
                   <Select
                     mode="multiple"
                     filterOption={false}
@@ -303,8 +332,8 @@ class FilterForm extends Component {
                     style={{ width: '100%' }}
                   >
                     {channels.map((channel) => (
-                      <Option key={channel.id} title={channel.description}>
-                        {channel.description}
+                      <Option key={channel.id} title={channel.name}>
+                        {channel.name}
                       </Option>
                     ))}
                   </Select>,
@@ -355,6 +384,27 @@ class FilterForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
+            <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
+              <StyledFormItem label="Status Atualização:">
+                {getFieldDecorator('updateStatus', { initialValue: [] })(
+                  <Select
+                    mode="multiple"
+                    filterOption={false}
+                    notFoundContent={
+                      updateStatusIsLoading ? <Spin size="small" /> : null
+                    }
+                    onSearch={this.handleStatusSelectSearch}
+                    style={{ width: '100%' }}
+                  >
+                    {updateStatus.map((item) => (
+                      <Option key={item.id} title={item.description}>
+                        {item.description}
+                      </Option>
+                    ))}
+                  </Select>,
+                )}
+              </StyledFormItem>
+            </Col>
           </Row>
           <Form.Item>
             <StyledButtonFilter
@@ -386,6 +436,10 @@ const mapStateToProps = createStructuredSelector({
 
   companies: companiesSelectors.makeSelectCompanies(),
   companiesIsLoading: companiesSelectors.makeSelectCompaniesIsLoading(),
+
+  updateStatus: channelProductsSelectors.makeSelectListUpdateStatus(),
+  updateStatusIsLoading: channelProductsSelectors.makeSelectListUpdateStatusIsLoading(),
+  updateStatusError: channelProductsSelectors.makeSelectListUpdateStatusError(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -395,6 +449,7 @@ const mapDispatchToProps = (dispatch) => ({
       ...categoriesActions,
       ...channelsActions,
       ...companiesActions,
+      ...channelProductsActions,
     },
     dispatch,
   ),

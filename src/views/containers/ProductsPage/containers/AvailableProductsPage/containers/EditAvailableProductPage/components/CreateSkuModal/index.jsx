@@ -102,7 +102,12 @@ class CreateSkuModal extends Component {
                 },
               ],
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input onChange={(e) => handleChangeImage(e, k)} />)}
+            })(
+              <Input
+                maxLength={128}
+                onChange={(e) => handleChangeImage(e, k)}
+              />,
+            )}
           </Form.Item>
         </Col>
         <Col span={5}>
@@ -116,7 +121,7 @@ class CreateSkuModal extends Component {
                 },
               ],
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input />)}
+            })(<Input maxLength={128} />)}
           </Form.Item>
         </Col>
         <Col span={9}>
@@ -130,7 +135,7 @@ class CreateSkuModal extends Component {
                 },
               ],
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input.TextArea autosize />)}
+            })(<Input.TextArea autosize maxLength={128} />)}
           </Form.Item>
         </Col>
         {keys.length > 1 ? (
@@ -200,7 +205,7 @@ class CreateSkuModal extends Component {
                         whitespace: true,
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input maxLength={50} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -213,7 +218,7 @@ class CreateSkuModal extends Component {
                         whitespace: true,
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input maxLength={30} minLength={5} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
@@ -244,7 +249,7 @@ class CreateSkuModal extends Component {
                         whitespace: true,
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input maxLength={200} />)}
                 </Form.Item>
               </Col>
             </Row>
@@ -259,13 +264,13 @@ class CreateSkuModal extends Component {
                         message: 'Favor, preencher a Altura!',
                       },
                     ],
-                  })(<InputNumber style={{ width: '100%' }} />)}
+                  })(<InputNumber min={0} style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item label="Peso real">
                   {getFieldDecorator('realWeight', {})(
-                    <InputNumber style={{ width: '100%' }} />,
+                    <InputNumber min={0} style={{ width: '100%' }} />,
                   )}
                 </Form.Item>
               </Col>
@@ -278,13 +283,13 @@ class CreateSkuModal extends Component {
                         message: 'Favor, preencher a Altura!',
                       },
                     ],
-                  })(<InputNumber style={{ width: '100%' }} />)}
+                  })(<InputNumber min={0} style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item label="Altura real">
                   {getFieldDecorator('realHeight', {})(
-                    <InputNumber style={{ width: '100%' }} />,
+                    <InputNumber min={0} style={{ width: '100%' }} />,
                   )}
                 </Form.Item>
               </Col>
@@ -299,13 +304,13 @@ class CreateSkuModal extends Component {
                         message: 'Favor, preencher a Largura!',
                       },
                     ],
-                  })(<InputNumber style={{ width: '100%' }} />)}
+                  })(<InputNumber min={0} style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item label="Largura real">
                   {getFieldDecorator('realWidth', {})(
-                    <InputNumber style={{ width: '100%' }} />,
+                    <InputNumber min={0} style={{ width: '100%' }} />,
                   )}
                 </Form.Item>
               </Col>
@@ -318,13 +323,13 @@ class CreateSkuModal extends Component {
                         message: 'Favor, preencher a Altura!',
                       },
                     ],
-                  })(<InputNumber style={{ width: '100%' }} />)}
+                  })(<InputNumber min={0} style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>
                 <Form.Item label="Comprimento real">
                   {getFieldDecorator('realLength', {})(
-                    <InputNumber style={{ width: '100%' }} />,
+                    <InputNumber min={0} style={{ width: '100%' }} />,
                   )}
                 </Form.Item>
               </Col>

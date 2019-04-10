@@ -41,8 +41,8 @@ class FilterForm extends Component {
     channels: PropTypes.array.isRequired,
     channelsIsLoading: PropTypes.bool.isRequired,
     loading: PropTypes.bool.isRequired,
-    companies: PropTypes.array.isRequired,
-    companiesIsLoading: PropTypes.bool.isRequired,
+    // companies: PropTypes.array.isRequired,
+    // companiesIsLoading: PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -58,7 +58,7 @@ class FilterForm extends Component {
     this.fetchBrands();
     this.fetchCategories();
     this.fetchChannels();
-    this.fetchCompanies();
+    // this.fetchCompanies();
   }
 
   handleBrandSelectSearch = async (value) => {
@@ -149,8 +149,8 @@ class FilterForm extends Component {
       channelsIsLoading,
       onSubmit,
       loading,
-      companies,
-      companiesIsLoading,
+      // companies,
+      // companiesIsLoading,
     } = this.props;
 
     return (
@@ -225,15 +225,15 @@ class FilterForm extends Component {
                     style={{ width: '100%' }}
                   >
                     {channels.map((channel) => (
-                      <Option key={channel.id} title={channel.description}>
-                        {channel.description}
+                      <Option key={channel.id} title={channel.name}>
+                        {channel.name}
                       </Option>
                     ))}
                   </Select>,
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
+            {/*  <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
               <StyledFormItem label="Empresas Fornecedoras:">
                 {getFieldDecorator('idsCompanies', { initialValue: [] })(
                   <Select
@@ -253,7 +253,7 @@ class FilterForm extends Component {
                   </Select>,
                 )}
               </StyledFormItem>
-            </Col>
+            </Col> */}
           </Row>
           <Form.Item>
             <StyledButtonFilter

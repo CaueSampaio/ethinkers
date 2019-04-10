@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import InfiniteScroll from 'react-infinite-scroller';
 import { Popover, Badge, Icon, List } from 'antd';
 
 import {
@@ -14,7 +15,7 @@ import {
 import './style.less';
 
 class NotificationsPopover extends Component {
-  state = { total: null };
+  state = { total: null, data: [], loading: false, hasMore: true };
   componentDidMount = async () => {
     const {
       actions: { listNotifications },
@@ -32,7 +33,19 @@ class NotificationsPopover extends Component {
   };
 
   renderHeader = () => {
-    return <div style={{ textAlign: 'center' }}>Notificações</div>;
+    const {
+      items: { totalNotViewed },
+    } = this.props;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        Notificações
+        {totalNotViewed > 0 ? (
+          <span className="total-notifications">{totalNotViewed}</span>
+        ) : (
+          ''
+        )}
+      </div>
+    );
   };
 
   handleNotificationClick = async (item) => {
@@ -88,7 +101,6 @@ class NotificationsPopover extends Component {
         });
         break;
       default:
-        console.log('aqui');
         push('/orders');
     }
   };
@@ -114,12 +126,14 @@ class NotificationsPopover extends Component {
       <List.Item.Meta
         // title={item.title}
         description={
-          <div className="notifications clearfix">
+          <div className="content-notifications">
             <div className="line" />
             <div className="notification">
               <div className="circle" />
-              <span className="time">{item.updatedAt}</span>
-              <p>{item.description}</p>
+              <div className="item-notification">
+                <p className="time">{item.updatedAt}</p>
+                <p>{item.description}</p>
+              </div>
             </div>
           </div>
         }
@@ -138,15 +152,29 @@ class NotificationsPopover extends Component {
       <Popover
         content={
           <div className="notifications">
-            <List
-              header={this.renderHeader()}
-              // footer={this.renderFooter()}
-              dataSource={items.results}
-              renderItem={this.renderListItem}
-              locale={{
-                emptyText: <div>Sem notificações recentes</div>,
-              }}
-            />
+            <InfiniteScroll
+              initialLoad={false}
+              pageStart={0}
+              useWindow={false}
+              loadMore={this.handleInfiniteOnLoad}
+              hasMore={!this.state.loading && this.state.hasMore}
+            >
+              <List
+                header={this.renderHeader()}
+                // footer={this.renderFooter()}
+                dataSource={items.results}
+                renderItem={this.renderListItem}
+                locale={{
+                  emptyText: <div>Sem notificações recentes</div>,
+                }}
+              >
+                {this.state.loading && this.state.hasMore && (
+                  <div className="demo-loading-container">
+                    <Spin />
+                  </div>
+                )}
+              </List>
+            </InfiniteScroll>
           </div>
         }
         placement="bottomRight"

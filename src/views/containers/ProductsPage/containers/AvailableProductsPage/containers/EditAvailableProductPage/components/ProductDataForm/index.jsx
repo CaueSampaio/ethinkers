@@ -107,7 +107,7 @@ class ProductDataForm extends Component {
                       whitespace: true,
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={150} />)}
               </Form.Item>
             </Col>
 
@@ -122,7 +122,7 @@ class ProductDataForm extends Component {
                       whitespace: true,
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={200} />)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -144,6 +144,7 @@ class ProductDataForm extends Component {
                     }
                     onSearch={this.handleBrandSelectSearch}
                     style={{ width: '100%' }}
+                    maxLength={100}
                   >
                     {brands.map((brandItem) => (
                       <Select.Option key={brandItem.id} title={brandItem.name}>
@@ -250,6 +251,7 @@ class ProductDataForm extends Component {
                     }
                     onSearch={this.handleCategorySelectSearch}
                     onSelect={this.handleSelectCategory}
+                    maxLength={100}
                   >
                     {categories.map((categoryItem) => (
                       <Select.Option

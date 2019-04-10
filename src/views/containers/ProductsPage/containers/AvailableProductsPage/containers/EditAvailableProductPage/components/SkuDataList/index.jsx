@@ -15,6 +15,8 @@ import {
 } from 'antd';
 import './style.less';
 
+import CurrencyFormField from '../../../../../../../../components/CurrencyFormField';
+
 import StyledFormItem from '../../../../../../../../components/StyledFormItem';
 import SkuModalForm from '../../../../components/SkuModalForm';
 
@@ -79,6 +81,7 @@ class SkusDataList extends Component {
   render() {
     const {
       product: { skus = [] },
+      form,
       form: { getFieldDecorator, getFieldValue },
       editSkuIsLoading,
       onSubmit,
@@ -216,18 +219,22 @@ class SkusDataList extends Component {
                   </Row>
                   <Row type="flex" gutter={24}>
                     <Col span={3}>
-                      <StyledFormItem label="Preço de">
-                        {getFieldDecorator('priceOf', {
-                          initialValue: sku.priceOf,
-                        })(<Input />)}
-                      </StyledFormItem>
+                      <CurrencyFormField
+                        form={form}
+                        precision="2"
+                        fieldName="priceOf"
+                        label="Preço de"
+                        initialValue={sku.priceOf}
+                      />
                     </Col>
                     <Col span={3}>
-                      <StyledFormItem label="Preço por">
-                        {getFieldDecorator('priceBy', {
-                          initialValue: sku.priceOf,
-                        })(<Input />)}
-                      </StyledFormItem>
+                      <CurrencyFormField
+                        form={form}
+                        precision="2"
+                        fieldName="priceBy"
+                        label="Preço por"
+                        initialValue={sku.priceBy}
+                      />
                     </Col>
                     <Col span={3}>
                       <StyledFormItem label="Peso">
