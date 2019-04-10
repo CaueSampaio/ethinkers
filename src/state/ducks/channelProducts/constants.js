@@ -1,35 +1,35 @@
 const channelProductStatus = [
   {
     status: 'Não Curado/Uncured',
-    value: 5,
+    value: 0,
   },
   {
     status: 'Curado/Cured',
-    value: 10,
+    value: 1,
   },
   {
     status: 'Recusado pelo Master/Refused By Master',
-    value: 12,
+    value: 2,
   },
   {
     status: 'Na análise do Master/In Master Analysis',
-    value: 10,
+    value: 3,
   },
   {
     status: 'Sincronizando/Syncing',
-    value: 23,
+    value: 4,
   },
   {
     status: 'Erro de integração/Integration Error',
-    value: 17,
+    value: 5,
   },
   {
     status: 'Ativo/Active',
-    value: 19,
+    value: 6,
   },
   {
     status: 'Desativado/Disabled',
-    value: 3,
+    value: 7,
   },
 ];
 

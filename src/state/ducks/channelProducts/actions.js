@@ -67,7 +67,7 @@ function createChannelProduct(data) {
 function listUpdateStatus() {
   return {
     type: types.LIST_UPDATE_STATUS,
-    promise: get(`updatestatus`),
+    promise: get(`channelproducts/updatestatus`),
   };
 }
 
@@ -84,6 +84,19 @@ function selectProduct(data) {
   };
 }
 
+function listChannelProductsStatus(data) {
+  return {
+    type: types.LIST_CHANNEL_PRODUCT_STATUS,
+    promise: get(`channelproducts/status${getQueryParams(data)}`),
+  };
+}
+
+function clearProductStatus() {
+  return {
+    type: types.CLEAR_STATUS,
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
@@ -96,4 +109,6 @@ export default {
   listUpdateStatus,
   clearUpdateStatus,
   selectProduct,
+  listChannelProductsStatus,
+  clearProductStatus,
 };

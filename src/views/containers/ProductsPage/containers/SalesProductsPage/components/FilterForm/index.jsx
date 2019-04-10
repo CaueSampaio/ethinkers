@@ -45,14 +45,13 @@ class FilterForm extends Component {
     categoriesIsLoading: PropTypes.bool.isRequired,
     channels: PropTypes.array.isRequired,
     channelsIsLoading: PropTypes.bool.isRequired,
-    channelsStatus: PropTypes.array.isRequired,
-    channelsStatusIsLoading: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     companies: PropTypes.array,
     companiesIsLoading: PropTypes.bool,
     updateStatus: PropTypes.array.isRequired,
     updateStatusIsLoading: PropTypes.bool.isRequired,
+    status: PropTypes.array,
   };
 
   constructor(props) {
@@ -64,10 +63,6 @@ class FilterForm extends Component {
     );
     this.handleChannelSelectSearch = debounce(
       this.handleChannelSelectSearch,
-      800,
-    );
-    this.handleStatusSelectSearch = debounce(
-      this.handleStatusSelectSearch,
       800,
     );
   }
@@ -120,13 +115,6 @@ class FilterForm extends Component {
       channelSearch: isEmpty(value) ? null : value,
     });
     this.fetchChannels();
-  };
-
-  handleStatusSelectSearch = async (value) => {
-    await this.setState({
-      statusSearch: isEmpty(value) ? null : value,
-    });
-    this.fetchChannelsStatus();
   };
 
   handleCompaniesSelectSearch = async (value) => {
@@ -200,11 +188,13 @@ class FilterForm extends Component {
 
   fetchChannelsStatus = async () => {
     const {
-      actions: { listChannelsStatus, clearChannelsStatus },
+      actions: { listChannelProductsStatus, clearChannelsStatus },
     } = this.props;
     const { statusSearch } = this.state;
     await clearChannelsStatus();
-    await listChannelsStatus(isEmpty(statusSearch) ? null : statusSearch);
+    await listChannelProductsStatus(
+      isEmpty(statusSearch) ? null : { search: statusSearch },
+    );
   };
 
   clearFields = () => {
@@ -223,14 +213,13 @@ class FilterForm extends Component {
       categoriesIsLoading,
       channels,
       channelsIsLoading,
-      channelsStatus,
-      channelsStatusIsLoading,
       companies,
       companiesIsLoading,
       onSubmit,
       loading,
       updateStatus,
       updateStatusIsLoading,
+      status,
     } = this.props;
     const children = [];
 
@@ -366,20 +355,13 @@ class FilterForm extends Component {
             <Col xs={24} sm={24} md={12} lg={12} xl={24} className="tags">
               <StyledFormItem label="Status:">
                 {getFieldDecorator('status', { initialValue: [] })(
-                  <Select
-                    mode="multiple"
-                    filterOption={false}
-                    notFoundContent={
-                      channelsStatusIsLoading ? <Spin size="small" /> : null
-                    }
-                    onSearch={this.handleStatusSelectSearch}
-                    style={{ width: '100%' }}
-                  >
-                    {channelsStatus.map((status) => (
-                      <Option key={status.id} title={status.description}>
-                        {status.description}
-                      </Option>
-                    ))}
+                  <Select mode="multiple" style={{ width: '100%' }}>
+                    {!isEmpty(status) &&
+                      status.map((item) => (
+                        <Option key={item.id} title={item.description}>
+                          {item.description}
+                        </Option>
+                      ))}
                   </Select>,
                 )}
               </StyledFormItem>
@@ -440,6 +422,9 @@ const mapStateToProps = createStructuredSelector({
   updateStatus: channelProductsSelectors.makeSelectListUpdateStatus(),
   updateStatusIsLoading: channelProductsSelectors.makeSelectListUpdateStatusIsLoading(),
   updateStatusError: channelProductsSelectors.makeSelectListUpdateStatusError(),
+
+  status: channelProductsSelectors.makeSelectListStatus(),
+  statusIsLoading: channelProductsSelectors.makeSelectListStatusIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
