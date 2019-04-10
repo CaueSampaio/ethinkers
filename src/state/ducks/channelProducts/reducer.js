@@ -208,6 +208,39 @@ function listUpdateStatusReducer(state = listUpdateStatusInitialState, action) {
   }
 }
 
+function selectProductReducer(state = [], action) {
+  const { type, data } = action;
+
+  switch (type) {
+    case types.SELECT_PRODUCTS:
+      return [...data];
+    default:
+      return state;
+  }
+}
+
+const listStatusInitialState = {
+  error: null,
+  isLoading: false,
+  data: [],
+};
+function listStatusReducer(state = listStatusInitialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.LIST_CHANNEL_PRODUCT_STATUS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    case types.CLEAR_STATUS:
+      return state;
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listChannelProducts: listChannelProductsReducer,
   findChannelProduct: findChannelProductReducer,
@@ -218,4 +251,6 @@ export default combineReducers({
   synchronizeChannelProduct: synchronizeChannelProductReducer,
   createChannelProduct: createChannelProductReducer,
   listUpdateStatus: listUpdateStatusReducer,
+  selectProduct: selectProductReducer,
+  listStatus: listStatusReducer,
 });

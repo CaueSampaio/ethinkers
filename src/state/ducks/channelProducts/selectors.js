@@ -163,6 +163,33 @@ const makeSelectListUpdateStatusError = () =>
     ({ error }) => error,
   );
 
+// SELECT PRODUCT
+const selectSelectedProducts = ({ channelProducts: { selectProduct } }) =>
+  selectProduct;
+const makeSelectSelectedProducts = () =>
+  createSelector(
+    selectSelectedProducts,
+    (data) => data,
+  );
+
+// LIST CHANNEL PRODUCTS STATUS
+const selectListStatus = ({ channelProducts: { listStatus } }) => listStatus;
+const makeSelectListStatus = () =>
+  createSelector(
+    selectListStatus,
+    ({ data }) => data,
+  );
+const makeSelectListStatusIsLoading = () =>
+  createSelector(
+    selectListStatus,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectListStatusError = () =>
+  createSelector(
+    selectListStatus,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
@@ -213,4 +240,14 @@ export default {
   makeSelectListUpdateStatus,
   makeSelectListUpdateStatusIsLoading,
   makeSelectListUpdateStatusError,
+
+  // LIST SELECTED PRDODUCTS
+  selectSelectedProducts,
+  makeSelectSelectedProducts,
+
+  // LIST STATUS
+  selectListStatus,
+  makeSelectListStatus,
+  makeSelectListStatusIsLoading,
+  makeSelectListStatusError,
 };

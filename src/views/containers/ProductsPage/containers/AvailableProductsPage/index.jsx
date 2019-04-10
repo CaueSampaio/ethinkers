@@ -219,7 +219,7 @@ class AvailableProductsPage extends Component {
         title: 'Canais',
         dataIndex: 'channels',
         key: 'channels',
-        render: (channels) => channels.map((item) => item.name),
+        render: (channels) => !isEmpty(channels) && channels.map((item) => item.name),
       },
       {
         title: 'Status',

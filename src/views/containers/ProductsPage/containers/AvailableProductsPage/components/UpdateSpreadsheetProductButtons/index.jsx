@@ -15,6 +15,7 @@ class UpdateSpreadsheetProductButtons extends Component {
     uploadingFile: false,
     errors: [],
     documentHasError: false,
+    fileList: [], // eslint-disable-line
   };
 
   handleUploadingStatus = async (status) => {
@@ -41,37 +42,31 @@ class UpdateSpreadsheetProductButtons extends Component {
 
     const props = {
       ...defaultUploadProps(),
-      // accept: '.xls, .xlsx',
-      multiple: false,
-      headers: {
-        'Content-Type':
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      },
       onChange: async (info) => {
+        let { fileList } = info;
+        fileList = fileList.slice(-1);
+
         const { file } = info;
-        console.log(file);
 
         this.setState({
           document: file, // eslint-disable-line
         });
 
         await this.handleUploadingStatus(file.status);
-        if (file.status === 'done') {
-          message.success(
-            `Upload do arquivo ${file.name} realizado com sucesso!`,
-          );
-        } else if (file.status === 'error') {
-          const { response, response: { Errors: errorMessage } = {} } = file;
-          this.setState({
-            errors: response,
-            documentHasError: true,
-          });
 
-          const text =
-            errorMessage || 'Houve erro durante o upload do arquivo.';
+        if (file.status === 'done') {
+          const { name } = file;
+
+          message.success('document.uploadSuccess', { fileName: name });
+        } else if (file.status === 'error') {
+          const { response: { Errors: errorMessage } = {} } = file;
+
+          const text = errorMessage || 'document.uploadMessage';
 
           message.error(text);
         }
+
+        this.setState({ fileList }); // eslint-disable-line
       },
     };
 

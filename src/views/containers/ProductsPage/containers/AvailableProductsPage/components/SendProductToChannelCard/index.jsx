@@ -80,17 +80,17 @@ class SendProductToChannelCard extends Component {
     await this.setState({
       sendSelectedsIsLoading: true,
     });
-    const filter = {
+    const filters = {
       idsProducts: [],
     };
 
     await selectedProducts.map((product) =>
-      filter.idsProducts.push(product.idProduct),
+      filters.idsProducts.push(product.idProduct),
     );
 
     const params = {
       status: 4,
-      filter,
+      filters,
     };
     const result = await createChannelProduct(params);
     if (!result.error) {

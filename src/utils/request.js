@@ -143,7 +143,6 @@ export const defaultUploadProps = () => ({
     authorization: `Bearer ${localStorage.getItem('token')}`,
   },
 });
-
 export const uploadInventories = () => ({
   name: 'file',
   action: `${API}/inventories/import`,
