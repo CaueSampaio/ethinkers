@@ -77,6 +77,13 @@ function clearUpdateStatus() {
   };
 }
 
+function selectProduct(data) {
+  return {
+    type: types.SELECT_PRODUCTS,
+    data,
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
@@ -88,4 +95,5 @@ export default {
   createChannelProduct,
   listUpdateStatus,
   clearUpdateStatus,
+  selectProduct,
 };

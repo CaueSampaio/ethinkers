@@ -46,7 +46,7 @@ class SalesProductsPage extends Component {
 
   state = {
     lastId: '',
-    selectedProducts: [],
+    selectedRowKeys: [],
     idsProducts: [],
     idsBrands: [],
     idsCategories: [],
@@ -348,6 +348,14 @@ class SalesProductsPage extends Component {
     </button>
   );
 
+  onSelectChange = (selectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    const {
+      actions: { selectProduct },
+    } = this.props;
+    selectProduct(selectedRowKeys);
+  };
+
   render() {
     const {
       channelProducts,
@@ -358,10 +366,11 @@ class SalesProductsPage extends Component {
       userData: {
         User: { Id: idCompany },
       },
+      selectedProducts,
     } = this.props;
 
     const {
-      selectedProducts,
+      selectedRowKeys,
       idsProducts,
       idsBrands,
       idsCategories,
@@ -384,36 +393,11 @@ class SalesProductsPage extends Component {
     };
 
     const rowSelection = {
-      hideDefaultSelections: true,
-      onChange: (selectedRowKeys, selectedRows) => {},
-      getCheckboxProps: (record) => ({
-        disabled:
-          record.status === 23 ||
-          record.status === 19 ||
-          record.status === 3 ||
-          record.status === 10,
-      }),
-      onSelect: (record, selected, selectedRows) => {
-        if (selected) {
-          this.setState({
-            selectedProducts: [...this.state.selectedProducts, record],
-          });
-        } else {
-          this.setState({
-            selectedProducts: this.state.selectedProducts.filter(
-              (element, i) => element.idProduct !== record.idProduct,
-            ),
-          });
-        }
-        console.log(this.state.selectedProducts);
-      },
-      onSelectAll: (selected, selectedRows, changeRows) => {
-        console.log(selected, selectedRows, changeRows);
-      },
-      onSelectInvert: (selectedRows) => {
-        console.log(selectedRows);
-      },
+      selectedProducts,
+      onChange: this.onSelectChange,
     };
+
+    console.log(selectedProducts);
 
     return (
       <Fragment>
@@ -495,6 +479,8 @@ const mapStateToProps = createStructuredSelector({
   productsSummaryIsLoading: channelProductsSelectors.makeSelectListChannelProductSummaryIsLoading(),
 
   userData: userSelectors.makeSelectUserData(),
+
+  selectedProducts: channelProductsSelectors.makeSelectSelectedProducts(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(

@@ -163,6 +163,15 @@ const makeSelectListUpdateStatusError = () =>
     ({ error }) => error,
   );
 
+// SELECT PRODUCT
+const selectSelectedProducts = ({ channelProducts: { selectProduct } }) =>
+  selectProduct;
+const makeSelectSelectedProducts = () =>
+  createSelector(
+    selectSelectedProducts,
+    (data) => data,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
@@ -213,4 +222,7 @@ export default {
   makeSelectListUpdateStatus,
   makeSelectListUpdateStatusIsLoading,
   makeSelectListUpdateStatusError,
+
+  selectSelectedProducts,
+  makeSelectSelectedProducts,
 };

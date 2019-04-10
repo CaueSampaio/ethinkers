@@ -208,6 +208,17 @@ function listUpdateStatusReducer(state = listUpdateStatusInitialState, action) {
   }
 }
 
+function selectProductReducer(state = [], action) {
+  const { type, data } = action;
+
+  switch (type) {
+    case types.SELECT_PRODUCTS:
+      return [...data];
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listChannelProducts: listChannelProductsReducer,
   findChannelProduct: findChannelProductReducer,
@@ -218,4 +229,5 @@ export default combineReducers({
   synchronizeChannelProduct: synchronizeChannelProductReducer,
   createChannelProduct: createChannelProductReducer,
   listUpdateStatus: listUpdateStatusReducer,
+  selectProduct: selectProductReducer,
 });
