@@ -60,7 +60,20 @@ function synchronizeChannelProduct(data) {
 function createChannelProduct(data) {
   return {
     type: types.CREATE_CHANNEL_PRODUCT,
-    promise: post(`channelProducts`, data),
+    promise: post(`channelproducts`, data),
+  };
+}
+
+function listUpdateStatus() {
+  return {
+    type: types.LIST_UPDATE_STATUS,
+    promise: get(`updatestatus`),
+  };
+}
+
+function clearUpdateStatus() {
+  return {
+    type: types.CLEAR_UPDATE_STATUS,
   };
 }
 
@@ -73,4 +86,6 @@ export default {
   editChannelProduct,
   synchronizeChannelProduct,
   createChannelProduct,
+  listUpdateStatus,
+  clearUpdateStatus,
 };

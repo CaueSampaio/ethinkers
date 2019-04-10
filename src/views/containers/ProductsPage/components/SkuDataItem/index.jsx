@@ -17,7 +17,6 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
         <Collapse
           key={i+1} // eslint-disable-line
           style={{ marginTop: 15 }}
-          defaultActive={['1']}
           className="collapse-sku"
         >
           <Panel header={sku.description}>
@@ -84,7 +83,7 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
                 <span className="label term">Peso</span>
                 <span className="detail">{sku.weight}</span>
               </Col>
-              {!isEmpty(sku.realWeight) && (
+              {sku.realWeight && (
                 <Col span={3}>
                   <span className="label term">Peso real</span>
                   <span className="detail">{sku.realWeight}</span>
@@ -94,7 +93,7 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
                 <span className="label term">Altura</span>
                 <span className="detail">{sku.height}</span>
               </Col>
-              {!isEmpty(sku.realHeight) && (
+              {sku.realHeight && (
                 <Col span={3}>
                   <span className="label term">Altura real</span>
                   <span className="detail">{sku.realHeight}</span>
@@ -106,7 +105,7 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
                 <span className="label term">Largura</span>
                 <span className="detail">{sku.width}</span>
               </Col>
-              {!isEmpty(sku.realWeight) && (
+              {sku.realWidth && (
                 <Col span={3}>
                   <span className="label term">Largura real</span>
                   <span className="detail">{sku.realWeight}</span>
@@ -114,12 +113,18 @@ const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
               )}
               <Col span={3}>
                 <span className="label term">Tamanho</span>
-                <span className="detail">{sku.lenght}</span>
+                <span className="detail">{sku.length}</span>
               </Col>
-              {!isEmpty(sku.realLenght) && (
+              {sku.realLength && (
                 <Col span={3}>
                   <span className="label term">Tamanho real</span>
-                  <span className="detail">{sku.realLenght}</span>
+                  <span className="detail">{sku.realLength}</span>
+                </Col>
+              )}
+              {sku.cubicWeight && (
+                <Col span={3}>
+                  <span className="label term">Peso cúbico</span>
+                  <span className="detail">{sku.cubicWeight}</span>
                 </Col>
               )}
             </Row>

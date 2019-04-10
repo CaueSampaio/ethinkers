@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
+import { isEmpty } from 'lodash';
+import moment from 'moment';
 import { Row, Col } from 'antd';
 
 import {
@@ -29,12 +31,12 @@ class OrdersPage extends Component {
 
   state = {
     pagination: {},
-    lastId: '',
+    lastId: null,
     search: {
-      orderNumber: '',
-      cpf: '',
-      firstName: '',
-      status: '',
+      orderNumber: null,
+      cpf: null,
+      firstName: null,
+      status: null,
     },
     loadingSubmit: false,
   };
@@ -95,18 +97,15 @@ class OrdersPage extends Component {
 
     await listOrders(params);
     const {
-      orders,
       orders: { total },
     } = this.props;
 
-    const lastItem = orders.results.pop();
     const currentPagination = { ...pagination };
     currentPagination.total = total;
     currentPagination.pageSize = 15;
 
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItem.orderNumber,
     });
   };
 
@@ -126,6 +125,7 @@ class OrdersPage extends Component {
         title: 'Data',
         dataIndex: 'date',
         key: 'date',
+        render: (text) => moment(text).format('DD/MM/YYYY'),
       },
       {
         title: 'Cliente',
@@ -145,8 +145,9 @@ class OrdersPage extends Component {
       },
       {
         title: 'Forma de pagamento',
-        dataIndex: 'paymentType',
-        key: 'paymentType',
+        dataIndex: 'paymentTypes',
+        key: 'paymentTypes',
+        render: (text) => !isEmpty(text) && text[0],
       },
       {
         title: 'Status',
@@ -173,7 +174,7 @@ class OrdersPage extends Component {
                       } = this.props;
                       push({
                         state: { lastItem: lastId },
-                        pathname: `/orders/${record.orderNumber}`,
+                        pathname: `/orders/${record.id}`,
                       });
                     }, // click row
                   };

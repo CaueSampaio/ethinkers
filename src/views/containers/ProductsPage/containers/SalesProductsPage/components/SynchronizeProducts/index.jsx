@@ -34,7 +34,7 @@ class SynchronizeProducts extends Component {
 
   handleSynchronizeAll = async () => {
     const {
-      actions: { synchronizeChannelProduct },
+      actions: { synchronizeChannelProduct, listChannelProducts },
       filterValues,
       synchronizeProductsError,
     } = this.props;
@@ -59,6 +59,7 @@ class SynchronizeProducts extends Component {
         message: 'Sucesso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar os outros ${notsynchronized} produtos.`,
       });
+      listChannelProducts();
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
 
@@ -71,7 +72,7 @@ class SynchronizeProducts extends Component {
 
   synchronizeSelectedProducts = async () => {
     const {
-      actions: { synchronizeChannelProduct },
+      actions: { synchronizeChannelProduct, listChannelProducts },
       selectedProducts,
       synchronizeProductsError,
     } = this.props;
@@ -104,6 +105,7 @@ class SynchronizeProducts extends Component {
         message: 'Sucesso',
         description: `Foram sincronizados ${synchronized} produtos com sucesso. Não foi possível sincronizar ${notsynchronized} produtos.`,
       });
+      listChannelProducts();
     } else {
       const { message: errorMessage, errors } = synchronizeProductsError;
       notification.error({
@@ -116,14 +118,13 @@ class SynchronizeProducts extends Component {
   render() {
     const {
       selectedProducts,
-      channelProducts: { results = [] },
+      channelProducts: { total },
       channelsProductsIsLoading,
     } = this.props;
     const {
       synchronizeAllIsLoading,
       synchronizeSelectedIsLoading,
     } = this.state;
-    const totalProducts = results.length;
 
     return (
       <PrivatePageSection className="synchronize-container">
@@ -137,7 +138,7 @@ class SynchronizeProducts extends Component {
             <Col xs={24} sm={24} md={24} lg={24} xl={11}>
               <Row type="flex" justify="center">
                 <Col>
-                  <span className="amount-total">{totalProducts}</span>
+                  <span className="amount-total">{total}</span>
                   <span className="label-amount"> Produtos encontrados</span>
                 </Col>
               </Row>

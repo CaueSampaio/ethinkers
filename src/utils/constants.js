@@ -1,7 +1,4 @@
-export const API =
-  process.env.NODE_ENV === 'development'
-    ? 'http://api.it4360.com.br'
-    : `http://api.it4360.com.br`;
+export const API = 'http://api.it4360.com.br';
 
 export const USER_DISCRIMINATORS = {
   company: 1,

@@ -41,10 +41,15 @@ class UpdateSpreadsheetProductButtons extends Component {
 
     const props = {
       ...defaultUploadProps(),
-      accept: '.xls, .xlsx',
+      // accept: '.xls, .xlsx',
       multiple: false,
+      headers: {
+        'Content-Type':
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      },
       onChange: async (info) => {
         const { file } = info;
+        console.log(file);
 
         this.setState({
           document: file, // eslint-disable-line

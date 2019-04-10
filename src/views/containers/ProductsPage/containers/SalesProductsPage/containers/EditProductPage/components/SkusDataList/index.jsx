@@ -18,6 +18,7 @@ import {
   notification,
   InputNumber,
 } from 'antd';
+import CurrencyFormField from '../../../../../../../../components/CurrencyFormField';
 
 import {
   channelSkusActions,
@@ -73,11 +74,8 @@ class SkusDataList extends Component {
 
   remove = (k) => {
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
-    // We need at least one passenger
 
-    // can use data-binding to set
     form.setFieldsValue({
       keys: keys.filter((key) => key !== k),
     });
@@ -85,11 +83,9 @@ class SkusDataList extends Component {
 
   add = () => {
     const { form } = this.props;
-    // can use data-binding to get
     const keys = form.getFieldValue('keys');
     const nextKeys = keys.concat((id += 1));
-    // can use data-binding to set
-    // important! notify form to detect changes
+
     form.setFieldsValue({
       keys: nextKeys,
     });
@@ -127,6 +123,7 @@ class SkusDataList extends Component {
     const {
       product,
       product: { skus = [] },
+      form,
       form: { getFieldDecorator },
       categoriesAttributes,
       editChannelSkusIsLoading,
@@ -134,24 +131,6 @@ class SkusDataList extends Component {
     const { visibleModal } = this.state;
 
     getFieldDecorator('keys', { initialValue: [] });
-    // const keys = getFieldValue('keys');
-
-    /* const formItemsImages = keys.map((k) => (
-      <Col span={8} key={k}>
-        <Form.Item label="URL da Imagem" required={false}>
-          {getFieldDecorator(`images[${k}]`, {
-            validateTrigger: ['onChange', 'onBlur'],
-          })(<Input style={{ width: '90%' }} />)}
-
-          <Icon
-            className="dynamic-delete-button"
-            type="minus-circle-o"
-            style={{ marginLeft: 5 }}
-            onClick={() => this.remove(k)}
-          />
-        </Form.Item>
-      </Col>
-    )); */
 
     return (
       <div className="content-collapse-sku">
@@ -204,7 +183,7 @@ class SkusDataList extends Component {
                               whitespace: true,
                             },
                           ],
-                        })(<Input.TextArea autosize />)}
+                        })(<Input.TextArea autosize maxLength={200} />)}
                       </StyledFormItem>
                     </Col>
                     {!isEmpty(sku.attributes) &&
@@ -273,30 +252,22 @@ class SkusDataList extends Component {
                   </Row>
                   <Row type="flex" gutter={24}>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
-                      <StyledFormItem label="Preço de">
-                        {getFieldDecorator('priceOf', {
-                          initialValue: sku.priceOf,
-                          rules: [
-                            {
-                              required: true,
-                              message: 'Favor, preencher o campo Preço De!',
-                            },
-                          ],
-                        })(<Input />)}
-                      </StyledFormItem>
+                      <CurrencyFormField
+                        form={form}
+                        precision="2"
+                        fieldName="priceOf"
+                        label="Preço de"
+                        initialValue={sku.priceOf}
+                      />
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
-                      <StyledFormItem label="Preço por">
-                        {getFieldDecorator('priceBy', {
-                          initialValue: sku.priceOf,
-                          rules: [
-                            {
-                              required: true,
-                              message: 'Favor, preencher o campo Preço Por!',
-                            },
-                          ],
-                        })(<Input />)}
-                      </StyledFormItem>
+                      <CurrencyFormField
+                        form={form}
+                        precision="2"
+                        fieldName="priceBy"
+                        label="Preço por"
+                        initialValue={sku.priceBy}
+                      />
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso">
@@ -308,14 +279,14 @@ class SkusDataList extends Component {
                               message: 'Favor, preencher o campo Peso',
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso real">
                         {getFieldDecorator('realWeight', {
                           initialValue: sku.realWeight,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
@@ -328,14 +299,14 @@ class SkusDataList extends Component {
                               message: 'Favor, preencher o campo Altura',
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Altura real">
                         {getFieldDecorator('realHeight', {
                           initialValue: sku.realHeight,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
@@ -348,7 +319,7 @@ class SkusDataList extends Component {
                               message: 'Favor, preencher o campo Largura!',
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
@@ -370,21 +341,21 @@ class SkusDataList extends Component {
                               message: 'Favor, preencher o campo Comprimento',
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Comprimento real">
                         {getFieldDecorator('realLenght', {
                           initialValue: sku.realLenght,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso cúbico">
                         {getFieldDecorator('cubicWeight', {
                           initialValue: sku.cubnicWeight,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                   </Row>
