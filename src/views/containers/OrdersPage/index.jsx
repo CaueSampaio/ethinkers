@@ -161,7 +161,7 @@ class OrdersPage extends Component {
                       } = this.props;
                       push({
                         state: { lastItem: lastId },
-                        pathname: `/orders/${record.orderNumber}`,
+                        pathname: `/orders/${record.idOrder}`,
                       });
                     }, // click row
                   };
@@ -169,7 +169,7 @@ class OrdersPage extends Component {
                 columns={columns}
                 dataSource={orders.results}
                 minWidth={1000}
-                rowKey={(record) => record.orderNumber}
+                rowKey={(record) => record.idOrder}
                 pagination={pagination}
                 onChange={this.handleTableChange}
                 loading={isLoading && spinnerAtrr}
