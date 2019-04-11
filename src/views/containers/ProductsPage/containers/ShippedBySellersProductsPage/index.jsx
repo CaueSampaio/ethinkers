@@ -54,7 +54,7 @@ class ShippedBySellersProductsPage extends Component {
     visibleModal: false,
     productSelected: {},
     status: 3,
-    updateStatus: 3,
+    updateStatus: 0,
   };
 
   constructor(props) {
