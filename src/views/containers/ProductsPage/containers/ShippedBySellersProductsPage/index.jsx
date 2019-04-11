@@ -125,6 +125,7 @@ class ShippedBySellersProductsPage extends Component {
       actions: { listChannelProducts },
     } = this.props;
     const { validateFields } = this.filterForm;
+    const { status, updateStatus } = this.state;
     validateFields(async (err, values) => {
       if (err) return;
 
@@ -132,7 +133,7 @@ class ShippedBySellersProductsPage extends Component {
         ...values,
         loadingSubmit: true,
       });
-      const params = { ...values };
+      const params = { ...values, status, updateStatus };
       await listChannelProducts(params);
       await this.setState({
         loadingSubmit: false,
