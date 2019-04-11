@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { Modal, Form, Input, notification } from 'antd';
+import { Modal, Form, Input, Button, notification } from 'antd';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
@@ -21,6 +21,7 @@ class CancelProducts extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       products: [],
       cancelModal: false,
     };
@@ -55,7 +56,22 @@ class CancelProducts extends Component {
     );
   };
 
+  renderFooterFormButtons = () => {
+    const { loading } = this.state;
+    return (
+      <div>
+        <Button key="back" onClick={this.handleCloseCancelProducts}>
+          Cancelar
+        </Button>
+        <Button key="submit" type="primary" loading={loading} onClick={this.handleCancelProducts}>Cancelar produtos</Button>
+      </div>
+    );
+  };
+
   handleCancelProducts = () => {
+    this.setState({
+      loading: true,
+    });
     const {
       products,
       id,
@@ -67,7 +83,7 @@ class CancelProducts extends Component {
       if (err) return;
       const data = {
         idOrderItems,
-        status: 4,
+        status: 7,
         ...value,
       };
       const result = await cancelOrderItems(id, data);
@@ -77,6 +93,10 @@ class CancelProducts extends Component {
           description: 'Produtos cancelados com sucesso',
         });
         resetFields();
+        this.setState({
+          loading: false,
+          cancelModal: false,
+        });
       } else {
         const { message: errorMessage, errors } = editStatusError;
         notification.error({
@@ -84,9 +104,6 @@ class CancelProducts extends Component {
           description: <BadRequestNotificationBody errors={errors} />,
         });
       }
-    });
-    this.setState({
-      cancelModal: false,
     });
   };
 
@@ -97,7 +114,14 @@ class CancelProducts extends Component {
   };
 
   handleCloseCancelProducts = (e) => {
+    const {
+      form: {
+        resetFields,
+      },
+    } = this.props;
+    resetFields();
     this.setState({
+      loading: false,
       cancelModal: false,
     });
   };
@@ -121,10 +145,10 @@ class CancelProducts extends Component {
         <Modal
           title="Cancelar itens selecionados."
           visible={this.state.cancelModal}
-          onOk={() => this.handleCancelProducts()}
-          onCancel={this.handleCloseCancelProducts}
           centered={true}
+          onCancel={this.handleCloseCancelProducts}
           okText="Cancelar produtos"
+          footer={this.renderFooterFormButtons()}
         >
           {this.renderCancelReasonForm()}
         </Modal>
