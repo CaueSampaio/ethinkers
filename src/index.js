@@ -5,6 +5,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import { LocaleProvider } from 'antd';
 import ptBR from 'antd/lib/locale-provider/pt_BR';
+import 'moment/locale/pt-br';
 
 import configureStore from './state/store/configureStore';
 import App from './App';

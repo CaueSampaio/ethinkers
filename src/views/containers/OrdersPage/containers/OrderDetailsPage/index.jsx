@@ -15,7 +15,9 @@ import {
   Spin,
   Modal,
   notification,
+  DatePicker
 } from 'antd';
+import locale from 'antd/lib/date-picker/locale/pt_BR';
 import { isEmpty } from 'lodash';
 import { Animated } from 'react-animated-css';
 import { getHeaderResourceName } from '../../../../../utils';
@@ -52,6 +54,7 @@ class OrderDetailsPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      invoiceLoading: false,
       order: props.order,
       slide: {
         isLoadingRight: false,
@@ -93,6 +96,18 @@ class OrderDetailsPage extends Component {
     return [getHeaderResourceName(order, 'orderNumber', 'id')];
   };
 
+  renderFooterFormButtons = () => {
+    const { invoiceLoading } = this.state;
+    return (
+      <div>
+        <Button key="back" onClick={this.handleCloseInvoiceOrderModal}>
+          Cancelar
+        </Button>
+        <Button key="submit" type="primary" loading={invoiceLoading} onClick={this.handleInvoiceOrder}>Faturar pedido</Button>
+      </div>
+    );
+  };
+
   showConfirmCancelOrder = () => {
     const {
       match: {
@@ -102,7 +117,7 @@ class OrderDetailsPage extends Component {
       editStatusError,
     } = this.props;
     const data = {
-      status: 4,
+      status: 7,
     };
 
     confirm({
@@ -128,12 +143,22 @@ class OrderDetailsPage extends Component {
   };
 
   handleCloseInvoiceOrderModal = () => {
+    const {
+      form: {
+        resetFields,
+      },
+    } = this.props;
+    resetFields();
     this.setState({
+      invoiceLoading: false,
       orderModal: false,
     });
   };
 
   handleInvoiceOrder = () => {
+    this.setState({
+      invoiceLoading: true,
+    });
     const {
       match: {
         params: { id },
@@ -155,7 +180,10 @@ class OrderDetailsPage extends Component {
           message: 'Sucesso',
           description: 'Pedido faturado com sucesso',
         });
-        this.handleCloseInvoiceOrderModal();
+        this.setState({
+          invoiceLoading: false,
+          orderModal: false,
+        });
         resetFields();
       }
     });
@@ -172,8 +200,10 @@ class OrderDetailsPage extends Component {
       form: { getFieldDecorator },
     } = this.props;
 
+    const dateFormat = 'DD/MM/YYYY';
+
     return (
-      <div>
+      <div className="invoice-form">
         <Form>
           <Form.Item label="Number">
             {getFieldDecorator('number', {
@@ -190,7 +220,12 @@ class OrderDetailsPage extends Component {
           <Form.Item label="Key">
             {getFieldDecorator('key', {
               rules: [{ required: true, message: 'Por favor insira key.' }],
-            })(<Input />)}
+            })(<Input minLength="1" maxLength="2"/>)}
+          </Form.Item>
+          <Form.Item label="Issuance Date">
+            {getFieldDecorator('issuanceDate', {
+              rules: [{ required: true, message: 'Por favor insira uma data.' }],
+            })(<DatePicker placeholder="" format={dateFormat} locale={locale} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
@@ -216,7 +251,7 @@ class OrderDetailsPage extends Component {
     } = this.props;
     i += 1;
     i %= orders.results.length;
-    findOrder(orders.results[i].orderNumber).then((response) => {
+    findOrder(orders.results[i].idOrder).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -232,7 +267,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].orderNumber}`);
+    push(`./${orders.results[i].idOrder}`);
     return orders.results[i];
   }
 
@@ -251,7 +286,7 @@ class OrderDetailsPage extends Component {
       i = orders.results.length;
     }
     i -= 1;
-    findOrder(orders.results[i].orderNumber).then((response) => {
+    findOrder(orders.results[i].idOrder).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -267,7 +302,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].orderNumber}`);
+    push(`./${orders.results[i].idOrder}`);
     return orders.results[i];
   }
 
@@ -292,7 +327,7 @@ class OrderDetailsPage extends Component {
           <Modal
             title="Faturar pedido"
             visible={orderModal}
-            onOk={this.handleInvoiceOrder}
+            footer={this.renderFooterFormButtons()}
             onCancel={this.handleCloseInvoiceOrderModal}
           >
             {this.renderInvoiceOrderForm()}

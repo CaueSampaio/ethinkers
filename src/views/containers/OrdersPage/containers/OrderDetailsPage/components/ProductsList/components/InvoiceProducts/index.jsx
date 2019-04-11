@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { Modal, Form, Input, notification } from 'antd';
+import { Modal, Form, Input, Button, notification, DatePicker } from 'antd';
+import locale from 'antd/lib/date-picker/locale/pt_BR';
 import { createStructuredSelector } from 'reselect';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
@@ -12,6 +13,8 @@ import {
 
 import PrivatePageHeaderButton from '../../../../../../../../components/PrivatePageHeaderButton';
 
+import './style.less';
+
 class InvoiceProducts extends Component {
   static propTypes = {
     actions: PropTypes.object.isRequired,
@@ -21,6 +24,7 @@ class InvoiceProducts extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       products: [],
       invoiceModal: false,
     };
@@ -33,12 +37,25 @@ class InvoiceProducts extends Component {
     });
   }
 
+  renderFooterFormButtons = () => {
+    const { loading } = this.state;
+    return (
+      <div>
+        <Button key="back" onClick={this.handleCloseInvoiceProducts}>
+          Cancelar
+        </Button>
+        <Button key="submit" type="primary" loading={loading} onClick={this.handleInvoiceProducts}>Faturar produtos</Button>
+      </div>
+    );
+  };
+
   renderInvoiceProductsForm = () => {
     const {
       form: { getFieldDecorator },
     } = this.props;
+    const dateFormat = 'DD/MM/YYYY';
     return (
-      <div>
+      <div className="invoice-form">
         <Form>
           <Form.Item label="Number">
             {getFieldDecorator('number', {
@@ -62,7 +79,12 @@ class InvoiceProducts extends Component {
               rules: [
                 { required: true, message: 'Keys é um campo obrigatório.' },
               ],
-            })(<Input />)}
+            })(<Input minLength="1" maxLength="2" />)}
+          </Form.Item>
+          <Form.Item label="Issuance Date">
+            {getFieldDecorator('issuanceDate', {
+              rules: [{ required: true, message: 'Por favor insira uma data.' }],
+            })(<DatePicker placeholder="" format={dateFormat} locale={locale} />)}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
@@ -76,6 +98,9 @@ class InvoiceProducts extends Component {
   };
 
   handleInvoiceProducts = () => {
+    this.setState({
+      loading: true,
+    });
     const {
       products,
       id,
@@ -97,6 +122,10 @@ class InvoiceProducts extends Component {
           description: 'Produtos faturados com sucesso',
         });
         resetFields();
+        this.setState({
+          loading: false,
+          invoiceModal: false,
+        });
       } else {
         const { message: errorMessage, errors } = editStatusError;
         notification.error({
@@ -104,9 +133,6 @@ class InvoiceProducts extends Component {
           description: <BadRequestNotificationBody errors={errors} />,
         });
       }
-    });
-    this.setState({
-      invoiceModal: false,
     });
   };
 
@@ -118,7 +144,14 @@ class InvoiceProducts extends Component {
   };
 
   handleCloseInvoiceProducts = (e) => {
+    const { 
+      form: {
+        resetFields 
+      }
+    } = this.props;
+    resetFields();
     this.setState({
+      loading: false,
       invoiceModal: false,
     });
   };
@@ -139,10 +172,10 @@ class InvoiceProducts extends Component {
         <Modal
           title="Faturar produtos selecionados."
           visible={this.state.invoiceModal}
-          onOk={() => this.handleInvoiceProducts()}
           onCancel={this.handleCloseInvoiceProducts}
           centered={true}
           okText="Faturar produtos"
+          footer={this.renderFooterFormButtons()}
         >
           {this.renderInvoiceProductsForm()}
         </Modal>

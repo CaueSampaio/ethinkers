@@ -67,6 +67,7 @@ class AvailableProductsPage extends Component {
     pagination: {},
     visibleModalUploadProduct: false,
     selectedProducts: [],
+    pagesItems: [],
   };
 
   constructor(props) {
@@ -87,11 +88,18 @@ class AvailableProductsPage extends Component {
     console.log(pagination);
     const lastItem = products.results.pop();
 
+    const newItem = {
+      lastProduct: lastItem.idProduct,
+      current: pagination.current,
+    };
+
     await this.setState({
       pagination: currentPagination,
       lastId: lastItem.idProduct,
+      itemsPage: [...this.state.pagesItems, newItem],
     });
     this.filterProducts();
+    console.log(this.state.itemsPage);
   };
 
   fetchProducts = async () => {
