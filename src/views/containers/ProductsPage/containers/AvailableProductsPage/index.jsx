@@ -84,7 +84,7 @@ class AvailableProductsPage extends Component {
     const { pagination: page } = this.state;
     const currentPagination = { ...page };
     currentPagination.current = pagination.current;
-    console.log(pagination.current);
+    console.log(pagination);
     const lastItem = products.results.pop();
 
     await this.setState({
