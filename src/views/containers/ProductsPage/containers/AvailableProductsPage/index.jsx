@@ -79,10 +79,12 @@ class AvailableProductsPage extends Component {
   }
 
   onTableChange = async (pagination) => {
+    console.log(pagination);
     const { products } = this.props;
     const { pagination: page } = this.state;
     const currentPagination = { ...page };
     currentPagination.current = pagination.current;
+    console.log(pagination.current);
     const lastItem = products.results.pop();
 
     await this.setState({
@@ -125,7 +127,7 @@ class AvailableProductsPage extends Component {
 
     const currentPagination = { ...pagination };
     currentPagination.total = total;
-    currentPagination.pageSize = 15;
+    currentPagination.pageSize = 30;
 
     await this.setState({ pagination: currentPagination });
   };
@@ -219,7 +221,8 @@ class AvailableProductsPage extends Component {
         title: 'Canais',
         dataIndex: 'channels',
         key: 'channels',
-        render: (channels) => !isEmpty(channels) && channels.map((item) => item.name),
+        render: (channels) =>
+          !isEmpty(channels) && channels.map((item) => item.name),
       },
       {
         title: 'Status',

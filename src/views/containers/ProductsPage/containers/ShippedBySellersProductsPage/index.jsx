@@ -53,6 +53,8 @@ class ShippedBySellersProductsPage extends Component {
     pagination: {},
     visibleModal: false,
     productSelected: {},
+    status: 3,
+    updateStatus: 3,
   };
 
   constructor(props) {
@@ -90,6 +92,8 @@ class ShippedBySellersProductsPage extends Component {
       idsChannels,
       // idsCompanies
       pagination,
+      status,
+      updateStatus,
     } = this.state;
 
     const params = {
@@ -98,6 +102,8 @@ class ShippedBySellersProductsPage extends Component {
       idsBrands,
       idsCategories,
       idsChannels,
+      status,
+      updateStatus,
       // idsCompanies
     };
     await listChannelProducts(params);

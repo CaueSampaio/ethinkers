@@ -95,18 +95,25 @@ class OrdersPage extends Component {
       ...search,
     };
 
-    await listOrders(params);
-    const {
-      orders: { total },
-    } = this.props;
+    const result = await listOrders(params);
+    if (!result.error) {
+      const {
+        orders: { total },
+      } = this.props;
 
-    const currentPagination = { ...pagination };
-    currentPagination.total = total;
-    currentPagination.pageSize = 15;
+      const currentPagination = { ...pagination };
+      currentPagination.total = total;
+      currentPagination.pageSize = 30;
 
-    await this.setState({
-      pagination: currentPagination,
-    });
+      await this.setState({
+        pagination: currentPagination,
+      });
+    } else {
+      notification.error({
+        message: 'Erro',
+        description: 'Não foi possível carregar os Pedidos',
+      });
+    }
   };
 
   render() {

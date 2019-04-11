@@ -74,7 +74,7 @@ function removeChannelProductReducer(
 const listChannelProductsSummaryInitialState = {
   error: null,
   isLoading: false,
-  data: [],
+  data: {},
 };
 function listChannelProductsSummaryReducer(
   state = listChannelProductsSummaryInitialState,
