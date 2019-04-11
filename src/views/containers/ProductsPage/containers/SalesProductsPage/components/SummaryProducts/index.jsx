@@ -57,7 +57,7 @@ class SummaryProducts extends Component {
 }
 
 SummaryProducts.propTypes = {
-  productsSummary: PropTypes.array.isRequired,
+  productsSummary: PropTypes.object.isRequired,
   productsSummaryIsLoading: PropTypes.bool.isRequired,
 };
 export default SummaryProducts;

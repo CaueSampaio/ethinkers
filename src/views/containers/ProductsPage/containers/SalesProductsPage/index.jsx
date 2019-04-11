@@ -126,7 +126,7 @@ class SalesProductsPage extends Component {
 
     const currentPagination = { ...this.state.pagination };
     currentPagination.total = total;
-    currentPagination.pageSize = 15;
+    currentPagination.pageSize = 30;
 
     await this.setState({ pagination: currentPagination });
   };
