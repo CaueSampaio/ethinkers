@@ -86,7 +86,7 @@ class AvailableProductsPage extends Component {
     currentPagination.current = pagination.current;
     const lastItem = products.results[products.results.length - 1];
 
-    let lastItemTest;
+    let lastPoduct;
 
     const newItem = {
       id: lastItem.idProduct,
@@ -98,12 +98,11 @@ class AvailableProductsPage extends Component {
         pagination.current === 1
           ? ''
           : this.state.pagesItems[pagination.current - 2];
-      lastItemTest = prevProduct;
-      console.log(prevProduct);
+      lastPoduct = prevProduct;
     }
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItemTest.id,
+      lastId: lastPoduct.id,
     });
     this.filterProducts();
   };
@@ -164,7 +163,6 @@ class AvailableProductsPage extends Component {
           pagesItems: [...this.state.pagesItems, item],
         });
       }
-      console.log(this.state.pageItems);
     }
   };
 
@@ -457,7 +455,6 @@ class AvailableProductsPage extends Component {
       },
     };
 
-    console.log(this.state.selectedProducts);
     return (
       <div>
         <PrivatePageHeader
