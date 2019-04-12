@@ -39,6 +39,7 @@ class OrdersPage extends Component {
       status: null,
     },
     loadingSubmit: false,
+    pagesItems: [],
   };
 
   componentDidMount() {
@@ -48,14 +49,29 @@ class OrdersPage extends Component {
   handleTableChange = async (pagination) => {
     const { pagination: paging } = this.state;
     const { orders } = this.props;
-    const lastItem = orders.results.pop();
+    const lastItem = products.results[products.results.length - 1];
 
     const currentPagination = { ...paging };
     currentPagination.current = pagination.current;
 
+    let lastPoduct;
+
+    const newItem = {
+      id: lastItem.idProduct,
+      current: pagination.current,
+    };
+
+    if (!isEmpty(this.state.pagesItems)) {
+      const prevProduct =
+        pagination.current === 1
+          ? ''
+          : this.state.pagesItems[pagination.current - 2];
+      lastPoduct = prevProduct;
+    }
+
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItem.orderNumber,
+      lastId: lastPoduct.id,
     });
 
     this.fetchOrders();
@@ -85,6 +101,10 @@ class OrdersPage extends Component {
     this.filterForm = ref;
   };
 
+  handleCheckLastItem(val) {
+    return this.state.pagesItems.some((item) => val.current === item.current);
+  }
+
   fetchOrders = async () => {
     const {
       actions: { listOrders },
@@ -96,18 +116,34 @@ class OrdersPage extends Component {
     };
 
     const result = await listOrders(params);
-    if (!result.error) {
+    const {
+      payload: { results },
+    } = result;
+
+    if (!isEmpty(results) && !result.error) {
       const {
         orders: { total },
       } = this.props;
+
+      const lastItem = results[results.length - 1];
 
       const currentPagination = { ...pagination };
       currentPagination.total = total;
       currentPagination.pageSize = 30;
 
+      const item = {
+        id: lastItem.idProduct,
+        current: 1,
+      };
+
       await this.setState({
         pagination: currentPagination,
       });
+      if (!this.handleCheckLastItem(pagination)) {
+        this.setState({
+          pagesItems: [...this.state.pagesItems, item],
+        });
+      }
     } else {
       notification.error({
         message: 'Erro',

@@ -61,6 +61,7 @@ class SalesProductsPage extends Component {
     visibleModal: false,
     idProduct: null,
     visibleModalUpload: false,
+    pagesItems: [],
   };
 
   constructor(props) {
@@ -84,14 +85,34 @@ class SalesProductsPage extends Component {
     const { channelProducts } = this.props;
     const currentPagination = { ...this.state.pagination };
     currentPagination.current = pagination.current;
-    const lastItem = channelProducts.results.pop();
+    const lastItem =
+      channelProducts.results[channelProducts.results.length - 1];
+
+    let lastPoduct;
+
+    const newItem = {
+      id: lastItem.idProduct,
+      current: pagination.current,
+    };
+
+    if (!isEmpty(this.state.pagesItems)) {
+      const prevProduct =
+        pagination.current === 1
+          ? ''
+          : this.state.pagesItems[pagination.current - 2];
+      lastPoduct = prevProduct;
+    }
 
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItem.idProduct,
+      lastId: lastPoduct.id,
     });
     this.filterChannelProducts();
   };
+
+  handleCheckLastItem(val) {
+    return this.state.pagesItems.some((item) => val.current === item.current);
+  }
 
   fetchChannelProducts = async () => {
     const {
@@ -107,6 +128,7 @@ class SalesProductsPage extends Component {
       idsCompanies,
       refsProducts,
       status,
+      pagination,
     } = this.state;
 
     const params = {
@@ -120,15 +142,30 @@ class SalesProductsPage extends Component {
       refsProducts,
       status,
     };
-    await listChannelProducts(params);
-
+    const result = await listChannelProducts(params);
     const { total } = this.props.channelProducts;
 
     const currentPagination = { ...this.state.pagination };
     currentPagination.total = total;
     currentPagination.pageSize = 30;
 
-    await this.setState({ pagination: currentPagination });
+    const {
+      payload: { results },
+    } = result;
+
+    if (!isEmpty(results) && !results.error) {
+      const lastItem = results[results.length - 1];
+      const item = {
+        id: lastItem.idProduct,
+        current: 1,
+      };
+      await this.setState({ pagination: currentPagination });
+      if (!this.handleCheckLastItem(pagination)) {
+        this.setState({
+          pagesItems: [...this.state.pagesItems, item],
+        });
+      }
+    }
   };
 
   showConfirmRemoveProduct = async (e, id) => {

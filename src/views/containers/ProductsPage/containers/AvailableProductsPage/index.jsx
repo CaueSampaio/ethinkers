@@ -137,17 +137,18 @@ class AvailableProductsPage extends Component {
       status,
     };
     const result = await listProducts(params);
+    const {
+      payload: { results },
+    } = result;
 
-    if (!result.error) {
+    if (!isEmpty(results) && !result.error) {
       const { total } = this.props.products;
 
       const currentPagination = { ...this.state.pagination };
       currentPagination.total = total;
       currentPagination.pageSize = 30;
 
-      const {
-        payload: { results },
-      } = result;
+      
       const lastItem = results[results.length - 1];
 
       const item = {

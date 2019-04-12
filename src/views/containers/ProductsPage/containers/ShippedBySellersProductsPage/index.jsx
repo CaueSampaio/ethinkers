@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import {
   Row,
   Col,
@@ -67,15 +67,21 @@ class ShippedBySellersProductsPage extends Component {
   }
 
   onTableChange = async (pagination) => {
-    const { channelProducts } = this.props;
-    const { pagination: page } = this.state;
+    const { pagination: page, pagesItems } = this.state;
     const currentPagination = { ...page };
     currentPagination.current = pagination.current;
-    const lastItem = channelProducts.results.pop();
+
+    let lastPoduct;
+
+    if (!isEmpty(pagesItems)) {
+      const prevProduct =
+        pagination.current === 1 ? '' : pagesItems[pagination.current - 2];
+      lastPoduct = prevProduct;
+    }
 
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItem.idProduct,
+      lastId: lastPoduct.id,
     });
     this.filterChannelProducts();
   };
@@ -106,7 +112,7 @@ class ShippedBySellersProductsPage extends Component {
       updateStatus,
       // idsCompanies
     };
-    await listChannelProducts(params);
+    const result = await listChannelProducts(params);
 
     const {
       channelProducts: { total },
@@ -116,7 +122,24 @@ class ShippedBySellersProductsPage extends Component {
     currentPagination.total = total;
     currentPagination.pageSize = 15;
 
-    await this.setState({ pagination: currentPagination });
+    const {
+      payload: { results },
+    } = result;
+    if (!isEmpty(results)) {
+      const lastItem = results[results.length - 1];
+
+      const item = {
+        id: lastItem.idProduct,
+        current: 1,
+      };
+      await this.setState({ pagination: currentPagination });
+
+      if (!this.handleCheckLastItem(pagination)) {
+        this.setState({
+          pagesItems: [...this.state.pagesItems, item], //eslint-disable-line
+        });
+      }
+    }
   };
 
   handleSubmitFilters = (e) => {
@@ -284,6 +307,11 @@ class ShippedBySellersProductsPage extends Component {
       ),
     },
   ];
+
+  handleCheckLastItem(val) {
+    const { pagesItems } = this.state;
+    return pagesItems.some((item) => val.current === item.current);
+  }
 
   render() {
     const {
