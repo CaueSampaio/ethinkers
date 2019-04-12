@@ -60,17 +60,17 @@ const selectChannelsCategories = ({ channels: { listCategories } }) =>
   listCategories;
 const makeSelectChannelCategories = () =>
   createSelector(
-    selectChannelsBrands,
+    selectChannelsCategories,
     ({ data }) => data,
   );
 const makeSelectChannelCategoriesIsLoading = () =>
   createSelector(
-    selectChannelsBrands,
+    selectChannelsCategories,
     ({ isLoading }) => isLoading,
   );
 const makeSelectChannelCategoriesError = () =>
   createSelector(
-    selectChannelsBrands,
+    selectChannelsCategories,
     ({ error }) => error,
   );
 

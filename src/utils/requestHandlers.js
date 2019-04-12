@@ -55,6 +55,17 @@ const errorRequestHandler = (err) => {
     });
   }
 
+  if (response.status === 422) {
+    const { data } = response;
+    const { error } = data;
+
+    return Promise.reject({
+      status,
+      message: 'Não foi possível convluir a ação',
+      errors: error,
+    });
+  }
+
   return Promise.reject({
     status: 500,
     message: 'Internal Server Error',

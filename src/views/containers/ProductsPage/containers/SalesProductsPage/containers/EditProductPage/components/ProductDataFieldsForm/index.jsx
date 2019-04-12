@@ -20,7 +20,10 @@ import {
   channelsActions,
   channelsSelectors,
 } from '../../../../../../../../../state/ducks/channels';
-
+import {
+  channelProductsActions,
+  channelProductsSelectors,
+} from '../../../../../../../../../state/ducks/channelProducts';
 import {
   channelCategoriesActions,
   channelCategoriesSelectors,
@@ -43,6 +46,8 @@ class EditProductPage extends Component {
     isLoading: PropTypes.bool.isRequired,
     product: PropTypes.object.isRequired,
     categoriesAttributes: PropTypes.array,
+    // findChannelProduct: PropTypes.func,
+    // idProduct: PropTypes.string,
   };
 
   constructor(props) {
@@ -60,10 +65,12 @@ class EditProductPage extends Component {
     checkedCured: false,
   };
 
-  componentDidMount() {
-    this.fetchCategories();
-    this.fetchBrands();
-  }
+  componentDidMount = async () => {
+    // const { idProduct, findChannelProduct } = this.props;
+    // await findChannelProduct(idProduct);
+    await this.fetchCategories();
+    await this.fetchBrands();
+  };
 
   componentWillUnmount() {
     const {
@@ -83,9 +90,12 @@ class EditProductPage extends Component {
   fetchCategories = async () => {
     const {
       actions: { listCategories, clearCategories },
+      product,
       product: { idChannel },
     } = this.props;
+    console.log(product);
     const { categorySearch } = this.state;
+
     await clearCategories();
     await listCategories(
       idChannel,
@@ -103,10 +113,14 @@ class EditProductPage extends Component {
   fetchBrands = async () => {
     const {
       actions: { listBrands, clearBrands },
+      product: { idChannel },
     } = this.props;
     const { brandSearch } = this.state;
     await clearBrands();
-    await listBrands(isEmpty(brandSearch) ? null : { search: brandSearch });
+    await listBrands(
+      idChannel,
+      isEmpty(brandSearch) ? null : { search: brandSearch },
+    );
   };
 
   handleSelectCategory = async (value) => {
@@ -160,7 +174,7 @@ class EditProductPage extends Component {
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Marca:">
-                {getFieldDecorator('brand', {
+                {getFieldDecorator('idChannelBrand', {
                   initialValue: brand.name,
                   rules: [
                     {
@@ -290,7 +304,7 @@ class EditProductPage extends Component {
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Categoria">
-                {getFieldDecorator('category', {
+                {getFieldDecorator('idChannelCategory', {
                   initialValue: category.name,
                   rules: [
                     {
@@ -388,6 +402,8 @@ class EditProductPage extends Component {
 const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
+  product: channelProductsSelectors.makeSelectFindChannelProduct(),
+
   brands: channelsSelectors.makeSelectChannelBrands(),
   brandsIsLoading: channelsSelectors.makeSelectChannelBrandsIsLoading(),
 
@@ -403,6 +419,7 @@ const mapDispatchToProps = (dispatch) => ({
     {
       ...channelsActions,
       ...channelCategoriesActions,
+      ...channelProductsActions,
     },
     dispatch,
   ),

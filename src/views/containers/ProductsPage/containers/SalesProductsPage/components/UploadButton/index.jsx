@@ -166,8 +166,8 @@ class UploadButton extends Component {
                   style={{ width: '100%' }}
                 >
                   {channels.map((channel) => (
-                    <Select.Option key={channel.id} title={channel.description}>
-                      {channel.description}
+                    <Select.Option key={channel.id} title={channel.name}>
+                      {channel.name}
                     </Select.Option>
                   ))}
                 </Select>,

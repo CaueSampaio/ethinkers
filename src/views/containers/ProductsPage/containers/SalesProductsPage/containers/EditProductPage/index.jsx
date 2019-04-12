@@ -47,8 +47,8 @@ class EditProductPage extends Component {
   getParams = (values) => {
     const params = {
       name: values.name,
-      brand: values.brand,
-      category: values.category,
+      idChannelBrand: values.idChannelBrand,
+      idChannelCategory: values.idChannelCategory,
       keyWords: values.keyWords,
       longDescription: values.longDescription,
       metaTags: values.metaTags,
@@ -85,12 +85,14 @@ class EditProductPage extends Component {
     } = this.props;
 
     validateFields(async (err, values) => {
+      console.log(values);
       if (err) return;
 
       const result = await editChannelProduct(
         idProduct,
         this.getParams(values),
       );
+      console.log(result);
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',
@@ -98,9 +100,12 @@ class EditProductPage extends Component {
         });
         await findChannelProduct(idProduct);
       } else {
-        const { message: errorMessage, errors } = editProductError;
+        const {
+          payload: { message, errors },
+        } = result;
+        console.log(editProductError);
         notification.error({
-          message: errorMessage,
+          message,
           description: <BadRequestNotificationBody errors={errors} />,
         });
       }
@@ -117,6 +122,7 @@ class EditProductPage extends Component {
       editProductIsLoading,
       categoriesAttributes,
       productIsLoading,
+      actions: { findChannelProduct },
     } = this.props;
 
     return (
@@ -124,10 +130,11 @@ class EditProductPage extends Component {
         <PrivatePageHeader title="Editar Produto" />
         <PrivatePageSection isLoading={productIsLoading}>
           <ProductDataFieldsForm
-            product={product}
+            idProduct={product.idProduct}
             onSubmit={this.handleSubmitProductData}
             ref={this.getFormRef}
             isLoading={editProductIsLoading}
+            findChannelProduct={findChannelProduct}
           />
         </PrivatePageSection>
         <PrivatePageSection isLoading={productIsLoading}>

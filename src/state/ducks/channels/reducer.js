@@ -54,7 +54,7 @@ const listBrandsInitialState = {
   isLoading: false,
   data: [],
 };
-function listBrandsStatusReducer(state = listBrandsInitialState, action) {
+function listBrandsReducer(state = listBrandsInitialState, action) {
   const { type, payload } = action;
 
   switch (type) {
@@ -102,6 +102,6 @@ export default combineReducers({
   listChannels: listChannelsReducer,
   listChannelsStatus: listChannelsStatusReducer,
 
-  listBrands: listBrandsStatusReducer,
+  listBrands: listBrandsReducer,
   listCategories: listCategoriesStatusReducer,
 });

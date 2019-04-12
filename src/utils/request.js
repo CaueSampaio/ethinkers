@@ -67,7 +67,7 @@ export const remove = (
 
 export const downloadFile = (url) =>
   get(url, {
-    contentType: 'application/pdf',
+    contentType: 'application/json',
     responseType:
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     successHandler: (res) => {

@@ -132,8 +132,11 @@ function editChannelProductReducer(
       return handle(state, action, {
         start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
         failure: (prevState) => ({ ...prevState, error: payload }),
+        success: (prevState) => ({
+          ...prevState,
+          data: payload,
+        }),
         finish: (prevState) => ({ ...prevState, isLoading: false }),
-        success: (prevState) => ({ ...prevState, data: payload }),
       });
     default:
       return state;
