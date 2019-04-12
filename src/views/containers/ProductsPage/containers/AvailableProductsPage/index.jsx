@@ -80,7 +80,6 @@ class AvailableProductsPage extends Component {
   }
 
   onTableChange = async (pagination) => {
-    console.log(pagination.current);
     const { products } = this.props;
     const { pagination: page } = this.state;
     const currentPagination = { ...page };
@@ -94,7 +93,6 @@ class AvailableProductsPage extends Component {
       current: pagination.current,
     };
 
-    console.log(this.state.pagesItems);
     if (!isEmpty(this.state.pagesItems)) {
       const prevProduct =
         pagination.current === 1
@@ -111,10 +109,6 @@ class AvailableProductsPage extends Component {
   };
 
   handleCheckLastItem(val) {
-    console.log(val.current);
-    console.log(
-      this.state.pagesItems.some((item) => val.current === item.current),
-    );
     return this.state.pagesItems.some((item) => val.current === item.current);
   }
 
@@ -453,13 +447,17 @@ class AvailableProductsPage extends Component {
     };
 
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
+      selectedProducts,
+      hideDefaultSelections: true,
+
+      onSelect: (changableRowKeys) => {
         this.setState({
-          selectedProducts: selectedRows,
+          selectedProducts: [...this.state.selectedProducts, changableRowKeys],
         });
       },
     };
 
+    console.log(this.state.selectedProducts);
     return (
       <div>
         <PrivatePageHeader
