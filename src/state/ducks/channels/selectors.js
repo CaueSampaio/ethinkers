@@ -37,6 +37,43 @@ const makeSelectChannelsStatusError = () =>
     ({ error }) => error,
   );
 
+// LIST CHANNELS BRANDS
+const selectChannelsBrands = ({ channels: { listBrands } }) => listBrands;
+const makeSelectChannelBrands = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ data }) => data,
+  );
+const makeSelectChannelBrandsIsLoading = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectChannelBrandsError = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ error }) => error,
+  );
+
+// LIST CHANNELS CATEGORIES
+const selectChannelsCategories = ({ channels: { listCategories } }) =>
+  listCategories;
+const makeSelectChannelCategories = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ data }) => data,
+  );
+const makeSelectChannelCategoriesIsLoading = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectChannelCategoriesError = () =>
+  createSelector(
+    selectChannelsBrands,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST CHANNELS
   selectChannels,
@@ -49,4 +86,16 @@ export default {
   makeSelectChannelsStatus,
   makeSelectChannelsStatusIsLoading,
   makeSelectChannelsStatusError,
+
+  // LIST CHANNEL BRANDS
+  selectChannelsBrands,
+  makeSelectChannelBrands,
+  makeSelectChannelBrandsIsLoading,
+  makeSelectChannelBrandsError,
+
+  // LIST CHANNEL CATEGORIES
+  selectChannelsCategories,
+  makeSelectChannelCategories,
+  makeSelectChannelCategoriesIsLoading,
+  makeSelectChannelCategoriesError,
 };

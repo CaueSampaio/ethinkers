@@ -34,6 +34,32 @@ function listAllBrandsPerChannelId(id, data) {
   };
 }
 
+function listBrands(idChannel) {
+  return {
+    type: types.LIST_CHANNEL_BRANDS,
+    promise: get(`channels/${idChannel}/brands`),
+  };
+}
+
+function clearBrands() {
+  return {
+    type: types.CLEAR_CHANNEL_BRANDS,
+  };
+}
+
+function listCategories(idChannelCategory) {
+  return {
+    type: types.LIST_CHANNEL_CATEGORIES,
+    promise: get(`channels/${idChannelCategory}/categories`),
+  };
+}
+
+function clearCategories() {
+  return {
+    type: types.CLEAR_CHANNEL_CATEGORIES,
+  };
+}
+
 export default {
   listChannels,
   clearChannels,
@@ -42,4 +68,10 @@ export default {
   clearChannelsStatus,
 
   listAllBrandsPerChannelId,
+
+  listBrands,
+  listCategories,
+
+  clearBrands,
+  clearCategories,
 };

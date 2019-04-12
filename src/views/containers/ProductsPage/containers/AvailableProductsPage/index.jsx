@@ -80,27 +80,43 @@ class AvailableProductsPage extends Component {
   }
 
   onTableChange = async (pagination) => {
-    console.log(pagination);
+    console.log(pagination.current);
     const { products } = this.props;
     const { pagination: page } = this.state;
     const currentPagination = { ...page };
     currentPagination.current = pagination.current;
-    console.log(pagination);
-    const lastItem = products.results.pop();
+    const lastItem = products.results[products.results.length - 1];
+
+    let lastItemTest;
 
     const newItem = {
-      lastProduct: lastItem.idProduct,
+      id: lastItem.idProduct,
       current: pagination.current,
     };
 
+    console.log(this.state.pagesItems);
+    if (!isEmpty(this.state.pagesItems)) {
+      const prevProduct =
+        pagination.current === 1
+          ? ''
+          : this.state.pagesItems[pagination.current - 2];
+      lastItemTest = prevProduct;
+      console.log(prevProduct);
+    }
     await this.setState({
       pagination: currentPagination,
-      lastId: lastItem.idProduct,
-      itemsPage: [...this.state.pagesItems, newItem],
+      lastId: lastItemTest.id,
     });
     this.filterProducts();
-    console.log(this.state.itemsPage);
   };
+
+  handleCheckLastItem(val) {
+    console.log(val.current);
+    console.log(
+      this.state.pagesItems.some((item) => val.current === item.current),
+    );
+    return this.state.pagesItems.some((item) => val.current === item.current);
+  }
 
   fetchProducts = async () => {
     const {
@@ -127,17 +143,35 @@ class AvailableProductsPage extends Component {
       // refsProducts,
       status,
     };
-    await listProducts(params);
+    const result = await listProducts(params);
 
-    const {
-      products: { total },
-    } = this.props;
+    if (!result.error) {
+      const { total } = this.props.products;
 
-    const currentPagination = { ...pagination };
-    currentPagination.total = total;
-    currentPagination.pageSize = 30;
+      const currentPagination = { ...this.state.pagination };
+      currentPagination.total = total;
+      currentPagination.pageSize = 30;
 
-    await this.setState({ pagination: currentPagination });
+      const {
+        payload: { results },
+      } = result;
+      const lastItem = results[results.length - 1];
+
+      const item = {
+        id: lastItem.idProduct,
+        current: 1,
+      };
+
+      await this.setState({
+        pagination: currentPagination,
+      });
+      if (!this.handleCheckLastItem(pagination)) {
+        this.setState({
+          pagesItems: [...this.state.pagesItems, item],
+        });
+      }
+      console.log(this.state.pageItems);
+    }
   };
 
   handleSubmitFilters = (e) => {
@@ -417,6 +451,7 @@ class AvailableProductsPage extends Component {
       refsProducts,
       status,
     };
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({

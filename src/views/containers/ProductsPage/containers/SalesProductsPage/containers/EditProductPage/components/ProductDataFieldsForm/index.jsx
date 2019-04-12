@@ -17,13 +17,10 @@ import {
 } from 'antd';
 
 import {
-  categoriesActions,
-  categoriesSelectors,
-} from '../../../../../../../../../state/ducks/categories';
-import {
-  brandsActions,
-  brandsSelectors,
-} from '../../../../../../../../../state/ducks/brands';
+  channelsActions,
+  channelsSelectors,
+} from '../../../../../../../../../state/ducks/channels';
+
 import {
   channelCategoriesActions,
   channelCategoriesSelectors,
@@ -86,10 +83,12 @@ class EditProductPage extends Component {
   fetchCategories = async () => {
     const {
       actions: { listCategories, clearCategories },
+      product: { idChannel },
     } = this.props;
     const { categorySearch } = this.state;
     await clearCategories();
     await listCategories(
+      idChannel,
       isEmpty(categorySearch) ? null : { search: categorySearch },
     );
   };
@@ -138,6 +137,7 @@ class EditProductPage extends Component {
       product: { attributes = [], brand = {}, category = {}, status },
     } = this.props;
     const { checkedCured } = this.state;
+    console.log(this.props);
 
     return (
       <Fragment>
@@ -388,11 +388,11 @@ class EditProductPage extends Component {
 const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
-  categories: categoriesSelectors.makeSelectCategories(),
-  categoriesIsLoading: categoriesSelectors.makeSelectCategoriesIsLoading(),
+  brands: channelsSelectors.makeSelectChannelBrands(),
+  brandsIsLoading: channelsSelectors.makeSelectChannelBrandsIsLoading(),
 
-  brands: brandsSelectors.makeSelectBrands(),
-  brandsIsLoading: brandsSelectors.makeSelectBrandsIsLoading(),
+  categories: channelsSelectors.makeSelectChannelCategories(),
+  categoriesIsLoading: channelsSelectors.makeSelectChannelCategoriesIsLoading(),
 
   categoriesAttributes: channelCategoriesSelectors.makeSelectCategoriesAttributes(),
   categoriesAttributesIsLoading: channelCategoriesSelectors.makeSelectCategoriesAttributesIsLoading(),
@@ -401,9 +401,8 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(
     {
-      ...categoriesActions,
+      ...channelsActions,
       ...channelCategoriesActions,
-      ...brandsActions,
     },
     dispatch,
   ),
