@@ -16,12 +16,12 @@ const errorRequestHandler = (err) => {
 
   if (response.status === 400) {
     const { data } = response;
-    const { message, Errors: errors } = data;
+    const { message } = data;
 
     return Promise.reject({
       status,
       message: message || 'Bad Request',
-      errors,
+      errorsMessage: data,
     });
   }
 
@@ -61,7 +61,7 @@ const errorRequestHandler = (err) => {
 
     return Promise.reject({
       status,
-      message: 'Não foi possível convluir a ação',
+      message: 'Não foi possível concluir a ação',
       errors: error,
     });
   }

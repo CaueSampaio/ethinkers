@@ -6,7 +6,7 @@ import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { Row, Col } from 'antd';
+import { Row, Col, notification } from 'antd';
 
 import {
   ordersActions,

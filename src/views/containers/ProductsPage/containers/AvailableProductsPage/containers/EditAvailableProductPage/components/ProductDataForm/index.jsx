@@ -96,7 +96,7 @@ class ProductDataForm extends Component {
       <Fragment>
         <Form onSubmit={onSubmit}>
           <Row gutter={24} className="input-multiple-product">
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Nome">
                 {getFieldDecorator('name', {
                   initialValue: product.name,
@@ -111,7 +111,7 @@ class ProductDataForm extends Component {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="REF">
                 {getFieldDecorator('refProduct', {
                   initialValue: product.refProduct,
@@ -125,10 +125,10 @@ class ProductDataForm extends Component {
                 })(<Input maxLength={200} />)}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Form.Item label="Marca:">
-                {getFieldDecorator('brand', {
-                  initialValue: brand.name,
+                {getFieldDecorator('idBrand', {
+                  initialValue: !isEmpty(brands) ? brand.id : '',
                   rules: [
                     {
                       required: true,
@@ -157,7 +157,7 @@ class ProductDataForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <Form.Item label="Descrição Longa">
                 {getFieldDecorator('longDescription', {
                   initialValue: product.longDescription,
@@ -171,7 +171,7 @@ class ProductDataForm extends Component {
                 })(<TextArea autosize={{ minRows: 2, maxRows: 6 }} />)}
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <Form.Item label="Descrição curta">
                 {getFieldDecorator('shortDescription', {
                   initialValue: product.shortDescription,
@@ -192,7 +192,7 @@ class ProductDataForm extends Component {
             gutter={24}
             className="input-multiple-product"
           >
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
                   initialValue: product.keyWords,
@@ -212,7 +212,7 @@ class ProductDataForm extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Meta tags">
                 {getFieldDecorator('metaTags', {
                   initialValue: product.metaTags,
@@ -232,10 +232,10 @@ class ProductDataForm extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Form.Item label="Categoria">
-                {getFieldDecorator('category', {
-                  initialValue: category.name,
+                {getFieldDecorator('idCategory', {
+                  initialValue: !isEmpty(categories) ? category.id : '',
                   rules: [
                     {
                       required: true,

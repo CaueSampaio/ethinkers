@@ -14,12 +14,13 @@ import {
   skusSelectors,
 } from '../../../../../../../state/ducks/skus';
 
+import { getHeaderResourceName } from '../../../../../../../utils';
+
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import ProductDataForm from './components/ProductDataForm';
 import SkuDataList from './components/SkuDataList';
 import CreateSkuModal from './components/CreateSkuModal';
-
 import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 class EditAvailableProductPage extends Component {
@@ -91,6 +92,7 @@ class EditAvailableProductPage extends Component {
         });
         await findProduct(idProduct);
       } else {
+        console.log(editProductError);
         const { message: errorMessage, errors } = editProductError;
         notification.error({
           message: errorMessage,
@@ -184,6 +186,12 @@ class EditAvailableProductPage extends Component {
     this.formCreateSku = ref;
   };
 
+  renderResourceMap = () => {
+    const { product } = this.props;
+
+    return [getHeaderResourceName(product, 'name', 'id')];
+  };
+
   render() {
     const {
       product = {},
@@ -196,7 +204,10 @@ class EditAvailableProductPage extends Component {
 
     return (
       <Fragment>
-        <PrivatePageHeader title="Editar Produto" />
+        <PrivatePageHeader
+          title="Editar Produto"
+          resourceMap={this.renderResourceMap()}
+        />
         <PrivatePageSection isLoading={productIsLoading}>
           <ProductDataForm
             ref={this.getFormRef}
@@ -207,12 +218,12 @@ class EditAvailableProductPage extends Component {
         </PrivatePageSection>
         <PrivatePageSection isLoading={productIsLoading}>
           <Row type="flex" align="middle">
-            <Col span={21}>
+            <Col xs={11} sm={17} md={18} lg={18} xl={20} xxl={23}>
               <Divider orientation="left">
                 <span>SKUS</span>
               </Divider>
             </Col>
-            <Col span={3}>
+            <Col xs={6} sm={6} md={5} lg={5} xl={3} xxl={20} offset={0}>
               <Button
                 className="add-sku"
                 type="dashed"

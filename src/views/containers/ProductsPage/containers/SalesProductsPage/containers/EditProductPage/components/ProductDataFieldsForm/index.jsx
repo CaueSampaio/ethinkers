@@ -37,6 +37,7 @@ class EditProductPage extends Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     actions: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
 
     onSubmit: PropTypes.func.isRequired,
     categories: PropTypes.array,
@@ -46,8 +47,7 @@ class EditProductPage extends Component {
     isLoading: PropTypes.bool.isRequired,
     product: PropTypes.object.isRequired,
     categoriesAttributes: PropTypes.array,
-    // findChannelProduct: PropTypes.func,
-    // idProduct: PropTypes.string,
+    findChannelProduct: PropTypes.func,
   };
 
   constructor(props) {
@@ -66,10 +66,15 @@ class EditProductPage extends Component {
   };
 
   componentDidMount = async () => {
-    // const { idProduct, findChannelProduct } = this.props;
-    // await findChannelProduct(idProduct);
-    await this.fetchCategories();
+    const {
+      match: {
+        params: { id },
+      },
+      findChannelProduct,
+    } = this.props;
+    await findChannelProduct(id);
     await this.fetchBrands();
+    await this.fetchCategories();
   };
 
   componentWillUnmount() {
@@ -85,22 +90,6 @@ class EditProductPage extends Component {
       categorySearch: isEmpty(value) ? null : value,
     });
     this.fetchCategories();
-  };
-
-  fetchCategories = async () => {
-    const {
-      actions: { listCategories, clearCategories },
-      product,
-      product: { idChannel },
-    } = this.props;
-    console.log(product);
-    const { categorySearch } = this.state;
-
-    await clearCategories();
-    await listCategories(
-      idChannel,
-      isEmpty(categorySearch) ? null : { search: categorySearch },
-    );
   };
 
   handleBrandSelectSearch = async (value) => {
@@ -120,6 +109,20 @@ class EditProductPage extends Component {
     await listBrands(
       idChannel,
       isEmpty(brandSearch) ? null : { search: brandSearch },
+    );
+  };
+
+  fetchCategories = async () => {
+    const {
+      actions: { listCategories, clearCategories },
+      product: { idChannel },
+    } = this.props;
+    const { categorySearch } = this.state;
+
+    await clearCategories();
+    await listCategories(
+      idChannel,
+      isEmpty(categorySearch) ? null : { search: categorySearch },
     );
   };
 
@@ -148,10 +151,14 @@ class EditProductPage extends Component {
       categoriesAttributes,
       // attributesIsLoading,
       product,
-      product: { attributes = [], brand = {}, category = {}, status },
+      product: {
+        channelProductAttributes = [],
+        channelBrand = {},
+        channelCategory = {},
+        status,
+      },
     } = this.props;
     const { checkedCured } = this.state;
-    console.log(this.props);
 
     return (
       <Fragment>
@@ -175,7 +182,7 @@ class EditProductPage extends Component {
             <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Marca:">
                 {getFieldDecorator('idChannelBrand', {
-                  initialValue: brand.name,
+                  initialValue: !isEmpty(brands) ? channelBrand.id : '',
                   rules: [
                     {
                       required: true,
@@ -282,7 +289,7 @@ class EditProductPage extends Component {
                 </Form.Item>
               </Col>
             )}
-            <Col xs={24} sm={24} md={18} lg={18} xl={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <Form.Item label="Palavras Chave">
                 {getFieldDecorator('keyWords', {
                   initialValue: product.keyWords,
@@ -302,10 +309,10 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <Form.Item label="Categoria">
                 {getFieldDecorator('idChannelCategory', {
-                  initialValue: category.name,
+                  initialValue: !isEmpty(categories) ? channelCategory.id : '',
                   rules: [
                     {
                       required: true,
@@ -335,9 +342,9 @@ class EditProductPage extends Component {
                 )}
               </Form.Item>
             </Col>
-            {!isEmpty(attributes) &&
-              attributes.map((attribute, i) => (
-                <Col xs={24} sm={24} md={12} lg={12} xl={6} key={attribute.id}>
+            {!isEmpty(channelProductAttributes) &&
+              channelProductAttributes.map((attribute, i) => (
+                <Col xs={24} sm={24} md={12} lg={12} xl={8} key={attribute.id}>
                   <Form.Item label="Atributo 1">
                     {getFieldDecorator(`attributes[${i}].value`, {})(<Input />)}
                   </Form.Item>
@@ -403,6 +410,7 @@ const withForm = Form.create();
 
 const mapStateToProps = createStructuredSelector({
   product: channelProductsSelectors.makeSelectFindChannelProduct(),
+  productIsLoading: channelProductsSelectors.makeSelectFindChannelProductIsLoading(),
 
   brands: channelsSelectors.makeSelectChannelBrands(),
   brandsIsLoading: channelsSelectors.makeSelectChannelBrandsIsLoading(),

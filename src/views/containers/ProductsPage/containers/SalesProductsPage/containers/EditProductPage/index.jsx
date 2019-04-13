@@ -14,6 +14,8 @@ import {
   channelCategoriesSelectors,
 } from '../../../../../../../state/ducks/channelCategories';
 
+import { getHeaderResourceName } from '../../../../../../../utils';
+
 import PrivatePageHeader from '../../../../../../components/PrivatePageHeader';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
 import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
@@ -27,7 +29,6 @@ class EditProductPage extends Component {
 
     product: PropTypes.object.isRequired,
     productIsLoading: PropTypes.bool.isRequired,
-    editProductError: PropTypes.object,
     editProductIsLoading: PropTypes.bool.isRequired,
     categoriesAttributes: PropTypes.array,
   };
@@ -42,6 +43,12 @@ class EditProductPage extends Component {
       },
     } = this.props;
     findChannelProduct(id);
+  };
+
+  renderResourceMap = () => {
+    const { product } = this.props;
+
+    return [getHeaderResourceName(product, 'name', 'id')];
   };
 
   getParams = (values) => {
@@ -81,18 +88,16 @@ class EditProductPage extends Component {
         params: { id: idProduct },
       },
       actions: { editChannelProduct, findChannelProduct },
-      editProductError,
     } = this.props;
 
     validateFields(async (err, values) => {
-      console.log(values);
       if (err) return;
 
       const result = await editChannelProduct(
         idProduct,
         this.getParams(values),
       );
-      console.log(result);
+
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',
@@ -103,7 +108,6 @@ class EditProductPage extends Component {
         const {
           payload: { message, errors },
         } = result;
-        console.log(editProductError);
         notification.error({
           message,
           description: <BadRequestNotificationBody errors={errors} />,
@@ -123,18 +127,23 @@ class EditProductPage extends Component {
       categoriesAttributes,
       productIsLoading,
       actions: { findChannelProduct },
+      match,
     } = this.props;
 
     return (
       <Fragment>
-        <PrivatePageHeader title="Editar Produto" />
+        <PrivatePageHeader
+          title="Editar Produto"
+          resourceMap={this.renderResourceMap()}
+        />
         <PrivatePageSection isLoading={productIsLoading}>
           <ProductDataFieldsForm
-            idProduct={product.idProduct}
+            // product={product}
             onSubmit={this.handleSubmitProductData}
             ref={this.getFormRef}
             isLoading={editProductIsLoading}
             findChannelProduct={findChannelProduct}
+            match={match}
           />
         </PrivatePageSection>
         <PrivatePageSection isLoading={productIsLoading}>
@@ -153,7 +162,6 @@ const mapStateToProps = createStructuredSelector({
   product: channelProductsSelectors.makeSelectFindChannelProduct(),
   productIsLoading: channelProductsSelectors.makeSelectFindChannelProductIsLoading(),
 
-  editProductError: channelProductsSelectors.makeSelectEditChannelProductError(),
   editProductIsLoading: channelProductsSelectors.makeSelectEditChannelProductIsLoading(),
 
   categoriesAttributes: channelCategoriesSelectors.makeSelectCategoriesAttributes(),

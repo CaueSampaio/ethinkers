@@ -62,7 +62,7 @@ class AvailableProductDetailsPage extends Component {
 
   render() {
     const { product, productIsLoading } = this.props;
-    console.log(productIsLoading);
+
     return (
       <Fragment>
         <PrivatePageHeader

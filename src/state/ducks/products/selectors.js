@@ -119,7 +119,10 @@ const makeSelectEditProductIsLoading = () =>
 const makeSelectEditProductError = () =>
   createSelector(
     selectEditProduct,
-    ({ error }) => error,
+    ({ error }) => {
+      console.log(error);
+      return error;
+    },
   );
 
 export default {
