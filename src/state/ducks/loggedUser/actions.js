@@ -8,6 +8,14 @@ function updateUserPassword(data) {
   };
 }
 
+function changeUserPasswordLoggedIn(data) {
+  return {
+    type: types.CHANGE_USER_PASSWORD_LOGGED_IN,
+    promise: patch(`users/me/password`, data),
+  };
+}
+
 export default {
   updateUserPassword,
+  changeUserPasswordLoggedIn,
 };

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Row, Col, Form, notification, Button } from 'antd';
+import { Row, Col, Form, notification, Input, Button } from 'antd';
 
 import {
   loggedUserActions,
@@ -30,16 +30,15 @@ class AccountPage extends Component {
 
     const {
       form: { validateFields },
-      actions: { updateUserPassword },
-      userData: { token },
+      actions: { changeUserPasswordLoggedIn },
     } = this.props;
     validateFields(async (err, values) => {
       if (err) return;
       const params = {
         ...values,
-        token,
       };
-      const result = await updateUserPassword(params);
+      console.log(params);
+      const result = await changeUserPasswordLoggedIn(params);
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',
@@ -47,7 +46,6 @@ class AccountPage extends Component {
         });
       } else {
         const { message: errorMessage, errors } = updateError;
-
         notification.error({
           message: errorMessage,
           description: <BadRequestNotificationBody errors={errors} />,
@@ -57,7 +55,11 @@ class AccountPage extends Component {
   };
 
   render() {
-    const { form, updateIsLoading } = this.props;
+    const {
+      form,
+      updateIsLoading,
+      form: { getFieldDecorator },
+    } = this.props;
     return (
       <Fragment>
         <PrivatePageHeader title="Alterar Senha" />
@@ -67,12 +69,24 @@ class AccountPage extends Component {
               <div className="account-content">
                 <Form>
                   <Row>
+                    <Form.Item label="Senha Atual">
+                      <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                        {getFieldDecorator('oldPassword', {
+                          rules: [
+                            {
+                              required: true,
+                              message: 'Por favor insira seu email.',
+                            },
+                          ],
+                        })(<Input type="password" />)}
+                      </Col>
+                    </Form.Item>
                     <Col xs={24} sm={24} md={8} lg={8} xl={8}>
                       <PasswordFormFields
                         form={form}
                         labelCol={null}
                         wrapperCol={null}
-                        passwordFieldName="password"
+                        passwordFieldName="newPassword"
                         passwordLabel="Nova Senha"
                       />
                     </Col>
