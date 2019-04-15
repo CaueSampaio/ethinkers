@@ -124,7 +124,6 @@ class SynchronizeProducts extends Component {
       synchronizeAllIsLoading,
       synchronizeSelectedIsLoading,
     } = this.state;
-    console.log(selectedProducts);
 
     return (
       <PrivatePageSection className="synchronize-container">

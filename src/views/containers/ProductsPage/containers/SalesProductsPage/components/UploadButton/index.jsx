@@ -132,9 +132,9 @@ class UploadButton extends Component {
           );
           onCancel();
         } else if (file.status === 'error') {
-          const { response: { Errors: errorMessage } = {} } = file;
+          // const { response: { Errors: errorMessage } = {} } = file;
 
-          const text = errorMessage || 'Clique aqui ou arraste o arquivo.';
+          const text = 'Houve erro durante o upload do arquivo.';
 
           message.error(text);
         }

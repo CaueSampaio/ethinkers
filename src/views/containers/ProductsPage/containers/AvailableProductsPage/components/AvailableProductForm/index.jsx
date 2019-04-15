@@ -193,7 +193,6 @@ class AvailableProductForm extends Component {
               return false;
             });
             if (!isEmpty(error)) {
-              console.log(resultSku);
               const {
                 payload: { message },
               } = resultSku;
