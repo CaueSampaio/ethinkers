@@ -34,6 +34,7 @@ class SkusDataList extends Component {
 
   state = {
     visibleModal: false,
+    skuImages: [],
   };
 
   showModalSku = () => {
@@ -76,6 +77,15 @@ class SkusDataList extends Component {
 
   getFormRef = (ref) => {
     this.skuForm = ref;
+  };
+
+  handleChangeImageSku = async (e, k) => {
+    e.persist();
+    const { skuImages } = this.state;
+    const newItems = [...skuImages];
+
+    newItems[k] = e.target.value;
+    await this.setState({ skuImages: newItems });
   };
 
   render() {
@@ -174,7 +184,7 @@ class SkusDataList extends Component {
                   </Row>
 
                   <Row type="flex" gutter={24}>
-                    <Col span={7}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={7}>
                       <StyledFormItem label="REF">
                         {getFieldDecorator('refProduct', {
                           initialValue: sku.refSku,
@@ -188,7 +198,7 @@ class SkusDataList extends Component {
                         })(<Input />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={7}>
+                    <Col xs={24} sm={24} md={12} lg={12} xl={7}>
                       <StyledFormItem label="EAN">
                         {getFieldDecorator('ean', {
                           initialValue: sku.ean,
@@ -202,7 +212,7 @@ class SkusDataList extends Component {
                         })(<Input />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={10}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={10}>
                       <StyledFormItem label="Descrição">
                         {getFieldDecorator('description', {
                           initialValue: sku.description,
@@ -218,7 +228,7 @@ class SkusDataList extends Component {
                     </Col>
                   </Row>
                   <Row type="flex" gutter={24}>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <CurrencyFormField
                         form={form}
                         precision="2"
@@ -227,7 +237,7 @@ class SkusDataList extends Component {
                         initialValue={sku.priceOf}
                       />
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <CurrencyFormField
                         form={form}
                         precision="2"
@@ -236,42 +246,60 @@ class SkusDataList extends Component {
                         initialValue={sku.priceBy}
                       />
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso">
                         {getFieldDecorator('weight', {
                           initialValue: sku.weight,
+                          rules: [
+                            {
+                              required: true,
+                              message: `Favor, preencher o campo Peso!`,
+                            },
+                          ],
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso real">
                         {getFieldDecorator('realWeight', {
                           initialValue: sku.realWeight,
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Altura">
                         {getFieldDecorator('height', {
                           initialValue: sku.height,
+                          rules: [
+                            {
+                              required: true,
+                              message: `Favor, preencher o campo Altura!`,
+                            },
+                          ],
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Altura real">
                         {getFieldDecorator('realHeight', {
                           initialValue: sku.realHeight,
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Largura">
                         {getFieldDecorator('width', {
                           initialValue: sku.width,
+                          rules: [
+                            {
+                              required: true,
+                              message: `Favor, preencher o campo Largura!`,
+                            },
+                          ],
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Largura real">
                         {getFieldDecorator('realWidth', {
                           initialValue: sku.realWidth,
@@ -280,21 +308,27 @@ class SkusDataList extends Component {
                     </Col>
                   </Row>
                   <Row type="flex" gutter={24}>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Comprimento">
                         {getFieldDecorator('lenght', {
                           initialValue: sku.lenght,
+                          rules: [
+                            {
+                              required: true,
+                              message: `Favor, preencher o campo Comprimento!`,
+                            },
+                          ],
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Comprimento real">
                         {getFieldDecorator('realLenght', {
                           initialValue: sku.realLenght,
                         })(<InputNumber style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
-                    <Col span={3}>
+                    <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Peso cúbico">
                         {getFieldDecorator('cubicWeight', {
                           initialValue: sku.cubnicWeight,
@@ -329,6 +363,7 @@ class SkusDataList extends Component {
           visible={visibleModal}
           onCancel={this.handleCancelSkuModal}
           ref={this.getFormRef}
+          handleChangeImage={this.handleChangeImageSku}
         />
       </Fragment>
     );

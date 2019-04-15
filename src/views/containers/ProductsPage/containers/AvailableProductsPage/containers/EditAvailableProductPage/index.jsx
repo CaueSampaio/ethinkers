@@ -31,7 +31,7 @@ class EditAvailableProductPage extends Component {
     productIsLoading: PropTypes.bool.isRequired,
     editProductError: PropTypes.object,
     editProductIsLoading: PropTypes.bool.isRequired,
-    editChannelSkusError: PropTypes.object.isRequired,
+    // editSkuError: PropTypes.object.isRequired,
     editSkuIsLoading: PropTypes.bool.isRequired,
     createSkuIsLoading: PropTypes.bool.isRequired,
     createSkuError: PropTypes.object,
@@ -92,7 +92,6 @@ class EditAvailableProductPage extends Component {
         });
         await findProduct(idProduct);
       } else {
-        console.log(editProductError);
         const { message: errorMessage, errors } = editProductError;
         notification.error({
           message: errorMessage,
@@ -107,7 +106,6 @@ class EditAvailableProductPage extends Component {
     const {
       actions: { editSku, findProduct },
       product: { id: idProduct },
-      editChannelSkusError,
     } = this.props;
     const { validateFields } = this.formEditSku;
 
@@ -121,7 +119,9 @@ class EditAvailableProductPage extends Component {
         });
         await findProduct(idProduct);
       } else {
-        const { message: errorMessage, errors } = editChannelSkusError;
+        const {
+          payload: { message: errorMessage, errors },
+        } = result;
         notification.error({
           message: errorMessage,
           description: <BadRequestNotificationBody errors={errors} />,

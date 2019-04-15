@@ -126,7 +126,7 @@ const makeSelectSynchronizeChannelProductIsLoading = () =>
 const makeSelectSynchronizeChannelProductError = () =>
   createSelector(
     selectSynchronizeChannelProduct,
-    ({ error }) => error,
+    (error) => error,
   );
 
 // CREATE CHANNEL PRODDUCT

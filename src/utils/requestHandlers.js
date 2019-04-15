@@ -39,7 +39,7 @@ const errorRequestHandler = (err) => {
 
     return Promise.reject({
       status,
-      message: 'Unauthorized',
+      message: 'Não autorizado.',
       errors,
     });
   }

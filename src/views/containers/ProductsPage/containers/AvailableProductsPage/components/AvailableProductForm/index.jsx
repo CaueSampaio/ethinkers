@@ -169,10 +169,11 @@ class AvailableProductForm extends Component {
       if (err) return;
       const result = await createProduct(values);
       const {
-        payload: { id },
+        payload: { id, errorsMessage },
       } = result;
 
       if (!result.error) {
+        let resultSku = {};
         await notification.success({
           message: 'Sucesso',
           description: 'Produto cadastrado com sucesso',
@@ -180,7 +181,7 @@ class AvailableProductForm extends Component {
         if (!isEmpty(skusList)) {
           const skus = skusList.map((sku) => ({ ...sku, idProduct: id }));
           const promisesList = skus.map(async (sku) => {
-            const resultSku = await createSku(sku);
+            resultSku = await createSku(sku);
             return resultSku;
           });
           Promise.all(promisesList).then((test) => {
@@ -192,10 +193,13 @@ class AvailableProductForm extends Component {
               return false;
             });
             if (!isEmpty(error)) {
-              const { message: errorMessage, errors } = createSkuError;
+              console.log(resultSku);
+              const {
+                payload: { message },
+              } = resultSku;
               notification.error({
-                message: errorMessage,
-                description: <BadRequestNotificationBody errors={errors} />,
+                message: 'Erro ao cadastrar o SKU',
+                description: <BadRequestNotificationBody errors={message} />,
               });
             } else {
               notification.success({
@@ -206,13 +210,13 @@ class AvailableProductForm extends Component {
           });
         }
       } else {
-        const {
-          message: errorMessageSku,
-          errors: errorsSku,
-        } = createProductError;
-        notification.error({
-          message: errorMessageSku,
-          description: <BadRequestNotificationBody errors={errorsSku} />,
+        errorsMessage.map((error) => {
+          error.errorsMessage.map((message) => {
+            notification.error({
+              message: 'Não foi possível concluir a ação',
+              description: <BadRequestNotificationBody errors={message} />,
+            });
+          });
         });
       }
     });
@@ -258,7 +262,7 @@ class AvailableProductForm extends Component {
       <Fragment>
         <Form onSubmit={this.onSubmit}>
           <Row className="create-product-form" gutter={24} type="flex">
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <StyledFormItem label="Nome">
                 {getFieldDecorator('name', {
                   rules: [
@@ -270,7 +274,7 @@ class AvailableProductForm extends Component {
                 })(<Input />)}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <StyledFormItem label="Ref do Produto">
                 {getFieldDecorator('refProduct', {
                   rules: [
@@ -282,9 +286,9 @@ class AvailableProductForm extends Component {
                 })(<Input />)}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <StyledFormItem label="Marca:">
-                {getFieldDecorator('brand', {
+                {getFieldDecorator('idBrand', {
                   rules: [
                     {
                       required: true,
@@ -312,7 +316,7 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <StyledFormItem label="Descrição longa">
                 {getFieldDecorator('longDescription', {
                   rules: [
@@ -324,7 +328,7 @@ class AvailableProductForm extends Component {
                 })(<TextArea rows={3} />)}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
               <StyledFormItem label="Descrição curta">
                 {getFieldDecorator('shortDescription', {
                   rules: [
@@ -338,7 +342,7 @@ class AvailableProductForm extends Component {
             </Col>
           </Row>
           <Row gutter={24}>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <StyledFormItem
                 className="input-multiple-product"
                 label="Meta Tags"
@@ -361,7 +365,7 @@ class AvailableProductForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <StyledFormItem
                 className="input-multiple-product "
                 label="Palavras Chave"
@@ -384,7 +388,7 @@ class AvailableProductForm extends Component {
                 )}
               </StyledFormItem>
             </Col>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Col xs={24} sm={24} md={24} lg={24} xl={8}>
               <StyledFormItem label="Categoria">
                 {getFieldDecorator('idCategory', {
                   rules: [
@@ -412,11 +416,11 @@ class AvailableProductForm extends Component {
               </StyledFormItem>
             </Col>
           </Row>
-          <Row type="flex" gutter={10} align="middle">
-            <Col span={20}>
+          <Row type="flex" justify="space-between" gutter={10} align="middle">
+            <Col xs={10} sm={16} md={18} lg={18} xl={20}>
               <Divider orientation="left">SKUS</Divider>
             </Col>
-            <Col span={4}>
+            <Col xs={14} sm={8} md={6} lg={6} xl={4}>
               <Button
                 style={{ borderRadius: 50 }}
                 type="dashed"
@@ -459,6 +463,7 @@ class AvailableProductForm extends Component {
                   style={{ borderRadius: 50 }}
                   htmlType="submit"
                   type="primary"
+                  disabled={skusList.length <= 0}
                 >
                   <span>Cadastrar</span>
                 </Button>

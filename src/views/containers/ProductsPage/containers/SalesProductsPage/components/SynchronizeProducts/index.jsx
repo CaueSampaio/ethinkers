@@ -21,7 +21,7 @@ class SynchronizeProducts extends Component {
     actions: PropTypes.object.isRequired,
     selectedProducts: PropTypes.array,
     filterValues: PropTypes.object.isRequired,
-    synchronizeProductsError: PropTypes.object,
+    // synchronizeProductsError: PropTypes.object,
     // synchronizeProductsIsLoading: PropTypes.bool.isRequired,
     channelProducts: PropTypes.object.isRequired,
     channelsProductsIsLoading: PropTypes.bool.isRequired,
@@ -36,7 +36,6 @@ class SynchronizeProducts extends Component {
     const {
       actions: { synchronizeChannelProduct, listChannelProducts },
       filterValues,
-      synchronizeProductsError,
     } = this.props;
     await this.setState({
       synchronizeAllIsLoading: true,
@@ -61,11 +60,14 @@ class SynchronizeProducts extends Component {
       });
       listChannelProducts();
     } else {
-      const { message: errorMessage, errors } = synchronizeProductsError;
+      console.log(result);
 
+      const {
+        payload: { message },
+      } = result;
       notification.error({
-        message: errorMessage,
-        description: <BadRequestNotificationBody errors={errors} />,
+        message: 'Erro',
+        description: <BadRequestNotificationBody errors={message} />,
       });
     }
   };
@@ -74,27 +76,22 @@ class SynchronizeProducts extends Component {
     const {
       actions: { synchronizeChannelProduct, listChannelProducts },
       selectedProducts,
-      synchronizeProductsError,
     } = this.props;
 
     await this.setState({
       synchronizeSelectedIsLoading: true,
     });
-    const filters = {
-      idsProducts: [],
-    };
-
-    await selectedProducts.map((product) =>
-      filters.idsProducts.push(product.idProduct),
-    );
 
     const params = {
       status: 4,
-      filters,
+      filters: {
+        idsProducts: selectedProducts,
+      },
     };
+
     const result = await synchronizeChannelProduct(params);
     const {
-      payload: { notsynchronized, synchronized },
+      payload: { notSynchronized, synchronized },
     } = result;
 
     await this.setState({
@@ -103,14 +100,16 @@ class SynchronizeProducts extends Component {
     if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: `Foram sincronizados ${synchronized} produtos com sucesso. Não foi possível sincronizar ${notsynchronized} produtos.`,
+        description: `Não foi possível sincronizar ${notSynchronized} produtos. Produtos sincronizados: ${synchronized}`,
       });
       listChannelProducts();
     } else {
-      const { message: errorMessage, errors } = synchronizeProductsError;
+      const {
+        payload: { message },
+      } = result;
       notification.error({
-        message: errorMessage,
-        description: <BadRequestNotificationBody errors={errors} />,
+        message: 'Erro',
+        description: <BadRequestNotificationBody errors={message} />,
       });
     }
   };
@@ -125,6 +124,7 @@ class SynchronizeProducts extends Component {
       synchronizeAllIsLoading,
       synchronizeSelectedIsLoading,
     } = this.state;
+    console.log(selectedProducts);
 
     return (
       <PrivatePageSection className="synchronize-container">

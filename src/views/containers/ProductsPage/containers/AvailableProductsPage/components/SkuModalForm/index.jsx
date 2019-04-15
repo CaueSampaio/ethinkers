@@ -38,7 +38,7 @@ class SkuModalForm extends Component {
     skuImages: PropTypes.array,
   };
 
-  state = { skuImages: [] };
+  state = {};
 
   remove = async (k) => {
     const { form } = this.props;
@@ -61,15 +61,6 @@ class SkuModalForm extends Component {
     form.setFieldsValue({
       keys: nextKeys,
     });
-  };
-
-  handleChangeImage = async (e, k) => {
-    e.persist();
-    const { skuImages } = this.state;
-    const newItems = [...skuImages];
-
-    newItems[k] = e.target.value;
-    await this.setState({ skuImages: newItems });
   };
 
   render() {
@@ -108,7 +99,7 @@ class SkuModalForm extends Component {
             )}
           </Form.Item>
         </Col>
-        <Col span={5}>
+        <Col xs={24} sm={24} md={10} lg={10} xl={5}>
           <Form.Item label="URL da Imagem" required>
             {getFieldDecorator(`images[${k}].url`, {
               rules: [
@@ -122,12 +113,12 @@ class SkuModalForm extends Component {
             })(
               <Input
                 onChange={(e) => handleChangeImage(e, k)}
-                maxLength={128}
+                // maxLength={128}
               />,
             )}
           </Form.Item>
         </Col>
-        <Col span={5}>
+        <Col xs={24} sm={24} md={10} lg={10} xl={5}>
           <Form.Item label="Nome" required>
             {getFieldDecorator(`images[${k}].name`, {
               rules: [
@@ -141,7 +132,7 @@ class SkuModalForm extends Component {
             })(<Input maxLength={128} />)}
           </Form.Item>
         </Col>
-        <Col span={9}>
+        <Col xs={24} sm={24} md={23} lg={23} xl={9}>
           <Form.Item label="Descrição" required>
             {getFieldDecorator(`images[${k}].description`, {
               rules: [
@@ -206,7 +197,7 @@ class SkuModalForm extends Component {
           </Row>
           <Divider orientation="left">Detalhes</Divider>
           <Row type="flex" gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="REF">
                 {getFieldDecorator('refSku', {
                   rules: [
@@ -219,7 +210,7 @@ class SkuModalForm extends Component {
                 })(<Input maxLength={50} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="EAN">
                 {getFieldDecorator('ean', {
                   rules: [
@@ -232,7 +223,7 @@ class SkuModalForm extends Component {
                 })(<Input maxLength={30} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <CurrencyFormField
                 form={form}
                 precision="2"
@@ -240,7 +231,7 @@ class SkuModalForm extends Component {
                 label="Preço de"
               />
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <CurrencyFormField
                 form={form}
                 precision="2"
@@ -266,7 +257,7 @@ class SkuModalForm extends Component {
           </Row>
           <Divider orientation="left">Medidas</Divider>
           <Row type="flex" gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Peso">
                 {getFieldDecorator('weight', {
                   rules: [
@@ -278,14 +269,14 @@ class SkuModalForm extends Component {
                 })(<InputNumber min={0} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Peso real">
                 {getFieldDecorator('realWeight', {})(
                   <InputNumber min={0} style={{ width: '100%' }} />,
                 )}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Altura">
                 {getFieldDecorator('height', {
                   rules: [
@@ -297,7 +288,7 @@ class SkuModalForm extends Component {
                 })(<InputNumber min={0} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Altura real">
                 {getFieldDecorator('realHeight', {})(
                   <InputNumber min={0} style={{ width: '100%' }} />,
@@ -306,7 +297,7 @@ class SkuModalForm extends Component {
             </Col>
           </Row>
           <Row type="flex" gutter={24}>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Largura">
                 {getFieldDecorator('width', {
                   rules: [
@@ -318,14 +309,14 @@ class SkuModalForm extends Component {
                 })(<InputNumber min={0} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Largura real">
                 {getFieldDecorator('realWidth', {})(
                   <InputNumber min={0} style={{ width: '100%' }} />,
                 )}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Comprimento">
                 {getFieldDecorator('length', {
                   rules: [
@@ -337,7 +328,7 @@ class SkuModalForm extends Component {
                 })(<InputNumber min={0} style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={6}>
               <Form.Item label="Comprimento real">
                 {getFieldDecorator('realLength', {})(
                   <InputNumber min={0} style={{ width: '100%' }} />,
