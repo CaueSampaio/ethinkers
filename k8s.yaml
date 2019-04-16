@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: it4-front
-        image: acr360.azurecr.io/it4-front:0.0.14
+        image: acr360.azurecr.io/it4-front:0.0.15
         ports:
         - name: http
           containerPort: 80
