@@ -114,8 +114,9 @@ LoginPage.propTypes = {
 
 const mapStateToProps = createStructuredSelector({
   userData: userSelectors.makeSelectUserData(),
-  verifyIsLoading: userSelectors.makeSelectUserLoading(),
   error: userSelectors.makeSelectUserError(),
+
+  verifyIsLoading: userSelectors.makeSelectVerifyTokenLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({

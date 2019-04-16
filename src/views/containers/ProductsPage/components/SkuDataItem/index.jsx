@@ -9,13 +9,13 @@ import './style.less';
 
 const { Panel } = Collapse;
 
-const SkuDataItem = ({ product: { skus = [], attributes = [] } }) => (
+const SkuDataItem = ({ product: { channelSkus = [], attributes = [] } }) => (
   <div className="content-collapse-sku">
     <Divider orientation="left">SKUS</Divider>
-    {!isEmpty(skus) &&
-      skus.map((sku, i) => (
+    {!isEmpty(channelSkus) &&
+      channelSkus.map((sku, i) => (
         <Collapse
-          key={i+1} // eslint-disable-line
+          key={i + 1} // eslint-disable-line
           style={{ marginTop: 15 }}
           className="collapse-sku"
         >

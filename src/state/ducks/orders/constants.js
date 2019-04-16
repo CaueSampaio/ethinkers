@@ -4,44 +4,32 @@ const orderStatusEnum = [
     value: 0,
   },
   {
-    status: 'Handling',
+    status: 'Em manuseio',
     value: 1,
   },
   {
-    status: 'Invoiced',
+    status: 'Faturando',
     value: 2,
   },
   {
-    status: 'Dispatched',
+    status: 'Faturado',
     value: 3,
   },
   {
-    status: 'Canceled',
+    status: 'Despachando',
     value: 4,
   },
   {
-    status: 'Invoicing',
+    status: 'Despachado',
     value: 5,
   },
   {
-    status: 'InvoicingError',
+    status: 'Cancelando',
     value: 6,
   },
   {
-    status: 'Canceling',
+    status: 'Cancelado',
     value: 7,
-  },
-  {
-    status: 'CancellationError',
-    value: 8,
-  },
-  {
-    status: 'Dispatching',
-    value: 9,
-  },
-  {
-    status: 10,
-    value: 'DispatchingError',
   },
 ];
 

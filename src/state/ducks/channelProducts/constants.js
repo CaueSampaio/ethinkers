@@ -1,34 +1,34 @@
 const channelProductStatus = [
   {
-    status: 'Não Curado/Uncured',
+    status: 'Não Curado',
     value: 0,
   },
   {
-    status: 'Curado/Cured',
+    status: 'Curado',
     value: 1,
   },
   {
-    status: 'Recusado pelo Master/Refused By Master',
+    status: 'Recusado pelo Master',
     value: 2,
   },
   {
-    status: 'Na análise do Master/In Master Analysis',
+    status: 'Em análise Master',
     value: 3,
   },
   {
-    status: 'Sincronizando/Syncing',
+    status: 'Sincronizando',
     value: 4,
   },
   {
-    status: 'Erro de integração/Integration Error',
+    status: 'Erro de integração',
     value: 5,
   },
   {
-    status: 'Ativo/Active',
+    status: 'Ativo',
     value: 6,
   },
   {
-    status: 'Desativado/Disabled',
+    status: 'Desativado',
     value: 7,
   },
 ];

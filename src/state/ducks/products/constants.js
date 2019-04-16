@@ -1,11 +1,11 @@
 const productStatus = [
   {
     value: 0,
-    status: 'Disabled',
+    status: 'Desabilitado',
   },
   {
     value: 1,
-    status: 'Able',
+    status: 'Habilitado',
   },
 ];
 
