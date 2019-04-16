@@ -5,6 +5,7 @@ const INVOICE_ORDER = 'orders/INVOICE';
 const TRACK_SKUS = 'orders/TRACK_SKUS';
 const CANCEL_ORDER = 'orders/CANCEL_ORDER';
 const CANCEL_ORDER_ITEMS = 'orders/CANCEL_ORDER_ITEMS';
+const EXPORT_ORDERS = 'orders/EXPORT_ORDERS';
 
 export default {
   LIST_ORDERS,
@@ -15,4 +16,6 @@ export default {
   TRACK_SKUS,
   CANCEL_ORDER,
   CANCEL_ORDER_ITEMS,
+
+  EXPORT_ORDERS,
 };

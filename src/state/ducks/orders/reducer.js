@@ -64,8 +64,30 @@ function listOrderStatusReducer(state = listOrderStatusInitialState, action) {
   }
 }
 
+const exportOrdersInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+function exportOrdersReducer(state = exportOrdersInitialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.EXPORT_ORDERS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listOrders: listOrdersReducer,
   findOrder: findOrderReducer,
   listStatus: listOrderStatusReducer,
+
+  exportOrders: exportOrdersReducer,
 });

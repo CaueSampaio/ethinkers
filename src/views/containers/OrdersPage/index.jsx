@@ -1,4 +1,4 @@
-/*eslint-disable*/
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -19,8 +19,8 @@ import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
-import ExportSpreadsheetModal from './components/ExportSpreadsheetModal';
 import { spinnerAtrr } from '../../components/MySpinner';
+import { downloadFile } from '../../../utils/request';
 
 class OrdersPage extends Component {
   static propTypes = {
@@ -57,11 +57,6 @@ class OrdersPage extends Component {
     currentPagination.current = pagination.current;
 
     let lastPoduct;
-
-    const newItem = {
-      id: lastItem.idProduct,
-      current: pagination.current,
-    };
 
     if (!isEmpty(this.state.pagesItems)) {
       const prevProduct =
@@ -166,11 +161,25 @@ class OrdersPage extends Component {
     });
   };
 
+  onDownloadSpreadsheet = async () => {
+    const {
+      actions: { exportOrders },
+    } = this.props;
+    const result = exportOrders();
+    console.log(result);
+    if (!result.error) {
+      notification.success({
+        message: 'Sucesso',
+        description: 'Enviamos a Planilha para o seu E-mail',
+      });
+    }
+  };
+
   renderHeaderContent = () => (
     <Row type="flex">
       <button
         className="private-page-header-button"
-        onClick={this.showModalUploadProduct}
+        onClick={this.onDownloadSpreadsheet}
       >
         <Icon type="download" />
         <span>Exportar Pedidos via Planilha</span>
@@ -180,12 +189,7 @@ class OrdersPage extends Component {
 
   render() {
     const { orders, isLoading } = this.props;
-    const {
-      pagination,
-      lastId,
-      loadingSubmit,
-      visibleModalExportProduct,
-    } = this.state;
+    const { pagination, lastId, loadingSubmit } = this.state;
     const { orderStatusEnum } = ordersConstants;
 
     const columns = [
@@ -276,10 +280,6 @@ class OrdersPage extends Component {
             </PrivatePageSection>
           </Col>
         </Row>
-        <ExportSpreadsheetModal
-          visible={visibleModalExportProduct}
-          onCancel={this.handleCancelUpload}
-        />
       </div>
     );
   }

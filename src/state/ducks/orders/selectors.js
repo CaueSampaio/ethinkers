@@ -54,6 +54,24 @@ const makeSelectListOrderStatusError = () =>
     ({ error }) => error,
   );
 
+// LIST STATUS
+const selectExportOrders = ({ orders: { exportOrders } }) => exportOrders;
+const makeSelectExportOrders = () =>
+  createSelector(
+    selectExportOrders,
+    ({ data }) => data,
+  );
+const makeSelectExportOrdersIsLoading = () =>
+  createSelector(
+    selectExportOrders,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectExportOrdersError = () =>
+  createSelector(
+    selectExportOrders,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST
   selectOrders,
@@ -72,4 +90,10 @@ export default {
   makeSelectListOrderStatus,
   makeSelectListOrderStatusIsLoading,
   makeSelectListOrderStatusError,
+
+  // EXPORT ORDERS
+  selectExportOrders,
+  makeSelectExportOrders,
+  makeSelectExportOrdersIsLoading,
+  makeSelectExportOrdersError,
 };

@@ -50,6 +50,13 @@ function trackSkus(id, data) {
   };
 }
 
+function exportOrders() {
+  return {
+    type: types.TRACK_SKUS,
+    promise: get(`/orders/export`),
+  };
+}
+
 export default {
   listOrders,
   findOrder,
@@ -59,4 +66,6 @@ export default {
   cancelOrder,
   cancelOrderItems,
   trackSkus,
+
+  exportOrders,
 };

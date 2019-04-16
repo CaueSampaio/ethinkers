@@ -139,7 +139,6 @@ class AvailableProductsPage extends Component {
       currentPagination.total = total;
       currentPagination.pageSize = 30;
 
-      
       const lastItem = results[results.length - 1];
 
       const item = {
@@ -290,6 +289,7 @@ class AvailableProductsPage extends Component {
       visibleModalUploadProduct: true,
     });
   };
+
   showConfirmDisableProduct = (e, product) => {
     e.domEvent.stopPropagation();
     const {
@@ -383,6 +383,14 @@ class AvailableProductsPage extends Component {
     });
   };
 
+  onSelectChange = (selectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    const {
+      actions: { selectProduct },
+    } = this.props;
+    selectProduct(selectedRowKeys);
+  };
+
   renderHeaderContent = () => (
     <Row type="flex">
       <Link to="available/create">
@@ -414,11 +422,11 @@ class AvailableProductsPage extends Component {
       products: { results },
       history: { push },
       productsIsLoading,
+      selectedProducts,
     } = this.props;
     const {
       loadingSubmit,
       pagination,
-      selectedProducts,
       idsProducts,
       idsBrands,
       idsCategories,
@@ -439,13 +447,10 @@ class AvailableProductsPage extends Component {
     const rowSelection = {
       selectedProducts,
       hideDefaultSelections: true,
-
-      onSelect: (changableRowKeys) => {
-        this.setState({
-          selectedProducts: [...this.state.selectedProducts, changableRowKeys],
-        });
-      },
+      onChange: this.onSelectChange,
     };
+
+    console.log(selectedProducts);
 
     return (
       <div>
@@ -515,6 +520,8 @@ const mapStateToProps = createStructuredSelector({
 
   removeProductIsLoading: productsSelectors.makeSelectRemoveProductIsLoading(),
   removeProductError: productsSelectors.makeSelectRemoveProductError(),
+
+  selectedProducts: channelProductsSelectors.makeSelectSelectedProducts(),
 
   createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
 });
