@@ -25,7 +25,6 @@ import {
 import {
   channelProductsActions,
   channelProductsSelectors,
-  channelProductsConstants,
 } from '../../../../../state/ducks/channelProducts';
 
 import PrivatePageHeader from '../../../../components/PrivatePageHeader';
@@ -80,18 +79,10 @@ class AvailableProductsPage extends Component {
   }
 
   onTableChange = async (pagination) => {
-    const { products } = this.props;
     const { pagination: page } = this.state;
     const currentPagination = { ...page };
     currentPagination.current = pagination.current;
-    const lastItem = products.results[products.results.length - 1];
-
     let lastPoduct;
-
-    const newItem = {
-      id: lastItem.idProduct,
-      current: pagination.current,
-    };
 
     if (!isEmpty(this.state.pagesItems)) {
       const prevProduct =

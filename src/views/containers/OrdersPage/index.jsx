@@ -6,7 +6,7 @@ import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { Row, Col, notification } from 'antd';
+import { Row, Col, notification, Icon } from 'antd';
 
 import {
   ordersActions,
@@ -19,6 +19,7 @@ import PrivatePageHeader from '../../components/PrivatePageHeader';
 import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
+import ExportSpreadsheetModal from './components/ExportSpreadsheetModal';
 import { spinnerAtrr } from '../../components/MySpinner';
 
 class OrdersPage extends Component {
@@ -40,6 +41,7 @@ class OrdersPage extends Component {
     },
     loadingSubmit: false,
     pagesItems: [],
+    visibleModalExportProduct: false,
   };
 
   componentDidMount() {
@@ -101,6 +103,12 @@ class OrdersPage extends Component {
     this.filterForm = ref;
   };
 
+  handleCancelUpload = (e) => {
+    this.setState({
+      visibleModalExportProduct: false,
+    });
+  };
+
   handleCheckLastItem(val) {
     return this.state.pagesItems.some((item) => val.current === item.current);
   }
@@ -152,11 +160,33 @@ class OrdersPage extends Component {
     }
   };
 
+  showModalUploadProduct = () => {
+    this.setState({
+      visibleModalExportProduct: true,
+    });
+  };
+
+  renderHeaderContent = () => (
+    <Row type="flex">
+      <button
+        className="private-page-header-button"
+        onClick={this.showModalUploadProduct}
+      >
+        <Icon type="download" />
+        <span>Exportar Pedidos via Planilha</span>
+      </button>
+    </Row>
+  );
+
   render() {
     const { orders, isLoading } = this.props;
-    const { pagination, lastId, loadingSubmit } = this.state;
+    const {
+      pagination,
+      lastId,
+      loadingSubmit,
+      visibleModalExportProduct,
+    } = this.state;
     const { orderStatusEnum } = ordersConstants;
-    const teste = orderStatusEnum.map((item) => item);
 
     const columns = [
       {
@@ -203,13 +233,15 @@ class OrdersPage extends Component {
 
     return (
       <div>
-        <PrivatePageHeader title="Pedidos" />
+        <PrivatePageHeader
+          title="Pedidos"
+          content={this.renderHeaderContent()}
+        />
         <Row type="flex" gutter={16}>
           <Col xs={24} sm={24} md={24} lg={24} xl={17}>
             <PrivatePageSection>
               <StandardTable
                 onRow={(record) => {
-                  // eslint-disable-line
                   return {
                     onClick: () => {
                       const {
@@ -219,7 +251,7 @@ class OrdersPage extends Component {
                         state: { lastItem: lastId },
                         pathname: `/orders/${record.id}`,
                       });
-                    }, // click row
+                    },
                   };
                 }}
                 columns={columns}
@@ -244,6 +276,10 @@ class OrdersPage extends Component {
             </PrivatePageSection>
           </Col>
         </Row>
+        <ExportSpreadsheetModal
+          visible={visibleModalExportProduct}
+          onCancel={this.handleCancelUpload}
+        />
       </div>
     );
   }
