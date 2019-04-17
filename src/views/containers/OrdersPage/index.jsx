@@ -1,4 +1,4 @@
-/* eslint-disable */
+/*eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -20,7 +20,7 @@ import PrivatePageSection from '../../components/PrivatePageSection';
 import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../components/MySpinner';
-import { downloadFile } from '../../../utils/request';
+import BadRequestNotificationBody from '../../components/BadRequestNotificationBody';
 
 class OrdersPage extends Component {
   static propTypes = {
@@ -165,12 +165,22 @@ class OrdersPage extends Component {
     const {
       actions: { exportOrders },
     } = this.props;
-    const result = exportOrders();
+    const result = await exportOrders();
     console.log(result);
     if (!result.error) {
       notification.success({
         message: 'Sucesso',
         description: 'Enviamos a Planilha para o seu E-mail',
+      });
+    } else {
+      const {
+        exportOrdersError,
+        exportOrdersError: { message, errors },
+      } = this.props;
+      console.log(exportOrdersError);
+      notification.error({
+        message,
+        description: <BadRequestNotificationBody errors={errors} />,
       });
     }
   };
@@ -188,9 +198,10 @@ class OrdersPage extends Component {
   );
 
   render() {
-    const { orders, isLoading } = this.props;
+    const { orders, isLoading, exportIsLoading } = this.props;
     const { pagination, lastId, loadingSubmit } = this.state;
     const { orderStatusEnum } = ordersConstants;
+    console.log(exportIsLoading);
 
     const columns = [
       {
@@ -289,6 +300,9 @@ const mapStateToProps = createStructuredSelector({
   orders: ordersSelectors.makeSelectOrders(),
   isLoading: ordersSelectors.makeSelectOrdersIsLoading(),
   error: ordersSelectors.makeSelectOrdersError(),
+
+  exportIsLoading: ordersSelectors.makeSelectExportOrdersIsLoading(),
+  exportOrdersError: ordersSelectors.makeSelectExportOrdersError(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(ordersActions, dispatch),

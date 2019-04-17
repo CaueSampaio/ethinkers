@@ -69,7 +69,7 @@ const makeSelectExportOrdersIsLoading = () =>
 const makeSelectExportOrdersError = () =>
   createSelector(
     selectExportOrders,
-    ({ error }) => error,
+    (error) => error,
   );
 
 export default {

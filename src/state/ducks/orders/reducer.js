@@ -65,13 +65,14 @@ function listOrderStatusReducer(state = listOrderStatusInitialState, action) {
 }
 
 const exportOrdersInitialState = {
-  error: null,
   isLoading: false,
+  error: null,
   data: {},
 };
 function exportOrdersReducer(state = exportOrdersInitialState, action) {
-  const { type, payload } = action;
-  switch (type) {
+  const { payload } = action;
+
+  switch (action.type) {
     case types.EXPORT_ORDERS:
       return handle(state, action, {
         start: (prevState) => ({ ...prevState, isLoading: true, error: null }),

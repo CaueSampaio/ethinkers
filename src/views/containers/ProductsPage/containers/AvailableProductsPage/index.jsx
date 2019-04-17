@@ -376,7 +376,7 @@ class AvailableProductsPage extends Component {
           notification.error({
             message: errorMessage,
             description: <BadRequestNotificationBody errors={errors} />,
-          });
+          });0
         }
       },
     });

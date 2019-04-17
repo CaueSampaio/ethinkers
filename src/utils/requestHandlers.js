@@ -10,7 +10,8 @@ const errorRequestHandler = (err) => {
   if (isEmpty(response)) {
     return Promise.reject({
       status: 500,
-      message: 'Internal Server Error',
+      message: 'Não foi possível concluir a ação',
+      errors: 'Erro no servidor',
     });
   }
 
@@ -73,7 +74,7 @@ const errorRequestHandler = (err) => {
 
   return Promise.reject({
     status: 500,
-    message: 'Internal Server Error',
+    message: 'Não foi possível concluir a ação',
   });
 };
 
