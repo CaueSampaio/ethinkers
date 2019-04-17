@@ -56,6 +56,19 @@ function findProduct(id) {
   };
 }
 
+function selectAvailableProduct(data) {
+  return {
+    type: types.SELECT_PRODUCTS,
+    data,
+  };
+}
+
+function clearSelectedProducts() {
+  return {
+    type: types.CLEAR_SELECTED_PRODUCTS,
+  };
+}
+
 export default {
   listProducts,
   editProduct,
@@ -65,4 +78,6 @@ export default {
   editProductStatus,
   removeProduct,
   findProduct,
+  selectAvailableProduct,
+  clearSelectedProducts,
 };

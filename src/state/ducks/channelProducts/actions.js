@@ -84,6 +84,12 @@ function selectProduct(data) {
   };
 }
 
+function clearSelectedProducts() {
+  return {
+    type: types.CLEAR_SELECTED_PRODUCTS,
+  };
+}
+
 function listChannelProductsStatus(data) {
   return {
     type: types.LIST_CHANNEL_PRODUCT_STATUS,
@@ -111,4 +117,5 @@ export default {
   selectProduct,
   listChannelProductsStatus,
   clearProductStatus,
+  clearSelectedProducts,
 };

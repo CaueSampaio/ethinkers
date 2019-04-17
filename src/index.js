@@ -12,7 +12,7 @@ import App from './App';
 
 // Create browser history to use in the Redux store
 const baseUrl = (document.getElementsByTagName('base')[0] || {}).href;
-const history = createBrowserHistory({ basename: baseUrl });
+export const history = createBrowserHistory({ basename: baseUrl });
 
 const initialState = window.initialReduxState;
 export const store = configureStore(history, initialState);

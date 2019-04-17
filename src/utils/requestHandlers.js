@@ -1,5 +1,7 @@
 import { isEmpty } from 'lodash';
 
+import { history } from '../index';
+
 const successRequestHandler = (res) => res.data;
 
 const errorRequestHandler = (err) => {
@@ -26,6 +28,9 @@ const errorRequestHandler = (err) => {
   }
 
   if (response.status === 401) {
+    const { push } = history;
+
+    push('/login');
     return Promise.reject({
       status,
       message: 'Unauthorized',

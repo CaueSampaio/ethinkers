@@ -42,7 +42,7 @@ class SynchronizeProducts extends Component {
     });
     const params = {
       status: 4,
-      filters: [filterValues],
+      filters: { filterValues },
     };
     const result = await synchronizeChannelProduct(params);
     await this.setState({
@@ -50,18 +50,16 @@ class SynchronizeProducts extends Component {
     });
 
     const {
-      payload: { notsynchronized, synchronized },
+      payload: { notSynchronized, synchronized },
     } = result;
 
     if (!result.error) {
       await notification.success({
         message: 'Sucesso',
-        description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar os outros ${notsynchronized} produtos.`,
+        description: `Foram sincronizados ${synchronized} produtos com sucesso. No momento, não é possível sincronizar ${notSynchronized} produtos.`,
       });
       listChannelProducts();
     } else {
-      console.log(result);
-
       const {
         payload: { message },
       } = result;

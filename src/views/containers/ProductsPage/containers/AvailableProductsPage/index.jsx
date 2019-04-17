@@ -54,7 +54,6 @@ class AvailableProductsPage extends Component {
 
   state = {
     lastId: '',
-    selectedProducts: [],
     idsProducts: [],
     idsBrands: [],
     idsCategories: [],
@@ -65,7 +64,7 @@ class AvailableProductsPage extends Component {
     loadingSubmit: false,
     pagination: {},
     visibleModalUploadProduct: false,
-    selectedProducts: [],
+    selectedProductKeys: [],
     pagesItems: [],
   };
 
@@ -383,12 +382,12 @@ class AvailableProductsPage extends Component {
     });
   };
 
-  onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
+  onSelectChange = async (selectedRowKeys) => {
     const {
-      actions: { selectProduct },
+      actions: { selectAvailableProduct },
+      selectedProducts,
     } = this.props;
-    selectProduct(selectedRowKeys);
+    await selectAvailableProduct(selectedRowKeys);
   };
 
   renderHeaderContent = () => (
@@ -433,6 +432,7 @@ class AvailableProductsPage extends Component {
       idsChannels,
       refsProducts,
       status,
+      selectedProductKeys,
     } = this.state;
 
     const filterValues = {
@@ -444,14 +444,17 @@ class AvailableProductsPage extends Component {
       status,
     };
 
+    const paramsSelectedProducts = !isEmpty(selectedProducts)
+      ? selectedProducts
+      : selectedProductKeys;
+
     const rowSelection = {
-      selectedProducts,
+      selectedRowKeys: paramsSelectedProducts,
       hideDefaultSelections: true,
       onChange: this.onSelectChange,
     };
 
-    console.log(selectedProducts);
-
+    console.log(paramsSelectedProducts);
     return (
       <div>
         <PrivatePageHeader
@@ -521,7 +524,7 @@ const mapStateToProps = createStructuredSelector({
   removeProductIsLoading: productsSelectors.makeSelectRemoveProductIsLoading(),
   removeProductError: productsSelectors.makeSelectRemoveProductError(),
 
-  selectedProducts: channelProductsSelectors.makeSelectSelectedProducts(),
+  selectedProducts: productsSelectors.makeSelectSelectedProducts(),
 
   createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
 });

@@ -32,11 +32,10 @@ class SendProductToChannelCard extends Component {
     products: PropTypes.object.isRequired,
     productsIsLoading: PropTypes.bool.isRequired,
     channels: PropTypes.array.isRequired,
+    createChannelProductIsLoading: PropTypes.bool,
   };
 
   state = {
-    sendAllIsLoading: false,
-    sendSelectedsIsLoading: false,
     visibleModalChannels: false,
     visibleModalSyncSelecteds: false,
   };
@@ -67,53 +66,50 @@ class SendProductToChannelCard extends Component {
     const {
       actions: { createChannelProduct, listProducts },
       filterValues,
-      createChannelProductError,
     } = this.props;
     const {
-      formSyncAll: { validateFields },
+      formSyncAll: { validateFields, resetFields },
     } = this;
 
     validateFields(async (err, values) => {
       if (err) return;
-      await this.setState({
-        sendAllIsLoading: true,
-      });
+
       const params = {
         status: 4,
-        filters: [filterValues],
+        filters: { ...filterValues },
         ...values,
       };
       const result = await createChannelProduct(params);
       const {
         payload: { productsShipped, productsAlreadyOnChannel },
       } = result;
-
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',
           description: `Foram enviados para o canal ${productsShipped} produtos e outros ${productsAlreadyOnChannel} produtos já estão no canal.`,
         });
-        await this.setState({
-          sendAllIsLoading: false,
-        });
+        await this.handleCancel();
+        await resetFields();
         await listProducts();
-        this.handleCancel();
       } else {
-        const { message: errorMessage, errors } = createChannelProductError;
-
+        const {
+          createChannelProductError: { errors, message },
+        } = this.props;
         notification.error({
-          message: errorMessage,
+          message,
           description: <BadRequestNotificationBody errors={errors} />,
         });
+        await this.handleCancel();
+        await resetFields();
+        await listProducts();
       }
     });
   };
 
   handleSendSelectedToChannel = async () => {
     const {
-      actions: { createChannelProduct, listProducts },
+      actions: { createChannelProduct, listProducts, clearSelectedProducts },
       selectedProducts,
-      createChannelProductError,
     } = this.props;
 
     const {
@@ -122,36 +118,36 @@ class SendProductToChannelCard extends Component {
     validateFields(async (err, values) => {
       if (err) return;
 
-      await this.setState({
-        sendSelectedsIsLoading: true,
-      });
       const filters = {
         idsProducts: selectedProducts,
       };
-
       const params = {
         status: 4,
         filters,
         ...values,
       };
       const result = await createChannelProduct(params);
+
       if (!result.error) {
+        await this.handleCancelSyncSelecteds();
+        await resetFields();
+        await listProducts();
+        await clearSelectedProducts();
         await notification.success({
           message: 'Sucesso',
-          description: 'Produtos enviados para o canal com sucesso!',
+          description: 'Os Produtos foram enviados para o canal!',
         });
-        await this.setState({
-          sendSelectedsIsLoading: false,
+      } else {
+        const {
+          createChannelProductError: { errors, message },
+        } = this.props;
+        notification.error({
+          message,
+          description: <BadRequestNotificationBody errors={errors} />,
         });
         this.handleCancelSyncSelecteds();
         await resetFields();
-        await listProducts();
-      } else {
-        const { message: errorMessage, errors } = createChannelProductError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
+        await clearSelectedProducts();
       }
     });
   };
@@ -190,13 +186,9 @@ class SendProductToChannelCard extends Component {
       products: { total },
       productsIsLoading,
       channels,
+      createChannelProductIsLoading,
     } = this.props;
-    const {
-      sendAllIsLoading,
-      sendSelectedsIsLoading,
-      visibleModalChannels,
-      visibleModalSyncSelecteds,
-    } = this.state;
+    const { visibleModalChannels, visibleModalSyncSelecteds } = this.state;
 
     return (
       <PrivatePageSection className="synchronize-container">
@@ -216,8 +208,7 @@ class SendProductToChannelCard extends Component {
               </Row>
               <Row type="flex" justify="center">
                 <Button
-                  disabled={sendSelectedsIsLoading}
-                  loading={sendAllIsLoading}
+                  disabled={createChannelProductIsLoading}
                   className="btn-synchronize"
                   onClick={this.showModalSendToChannel}
                 >
@@ -252,8 +243,7 @@ class SendProductToChannelCard extends Component {
                       </Col>
                       <Col offset={7}>
                         <Button
-                          disabled={sendAllIsLoading}
-                          loading={sendSelectedsIsLoading}
+                          disabled={createChannelProductIsLoading}
                           onClick={this.showModalSendSelectedsToChannel}
                           className="btn-synchronize"
                         >
@@ -270,7 +260,7 @@ class SendProductToChannelCard extends Component {
         <ChannelsFormModal
           visible={visibleModalChannels}
           onSubmit={this.handleSendAllToChannel}
-          isLoading={sendAllIsLoading}
+          isLoading={createChannelProductIsLoading}
           channels={channels}
           ref={this.getRefSyncAllForm}
           handleCancel={this.handleCancel}
@@ -278,7 +268,7 @@ class SendProductToChannelCard extends Component {
         <ChannelsFormModal
           visible={visibleModalSyncSelecteds}
           onSubmit={this.handleSendSelectedToChannel}
-          isLoading={sendSelectedsIsLoading}
+          isLoading={createChannelProductIsLoading}
           channels={channels}
           ref={this.getRefSyncSelectedsForm}
           handleCancel={this.handleCancelSyncSelecteds}
@@ -290,6 +280,7 @@ class SendProductToChannelCard extends Component {
 
 const mapStateToProps = createStructuredSelector({
   productsIsLoading: productsSelectors.makeSelectProductsIsLoading(),
+
   createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
   createChannelProductIsLoading: channelProductsSelectors.makeSelectCreateChannelProductIsLoading(),
 

@@ -148,6 +148,19 @@ function editProductReducer(state = editProductInitialState, action) {
   }
 }
 
+function selectProductReducer(state = [], action) {
+  const { type, data } = action;
+
+  switch (type) {
+    case types.SELECT_PRODUCTS:
+      return [...data];
+    case types.CLEAR_SELECTED_PRODUCTS:
+      return [];
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listProducts: listProductsReducer,
   listStatus: listProductsStatusReducer,
@@ -156,4 +169,5 @@ export default combineReducers({
   removeProduct: removeProductReducer,
   findProduct: findProductReducer,
   editProduct: editProductReducer,
+  selectProduct: selectProductReducer,
 });

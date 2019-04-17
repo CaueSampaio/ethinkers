@@ -122,6 +122,15 @@ const makeSelectEditProductError = () =>
     ({ error }) => error,
   );
 
+// SELECT PRODUCT
+const selectSelectedProducts = ({ products: { selectProduct } }) =>
+  selectProduct;
+const makeSelectSelectedProducts = () =>
+  createSelector(
+    selectSelectedProducts,
+    (data) => data,
+  );
+
 export default {
   // LIST PRODUCTS
   selectProducts,
@@ -163,4 +172,8 @@ export default {
   makeSelectEditProduct,
   makeSelectEditProductIsLoading,
   makeSelectEditProductError,
+
+  // SELECT PRODUCTS
+  selectSelectedProducts,
+  makeSelectSelectedProducts,
 };

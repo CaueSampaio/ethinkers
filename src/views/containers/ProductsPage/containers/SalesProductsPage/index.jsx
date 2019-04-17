@@ -46,7 +46,7 @@ class SalesProductsPage extends Component {
 
   state = {
     lastId: '',
-    selectedRowKeys: [],
+    selectedProductKeys: [],
     idsProducts: [],
     idsBrands: [],
     idsCategories: [],
@@ -129,6 +129,7 @@ class SalesProductsPage extends Component {
       refsProducts,
       status,
       pagination,
+      selectedProductKeys,
     } = this.state;
 
     const params = {
@@ -407,7 +408,7 @@ class SalesProductsPage extends Component {
     } = this.props;
 
     const {
-      selectedRowKeys,
+      selectedProductKeys,
       idsProducts,
       idsBrands,
       idsCategories,
@@ -429,12 +430,14 @@ class SalesProductsPage extends Component {
       name,
     };
 
+    const paramsSelectedProducts = !isEmpty(selectedProducts)
+    ? selectedProducts
+    : selectedProductKeys;
+  
     const rowSelection = {
-      selectedProducts,
+      selectedRowKeys: paramsSelectedProducts,
       onChange: this.onSelectChange,
     };
-
-    console.log(selectedProducts);
 
     return (
       <Fragment>

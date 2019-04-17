@@ -175,8 +175,8 @@ function createChannelProductReducer(
   state = createChannelProductInitialState,
   action,
 ) {
-  const { type, payload } = action;
-  switch (type) {
+  const { payload } = action;
+  switch (action.type) {
     case types.CREATE_CHANNEL_PRODUCT:
       return handle(state, action, {
         start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
@@ -217,6 +217,8 @@ function selectProductReducer(state = [], action) {
   switch (type) {
     case types.SELECT_PRODUCTS:
       return [...data];
+    case types.CLEAR_SELECTED_PRODUCTS:
+      return [];
     default:
       return state;
   }
@@ -234,8 +236,8 @@ function listStatusReducer(state = listStatusInitialState, action) {
       return handle(state, action, {
         start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
         failure: (prevState) => ({ ...prevState, error: payload }),
-        finish: (prevState) => ({ ...prevState, isLoading: false }),
         success: (prevState) => ({ ...prevState, data: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
       });
     case types.CLEAR_STATUS:
       return state;
