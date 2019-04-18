@@ -52,7 +52,7 @@ function trackSkus(id, data) {
 
 function exportOrders() {
   return {
-    type: types.TRACK_SKUS,
+    type: types.EXPORT_ORDERS,
     promise: get(`/orders/export`),
   };
 }

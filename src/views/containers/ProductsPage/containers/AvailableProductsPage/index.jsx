@@ -144,10 +144,10 @@ class AvailableProductsPage extends Component {
         id: lastItem.idProduct,
         current: 1,
       };
-
       await this.setState({
         pagination: currentPagination,
       });
+
       if (!this.handleCheckLastItem(pagination)) {
         this.setState({
           pagesItems: [...this.state.pagesItems, item],
@@ -156,21 +156,18 @@ class AvailableProductsPage extends Component {
     }
   };
 
-  handleSubmitFilters = (e) => {
+  handleSubmitFilters = async (e) => {
     e.preventDefault();
-    const {
-      actions: { listProducts },
-    } = this.props;
     const { validateFields } = this.filterForm;
+
     validateFields(async (err, values) => {
       if (err) return;
-
       await this.setState({
+        pagination: {},
         ...values,
         loadingSubmit: true,
       });
-      const params = { ...values };
-      await listProducts(params);
+      await this.fetchProducts();
       await this.setState({
         loadingSubmit: false,
       });
@@ -376,7 +373,8 @@ class AvailableProductsPage extends Component {
           notification.error({
             message: errorMessage,
             description: <BadRequestNotificationBody errors={errors} />,
-          });0
+          });
+          0;
         }
       },
     });
@@ -394,7 +392,7 @@ class AvailableProductsPage extends Component {
     <Row type="flex">
       <Link to="available/create">
         <PrivatePageHeaderButton icon="plus-circle">
-          Cadastrar Produto
+          <span>Cadastrar Produto</span>
         </PrivatePageHeaderButton>
       </Link>
       <button
@@ -422,6 +420,8 @@ class AvailableProductsPage extends Component {
       history: { push },
       productsIsLoading,
       selectedProducts,
+      actions: { exportProducts },
+      exportProductsIsLoading,
     } = this.props;
     const {
       loadingSubmit,
@@ -508,6 +508,7 @@ class AvailableProductsPage extends Component {
           textChildren="Upload"
           visible={this.state.visibleModalUploadProduct}
           onCancel={this.handleCancelUploadProduct}
+          exportProducts={exportProducts}
         />
       </div>
     );
@@ -527,6 +528,8 @@ const mapStateToProps = createStructuredSelector({
   selectedProducts: productsSelectors.makeSelectSelectedProducts(),
 
   createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
+
+  exportProducts: channelProductsSelectors.make
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(

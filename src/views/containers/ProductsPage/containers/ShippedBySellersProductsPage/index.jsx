@@ -55,6 +55,7 @@ class ShippedBySellersProductsPage extends Component {
     productSelected: {},
     status: 3,
     updateStatus: 0,
+    pagesItems: [],
   };
 
   constructor(props) {
@@ -62,9 +63,31 @@ class ShippedBySellersProductsPage extends Component {
     this.filterChannelProducts = debounce(this.fetchChannelProducts);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    const {
+      history: { location },
+    } = this.props;
+    if (!isEmpty(location.state)) {
+      const {
+        filterForm: { setFieldsValue },
+      } = this;
+      const {
+        history: {
+          location: {
+            state: { seller },
+          },
+        },
+      } = this.props;
+      await setFieldsValue({
+        idsCompanies: seller,
+      });
+      await this.setState({
+        idsCompanies: seller, // eslint-disable-line
+      });
+      await this.fetchChannelProducts();
+    }
     this.fetchChannelProducts();
-  }
+  };
 
   onTableChange = async (pagination) => {
     const { pagination: page, pagesItems } = this.state;
@@ -96,10 +119,11 @@ class ShippedBySellersProductsPage extends Component {
       idsBrands,
       idsCategories,
       idsChannels,
-      // idsCompanies
+      idsCompanies,
       pagination,
       status,
       updateStatus,
+      pagesItems,
     } = this.state;
 
     const params = {
@@ -110,7 +134,7 @@ class ShippedBySellersProductsPage extends Component {
       idsChannels,
       status,
       updateStatus,
-      // idsCompanies
+      idsCompanies,
     };
     const result = await listChannelProducts(params);
 
@@ -125,18 +149,17 @@ class ShippedBySellersProductsPage extends Component {
     const {
       payload: { results },
     } = result;
-    if (!isEmpty(results)) {
-      const lastItem = results[results.length - 1];
 
+    if (!isEmpty(results) && !results.error) {
+      const lastItem = results[results.length - 1];
       const item = {
         id: lastItem.idProduct,
         current: 1,
       };
       await this.setState({ pagination: currentPagination });
-
       if (!this.handleCheckLastItem(pagination)) {
         this.setState({
-          pagesItems: [...this.state.pagesItems, item], //eslint-disable-line
+          pagesItems: [...pagesItems, item],
         });
       }
     }
@@ -335,7 +358,7 @@ class ShippedBySellersProductsPage extends Component {
                 minWidth={1000}
                 dataSource={channelProducts.results}
                 columns={this.getTableColumns()}
-                onRow={(record) => { // eslint-disable-line
+                onRow={(record) => {// eslint-disable-line
                   return {
                     onClick: () =>
                       push(`/products/shipped/${record.idProduct}`),

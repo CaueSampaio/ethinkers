@@ -33,6 +33,30 @@ const channelProductStatus = [
   },
 ];
 
+const channelProductUpdateStatus = [
+  {
+    status: 'Em análise master',
+    value: 0,
+  },
+  {
+    status: 'Recusado pelo master',
+    value: 1,
+  },
+  {
+    status: 'Sincronizando',
+    value: 2,
+  },
+  {
+    status: 'Erro na integração',
+    value: 3,
+  },
+  {
+    status: 'Sincronizando',
+    value: 4,
+  },
+];
+
 export default {
   channelProductStatus,
+  channelProductUpdateStatus,
 };

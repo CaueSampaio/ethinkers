@@ -53,7 +53,7 @@ class SalesProductsPage extends Component {
     idsChannels: [],
     refsProducts: [],
     idsCompanies: [],
-    idsUpdateStatus: [],
+    updateStatus: [],
     status: [],
     name: null,
     loadingSubmit: false,
@@ -81,19 +81,10 @@ class SalesProductsPage extends Component {
     this.filterForm = ref;
   };
 
-  onTableChange = async (pagination, filters, sorter, extra) => {
-    const { channelProducts } = this.props;
+  onTableChange = async (pagination) => {
     const currentPagination = { ...this.state.pagination };
     currentPagination.current = pagination.current;
-    const lastItem =
-      channelProducts.results[channelProducts.results.length - 1];
-
     let lastPoduct;
-
-    const newItem = {
-      id: lastItem.idProduct,
-      current: pagination.current,
-    };
 
     if (!isEmpty(this.state.pagesItems)) {
       const prevProduct =
@@ -129,7 +120,7 @@ class SalesProductsPage extends Component {
       refsProducts,
       status,
       pagination,
-      selectedProductKeys,
+      updateStatus,
     } = this.state;
 
     const params = {
@@ -142,6 +133,7 @@ class SalesProductsPage extends Component {
       idsCompanies,
       refsProducts,
       status,
+      updateStatus,
     };
     const result = await listChannelProducts(params);
     const { total } = this.props.channelProducts;
@@ -233,18 +225,16 @@ class SalesProductsPage extends Component {
 
   handleSubmitFilters = (e) => {
     e.preventDefault();
-    const {
-      actions: { listChannelProducts },
-    } = this.props;
     const { validateFields } = this.filterForm;
+
     validateFields(async (err, values) => {
+      console.log(values);
       if (err) return;
       await this.setState({
         ...values,
         loadingSubmit: true,
       });
-      const params = { ...values };
-      await listChannelProducts(params);
+      await this.fetchChannelProducts();
       await this.setState({
         loadingSubmit: false,
       });
@@ -315,7 +305,10 @@ class SalesProductsPage extends Component {
   };
 
   getTableColumns = () => {
-    const { channelProductStatus } = channelProductsConstants;
+    const {
+      channelProductStatus,
+      channelProductUpdateStatus,
+    } = channelProductsConstants;
 
     return [
       {
@@ -360,8 +353,12 @@ class SalesProductsPage extends Component {
       },
       {
         title: 'Status Atualização',
-        dataIndex: 'updatestatus',
-        key: 'updatestatus',
+        dataIndex: 'updateStatus',
+        key: 'updateStatus',
+        render: (text) =>
+          channelProductUpdateStatus.map(
+            (item) => item.value === text && item.status,
+          ),
       },
       {
         key: 'actions',
@@ -431,9 +428,9 @@ class SalesProductsPage extends Component {
     };
 
     const paramsSelectedProducts = !isEmpty(selectedProducts)
-    ? selectedProducts
-    : selectedProductKeys;
-  
+      ? selectedProducts
+      : selectedProductKeys;
+
     const rowSelection = {
       selectedRowKeys: paramsSelectedProducts,
       onChange: this.onSelectChange,

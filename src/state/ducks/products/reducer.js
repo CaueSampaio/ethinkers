@@ -161,6 +161,25 @@ function selectProductReducer(state = [], action) {
   }
 }
 
+const exportProductInitialState = {
+  error: null,
+  isLoading: false,
+};
+function exportProductReducer(state = exportProductInitialState, action) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.EXPORT_PRODUCTS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listProducts: listProductsReducer,
   listStatus: listProductsStatusReducer,
@@ -170,4 +189,5 @@ export default combineReducers({
   findProduct: findProductReducer,
   editProduct: editProductReducer,
   selectProduct: selectProductReducer,
+  exportProducts: exportProductReducer,
 });

@@ -1,10 +1,11 @@
 import { isEmpty } from 'lodash';
 
 import { history } from '../index';
+import { userUtils } from '../state/ducks/user';
 
 const successRequestHandler = (res) => res.data;
 
-const errorRequestHandler = (err) => {
+const errorRequestHandler = async (err) => {
   const { response } = err;
 
   if (isEmpty(response)) {
@@ -30,8 +31,9 @@ const errorRequestHandler = (err) => {
 
   if (response.status === 401) {
     const { push } = history;
-
-    push('/login');
+    const { removeLocalStorageUser } = userUtils;
+    await removeLocalStorageUser();
+    await push('/login');
     return Promise.reject({
       status,
       message: 'Unauthorized',

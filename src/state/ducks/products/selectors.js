@@ -131,6 +131,25 @@ const makeSelectSelectedProducts = () =>
     (data) => data,
   );
 
+// EXPORT PRODUCT
+const selectExportProduct = ({ products: { exportProducts } }) =>
+  exportProducts;
+const makeSelectExportProducts = () =>
+  createSelector(
+    selectExportProduct,
+    ({ data }) => data,
+  );
+const makeSelectExportProductsIsLoading = () =>
+  createSelector(
+    selectExportProduct,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectExportProductsError = () =>
+  createSelector(
+    selectEditProduct,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectProducts,
@@ -176,4 +195,10 @@ export default {
   // SELECT PRODUCTS
   selectSelectedProducts,
   makeSelectSelectedProducts,
+
+  // EXPORT PRODUCTS
+  selectExportProduct,
+  makeSelectExportProducts,
+  makeSelectExportProductsIsLoading,
+  makeSelectExportProductsError,
 };

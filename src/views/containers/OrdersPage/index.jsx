@@ -6,7 +6,7 @@ import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
-import { Row, Col, notification, Icon } from 'antd';
+import { Row, Col, notification, Icon, Button } from 'antd';
 
 import {
   ordersActions,
@@ -21,6 +21,7 @@ import StandardTable from '../../components/StandardTable';
 import FilterForm from './components/FilterForm';
 import { spinnerAtrr } from '../../components/MySpinner';
 import BadRequestNotificationBody from '../../components/BadRequestNotificationBody';
+import PrivatePageHeaderButton from '../../components/PrivatePageHeaderButton';
 
 class OrdersPage extends Component {
   static propTypes = {
@@ -168,9 +169,12 @@ class OrdersPage extends Component {
     const result = await exportOrders();
     console.log(result);
     if (!result.error) {
+      const {
+        payload: { message: description },
+      } = result;
       notification.success({
         message: 'Sucesso',
-        description: 'Enviamos a Planilha para o seu E-mail',
+        description,
       });
     } else {
       const {
@@ -185,17 +189,21 @@ class OrdersPage extends Component {
     }
   };
 
-  renderHeaderContent = () => (
-    <Row type="flex">
-      <button
-        className="private-page-header-button"
-        onClick={this.onDownloadSpreadsheet}
-      >
-        <Icon type="download" />
-        <span>Exportar Pedidos via Planilha</span>
-      </button>
-    </Row>
-  );
+  renderHeaderContent = () => {
+    const { exportIsLoading } = this.props;
+    return (
+      <Row type="flex">
+        <PrivatePageHeaderButton
+          className="private-page-header-button"
+          onClick={this.onDownloadSpreadsheet}
+          loading={exportIsLoading}
+        >
+         {exportIsLoading ?  <Icon type="loading" /> :  <Icon type="download" />}
+          <span>Exportar Pedidos via Planilha</span>
+        </PrivatePageHeaderButton>
+      </Row>
+    );
+  };
 
   render() {
     const { orders, isLoading, exportIsLoading } = this.props;

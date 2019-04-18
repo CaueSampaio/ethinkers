@@ -69,6 +69,13 @@ function clearSelectedProducts() {
   };
 }
 
+function exportProducts() {
+  return {
+    type: types.EXPORT_PRODUCTS,
+    promise: get(`products/export`),
+  };
+}
+
 export default {
   listProducts,
   editProduct,
@@ -80,4 +87,5 @@ export default {
   findProduct,
   selectAvailableProduct,
   clearSelectedProducts,
+  exportProducts,
 };

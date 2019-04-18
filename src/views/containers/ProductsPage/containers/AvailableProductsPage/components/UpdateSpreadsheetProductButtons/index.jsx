@@ -80,7 +80,6 @@ class UpdateSpreadsheetProductButtons extends Component {
         width={documentHasError ? 700 : 500}
         footer={[]}
       >
-        {/* eslint-disable-next-line react/jsx-one-expression-per-line */}
         <p>
           Exporte a planilha, faça as devidas alterações e em seguida faça o
           Upload da mesma

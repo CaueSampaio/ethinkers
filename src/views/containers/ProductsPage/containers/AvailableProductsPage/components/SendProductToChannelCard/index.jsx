@@ -203,7 +203,7 @@ class SendProductToChannelCard extends Component {
               <Row type="flex" justify="center">
                 <Col>
                   <span className="amount-total">{total}</span>
-                  <span className="label-amount">Produtos encontrados</span>
+                  <span className="label-amount">Produto(s) encontrado(s)</span>
                 </Col>
               </Row>
               <Row type="flex" justify="center">
