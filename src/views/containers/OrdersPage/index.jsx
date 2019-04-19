@@ -279,7 +279,7 @@ class OrdersPage extends Component {
                 }}
                 columns={columns}
                 dataSource={orders.results}
-                minWidth={1000}
+                minWidth={1200}
                 rowKey={(record) => record.idOrder}
                 pagination={pagination}
                 onChange={this.handleTableChange}

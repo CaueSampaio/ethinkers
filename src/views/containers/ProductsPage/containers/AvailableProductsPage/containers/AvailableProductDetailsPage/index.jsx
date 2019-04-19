@@ -56,7 +56,7 @@ class AvailableProductDetailsPage extends Component {
         <span className="status-disabled">(Desabilitado)</span>
       </div>
     ) : (
-      ''
+      <span />
     );
   };
 

@@ -19,7 +19,7 @@ const SkuDataList = ({ channelProduct: { skus = [], attributes = [] } }) => (
               {!isEmpty(sku.images) &&
                 sku.images.map((image) => (
                   <Col span={4} key={image} className="gallery-container">
-                    <Avatar size={120} shape="square" src={image} />
+                    <Avatar size={120} shape="square" src={image.url} />
                   </Col>
                 ))}
             </Row>

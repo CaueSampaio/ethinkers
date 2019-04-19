@@ -254,6 +254,8 @@ class AvailableProductsPage extends Component {
       },
       {
         key: 'actions',
+        fixed: 'right',
+        width: 10,
         render: (record) => (
           <Dropdown overlay={this.renderItemsMenu(record)}>
             <Icon className="ic-config" type="ellipsis" />
@@ -391,9 +393,10 @@ class AvailableProductsPage extends Component {
   renderHeaderContent = () => (
     <Row type="flex">
       <Link to="available/create">
-        <PrivatePageHeaderButton icon="plus-circle">
+        <button className="private-page-header-button">
+          <Icon type="plus-circle" />
           <span>Cadastrar Produto</span>
-        </PrivatePageHeaderButton>
+        </button>
       </Link>
       <button
         className="private-page-header-button"
@@ -420,8 +423,11 @@ class AvailableProductsPage extends Component {
       history: { push },
       productsIsLoading,
       selectedProducts,
-      actions: { exportProducts },
-      exportProductsIsLoading,
+      actions: { exportProducts, exportInventories },
+      exportIsLoading,
+      exportError,
+      exportInventoriesIsLoading,
+      exportInventoriesError,
     } = this.props;
     const {
       loadingSubmit,
@@ -471,7 +477,7 @@ class AvailableProductsPage extends Component {
             />
             <PrivatePageSection>
               <StandardTable
-                minWidth={1000}
+                minWidth={1200}
                 rowSelection={rowSelection}
                 dataSource={results}
                 columns={this.getTableColumns()}
@@ -503,12 +509,18 @@ class AvailableProductsPage extends Component {
           textChildren="Upload"
           visible={this.state.visibleModalUpload}
           onCancel={this.handleCancelUpload}
+          isLoading={exportInventoriesIsLoading}
+          exportError={exportInventoriesError}
+          exportInventories={exportInventories}
         />
         <UpdateSpreadsheetProductButtons
           textChildren="Upload"
           visible={this.state.visibleModalUploadProduct}
           onCancel={this.handleCancelUploadProduct}
           exportProducts={exportProducts}
+          isLoading={exportIsLoading}
+          exportProducts={exportProducts}
+          exportError={exportError}
         />
       </div>
     );
@@ -529,7 +541,11 @@ const mapStateToProps = createStructuredSelector({
 
   createChannelProductError: channelProductsSelectors.makeSelectCreateChannelProductError(),
 
-  exportProducts: channelProductsSelectors.make
+  exportIsLoading: productsSelectors.makeSelectExportProductsIsLoading(),
+  exportError: productsSelectors.makeSelectExportProductsError(),
+
+  exportInventoriesIsLoading: productsSelectors.makeSelectExportInventoriesIsLoading(),
+  exportInventoriesError: productsSelectors.makeSelectExportInventoriesError(),
 });
 const mapDispatchToProps = (dispatch) => ({
   actions: bindActionCreators(

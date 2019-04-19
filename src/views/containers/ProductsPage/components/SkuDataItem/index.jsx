@@ -30,7 +30,7 @@ const SkuDataItem = ({ product: { channelSkus = [], attributes = [] } }) => (
                     <Avatar
                       size={120}
                       shape="square"
-                      src={image}
+                      src={image.url}
                       className="avatar-sku"
                       icon="picture"
                     />

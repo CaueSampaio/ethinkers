@@ -150,6 +150,25 @@ const makeSelectExportProductsError = () =>
     ({ error }) => error,
   );
 
+// EXPORT INVENTORIES
+const selectExportInventories = ({ products: { exportInventories } }) =>
+  exportInventories;
+const makeSelectExportInventories = () =>
+  createSelector(
+    selectExportInventories,
+    ({ data }) => data,
+  );
+const makeSelectExportInventoriesIsLoading = () =>
+  createSelector(
+    selectExportInventories,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectExportInventoriesError = () =>
+  createSelector(
+    selectExportInventories,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectProducts,
@@ -201,4 +220,10 @@ export default {
   makeSelectExportProducts,
   makeSelectExportProductsIsLoading,
   makeSelectExportProductsError,
+
+  // EXPORT INVENTORIES
+  selectExportInventories,
+  makeSelectExportInventories,
+  makeSelectExportInventoriesIsLoading,
+  makeSelectExportInventoriesError,
 };

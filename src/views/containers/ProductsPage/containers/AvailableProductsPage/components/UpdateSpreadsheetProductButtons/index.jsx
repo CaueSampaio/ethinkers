@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
-import { Form, Icon, Upload, message, Modal, Button } from 'antd';
+import { Form, Icon, Upload, message, Modal, Button, notification } from 'antd';
 
-import {
-  downloadFile,
-  defaultUploadProps,
-} from '../../../../../../../utils/request';
+import { defaultUploadProps } from '../../../../../../../utils/request';
 
 import DocumentErrorItemsCard from '../../../../../../components/DocumentErrorItemsCard';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 class UpdateSpreadsheetProductButtons extends Component {
   state = {
@@ -32,13 +30,32 @@ class UpdateSpreadsheetProductButtons extends Component {
     }
   };
 
-  onDownloadSpreadsheet = () => {
-    downloadFile(`products/export`);
+  onDownloadSpreadsheet = async () => {
+    const { exportProducts, onCancel } = this.props;
+    const result = await exportProducts();
+    if (!result.error) {
+      const {
+        payload: { message: description },
+      } = result;
+      onCancel();
+      notification.success({
+        message: 'Sucesso',
+        description,
+      });
+    } else {
+      const {
+        exportError: { message: messageError, errors },
+      } = this.props;
+      notification.error({
+        message: messageError,
+        description: <BadRequestNotificationBody errors={errors} />,
+      });
+    }
   };
 
   render() {
     const { uploadingFile, documentHasError, errors } = this.state;
-    const { textChildren, onCancel, visible } = this.props;
+    const { textChildren, onCancel, visible, isLoading } = this.props;
 
     const props = {
       ...defaultUploadProps(),
@@ -85,7 +102,7 @@ class UpdateSpreadsheetProductButtons extends Component {
           Upload da mesma
         </p>
         <Button onClick={this.onDownloadSpreadsheet}>
-          <Icon type="file-excel" />
+          {isLoading ? <Icon type="loading" /> : <Icon type="file-excel" />}
           <span>Exportar planilha</span>
         </Button>
         <Upload {...props} style={{ marginLeft: 10 }}>
@@ -105,6 +122,9 @@ UpdateSpreadsheetProductButtons.propTypes = {
   textChildren: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
+  exportProducts: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  exportError: PropTypes.object,
 };
 
 const withForm = Form.create();

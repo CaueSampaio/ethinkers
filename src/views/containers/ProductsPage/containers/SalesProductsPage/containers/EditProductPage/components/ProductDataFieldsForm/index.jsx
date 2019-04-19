@@ -23,6 +23,7 @@ import {
 import {
   channelProductsActions,
   channelProductsSelectors,
+  channelProductsConstants,
 } from '../../../../../../../../../state/ducks/channelProducts';
 import {
   channelCategoriesActions,
@@ -159,10 +160,41 @@ class EditProductPage extends Component {
       },
     } = this.props;
     const { checkedCured } = this.state;
+    const {
+      channelProductStatus,
+      channelProductUpdateStatus,
+    } = channelProductsConstants;
 
     return (
       <Fragment>
         <Divider orientation="left">Dados do Produto</Divider>
+        <Row type="flex" gutter={24}>
+          <Col span={8}>
+            <span className="label term">Status</span>
+            <span className="detail">
+              <span key={product.status}>
+                {channelProductStatus.map(
+                  (item) => item.value === product.status && item.status,
+                )}
+              </span>
+            </span>
+          </Col>
+          {product.updateStatus ? (
+            <Col span={8}>
+              <span className="label term">Status Atualização</span>
+              <span className="detail">
+                <span key={product.updateStatus}>
+                  {channelProductUpdateStatus.map(
+                    (item) =>
+                      item.value === product.updateStatus && item.status,
+                  )}
+                </span>
+              </span>
+            </Col>
+          ) : (
+            ''
+          )}
+        </Row>
         <Form onSubmit={onSubmit}>
           <Row gutter={24} className="input-multiple-product">
             <Col xs={24} sm={24} md={12} lg={12} xl={8}>

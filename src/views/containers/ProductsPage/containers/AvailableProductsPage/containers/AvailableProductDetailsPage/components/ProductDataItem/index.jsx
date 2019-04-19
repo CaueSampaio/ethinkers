@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Row, Col, Divider } from 'antd';
 
+import { productsConstants } from '../../../../../../../../../state/ducks/products';
+
+const { productStatus } = productsConstants;
+
 const ProductDataItem = ({
   product,
   product: {
@@ -66,10 +70,24 @@ const ProductDataItem = ({
           </Col>
         ))}
     </Row>
-    <Row>
-      <Col span={21}>
+    <Row type="flex" gutter={24}>
+      <Col span={8}>
         <span className="label term">Descrição longa</span>
         <span className="detail">{product.longDescription}</span>
+      </Col>
+      <Col span={8}>
+        <span className="label term">Descrição curta</span>
+        <span className="detail">{product.shortDescription}</span>
+      </Col>
+      <Col span={8}>
+        <span className="label term">Status</span>
+        <span className="detail">
+          <span key={product.status}>
+            {productStatus.map(
+              (item) => item.value === product.status && item.status,
+            )}
+          </span>
+        </span>
       </Col>
     </Row>
   </Fragment>

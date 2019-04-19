@@ -356,9 +356,11 @@ class SalesProductsPage extends Component {
         dataIndex: 'updateStatus',
         key: 'updateStatus',
         render: (text) =>
-          channelProductUpdateStatus.map(
-            (item) => item.value === text && item.status,
-          ),
+          text
+            ? channelProductUpdateStatus.map(
+                (item) => item.value === text && item.status,
+              )
+            : '-',
       },
       {
         key: 'actions',

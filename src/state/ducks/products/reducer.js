@@ -180,6 +180,28 @@ function exportProductReducer(state = exportProductInitialState, action) {
   }
 }
 
+const exportInventoriesInitialState = {
+  error: null,
+  isLoading: false,
+};
+function exportInventoriesReducer(
+  state = exportInventoriesInitialState,
+  action,
+) {
+  const { payload, type } = action;
+  switch (type) {
+    case types.EXPORT_INVENTORIES:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listProducts: listProductsReducer,
   listStatus: listProductsStatusReducer,
@@ -190,4 +212,5 @@ export default combineReducers({
   editProduct: editProductReducer,
   selectProduct: selectProductReducer,
   exportProducts: exportProductReducer,
+  exportInventories: exportInventoriesReducer,
 });

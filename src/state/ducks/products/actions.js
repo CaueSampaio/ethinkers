@@ -76,6 +76,13 @@ function exportProducts() {
   };
 }
 
+function exportInventories() {
+  return {
+    type: types.EXPORT_INVENTORIES,
+    promise: get(`inventories/export`),
+  };
+}
+
 export default {
   listProducts,
   editProduct,
@@ -88,4 +95,5 @@ export default {
   selectAvailableProduct,
   clearSelectedProducts,
   exportProducts,
+  exportInventories,
 };
