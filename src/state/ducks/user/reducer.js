@@ -33,6 +33,20 @@ function userReducer(state = initialState, action) {
         ...state,
         data: null,
       };
+    case types.FORGOT_PASSORD:
+      return handle(state, action, {
+        start: (prevState) => ({
+          ...prevState,
+          verifyIsLoading: true,
+          verifyError: null,
+        }),
+        failure: (prevState) => ({ ...prevState, verifyError: payload }),
+        success: (prevState) => ({
+          ...prevState,
+          data: utils.getUserData(payload.token),
+        }),
+        finish: (prevState) => ({ ...prevState, verifyIsLoading: false }),
+      });
     default:
       return state;
   }
