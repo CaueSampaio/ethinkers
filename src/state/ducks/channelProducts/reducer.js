@@ -143,6 +143,33 @@ function editChannelProductReducer(
   }
 }
 
+const editChannelProductUpdateStatusInitialState = {
+  error: null,
+  isLoading: false,
+  data: {},
+};
+
+function editChannelProductUpdateStatusReducer(
+  state = editChannelProductUpdateStatusInitialState,
+  action,
+) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.EDIT_UPDATE_STATUS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        success: (prevState) => ({
+          ...prevState,
+          data: payload,
+        }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+      });
+    default:
+      return state;
+  }
+}
+
 const synchronizeChannelProductInitialState = {
   error: null,
   isLoading: false,
@@ -246,6 +273,26 @@ function listStatusReducer(state = listStatusInitialState, action) {
   }
 }
 
+const exportProductsInitialState = {
+  error: null,
+  isLoading: false,
+  data: [],
+};
+function exportProductsReducer(state = exportProductsInitialState, action) {
+  const { type, payload } = action;
+  switch (type) {
+    case types.EXPORT_CHANNEL_PRODUCTS:
+      return handle(state, action, {
+        start: (prevState) => ({ ...prevState, isLoading: true, error: null }),
+        failure: (prevState) => ({ ...prevState, error: payload }),
+        success: (prevState) => ({ ...prevState, data: payload }),
+        finish: (prevState) => ({ ...prevState, isLoading: false }),
+      });
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   listChannelProducts: listChannelProductsReducer,
   findChannelProduct: findChannelProductReducer,
@@ -258,4 +305,6 @@ export default combineReducers({
   listUpdateStatus: listUpdateStatusReducer,
   selectProduct: selectProductReducer,
   listStatus: listStatusReducer,
+  editChannelProductUpdateStatus: editChannelProductUpdateStatusReducer,
+  exportProducts: exportProductsReducer,
 });

@@ -23,31 +23,52 @@ class ProductList extends Component {
 
   showConfirmAcceptProduct = (e, product) => {
     const {
-      actions: { editChannelProductStatus },
+      actions: { editChannelProductStatus, editChannelProductUpdateStatus },
       editStatusError,
       nextProduct,
     } = this.props;
     const { idProduct } = product;
-    const status = 6;
-
+    const params = {
+      status: 6,
+    };
     confirm({
       title: 'Deseja realmente aceitar este produto?',
       okText: 'Confirmar',
       content: 'Ao aceitá-lo, este produto ficará disponível',
       onOk: async () => {
-        const result = await editChannelProductStatus(idProduct, status);
-        if (!result.error) {
-          await notification.success({
-            message: 'Sucesso',
-            description: 'Produto aceito com sucesso',
-          });
-          await nextProduct();
+        if (!isEmpty(product.updateStatus)) {
+          const result = await editChannelProductStatus(idProduct, params);
+          if (!result.error) {
+            await notification.success({
+              message: 'Sucesso',
+              description: 'Produto aceito com sucesso',
+            });
+            await nextProduct();
+          } else {
+            const { message: errorMessage, errors } = editStatusError;
+            notification.error({
+              message: errorMessage,
+              description: <BadRequestNotificationBody errors={errors} />,
+            });
+          }
         } else {
-          const { message: errorMessage, errors } = editStatusError;
-          notification.error({
-            message: errorMessage,
-            description: <BadRequestNotificationBody errors={errors} />,
-          });
+          const result = await editChannelProductUpdateStatus(
+            idProduct,
+            params,
+          );
+          if (!result.error) {
+            await notification.success({
+              message: 'Sucesso',
+              description: 'Produto aceito com sucesso',
+            });
+            await nextProduct();
+          } else {
+            const { message: errorMessage, errors } = editStatusError;
+            notification.error({
+              message: errorMessage,
+              description: <BadRequestNotificationBody errors={errors} />,
+            });
+          }
         }
       },
     });
@@ -81,6 +102,7 @@ class ProductList extends Component {
       actions: { editChannelProductStatus },
       editStatusError,
       nextProduct,
+      channelProduct,
     } = this.props;
     const { validateFields, resetFields } = this.formRefuse;
     const { idProduct } = this.state;
@@ -93,21 +115,40 @@ class ProductList extends Component {
         values,
       };
 
-      const result = await editChannelProductStatus(idProduct, params);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'Produto recusado com sucesso',
-        });
-        await this.handleCancelModalRefuse();
-        await resetFields();
-        await nextProduct();
+      if (!isEmpty(channelProduct.updateStatus)) {
+        const result = await editChannelProductStatus(idProduct, params);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto recusado com sucesso',
+          });
+          await this.handleCancelModalRefuse();
+          await resetFields();
+          await nextProduct();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
       } else {
-        const { message: errorMessage, errors } = editStatusError;
-        notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
-        });
+        const result = await editChannelProductStatus(idProduct, params);
+        if (!result.error) {
+          await notification.success({
+            message: 'Sucesso',
+            description: 'Produto recusado com sucesso',
+          });
+          await this.handleCancelModalRefuse();
+          await resetFields();
+          await nextProduct();
+        } else {
+          const { message: errorMessage, errors } = editStatusError;
+          notification.error({
+            message: errorMessage,
+            description: <BadRequestNotificationBody errors={errors} />,
+          });
+        }
       }
     });
   };

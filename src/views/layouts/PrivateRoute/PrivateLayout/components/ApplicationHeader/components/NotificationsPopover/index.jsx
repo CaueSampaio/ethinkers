@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose, bindActionCreators } from 'redux';
 import { createStructuredSelector } from 'reselect';
-import { Popover, Badge, Icon, List, Spin, message } from 'antd';
+import { Popover, Badge, Icon, List, Spin, message, Row } from 'antd';
 import { isEmpty, debounce } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
 import moment from 'moment';
@@ -43,9 +43,9 @@ class NotificationsPopover extends Component {
 
   renderHeader = () => {
     return (
-      <div>
+      <div className="header-notifications">
+        <span style={{ marginLeft: 5 }}>NOTIFICAÇÕES</span>
         <Icon type="mail" />
-        <span style={{ marginLeft: 5 }}>Notificações</span>
       </div>
     );
   };
@@ -124,14 +124,17 @@ class NotificationsPopover extends Component {
     >
       <List.Item.Meta
         description={
-          <div className="notifications clearfix">
-            <div className="line" />
+          <div className="notifications">
             <div className="notification">
-              <div className="circle" />
               <span className="time">
                 {moment(item.updatedAt).format('DD/MM/YYYY')}
               </span>
-              <p>{item.description}</p>
+              <Row>{item.description}</Row>
+              <Row className="relative-time">
+                {moment(item.updatedAt)
+                  .startOf('hour')
+                  .fromNow()}
+              </Row>
             </div>
           </div>
         }
@@ -145,12 +148,10 @@ class NotificationsPopover extends Component {
       actions: { listNotifications },
     } = this.props;
     const lastItem = data[data.length - 1];
-    console.log('aqui');
 
     await this.setState({
       loading: true,
     });
-    console.log(this.state.loading);
 
     const params = { lastId: lastItem.id };
 
@@ -186,7 +187,7 @@ class NotificationsPopover extends Component {
       items: { totalNotViewed },
     } = this.props;
     const { total, data } = this.state;
-    console.log(items);
+
     return (
       <Popover
         content={
@@ -198,6 +199,7 @@ class NotificationsPopover extends Component {
                 loadMore={this.handleInfiniteOnLoad}
                 hasMore={!this.state.loading && this.state.hasMore}
                 useWindow={false}
+                style={{ width: 270 }}
               >
                 <List
                   header={this.renderHeader()}

@@ -228,7 +228,6 @@ class SalesProductsPage extends Component {
     const { validateFields } = this.filterForm;
 
     validateFields(async (err, values) => {
-      console.log(values);
       if (err) return;
       await this.setState({
         ...values,
@@ -386,7 +385,6 @@ class SalesProductsPage extends Component {
   );
 
   onSelectChange = (selectedRowKeys) => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     const {
       actions: { selectProduct },
     } = this.props;

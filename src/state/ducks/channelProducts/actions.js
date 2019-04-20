@@ -43,6 +43,13 @@ function editChannelProductStatus(id, data) {
   };
 }
 
+function editChannelProductUpdateStatus(id, data) {
+  return {
+    type: types.EDIT_UPDATE_STATUS,
+    promise: patch(`channelproducts/${id}/updateStatus`, data),
+  };
+}
+
 function editChannelProduct(id, data) {
   return {
     type: types.EDIT_CHANNEL_PRODUCT,
@@ -103,6 +110,13 @@ function clearProductStatus() {
   };
 }
 
+function exportChannelProducts(idChannel) {
+  return {
+    type: types.EXPORT_CHANNEL_PRODUCTS,
+    promise: get(`channelproducts/export${getQueryParams(idChannel)}`),
+  };
+}
+
 export default {
   listChannelProducts,
   findChannelProduct,
@@ -118,4 +132,6 @@ export default {
   listChannelProductsStatus,
   clearProductStatus,
   clearSelectedProducts,
+  editChannelProductUpdateStatus,
+  exportChannelProducts,
 };

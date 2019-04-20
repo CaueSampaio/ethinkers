@@ -37,8 +37,8 @@ class AccountPage extends Component {
       const params = {
         ...values,
       };
-      console.log(params);
       const result = await changeUserPasswordLoggedIn(params);
+
       if (!result.error) {
         await notification.success({
           message: 'Sucesso',

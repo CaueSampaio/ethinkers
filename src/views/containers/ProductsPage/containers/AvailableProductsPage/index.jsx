@@ -460,7 +460,6 @@ class AvailableProductsPage extends Component {
       onChange: this.onSelectChange,
     };
 
-    console.log(paramsSelectedProducts);
     return (
       <div>
         <PrivatePageHeader

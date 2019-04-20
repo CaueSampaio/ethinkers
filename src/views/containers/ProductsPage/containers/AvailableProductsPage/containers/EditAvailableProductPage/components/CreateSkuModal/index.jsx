@@ -217,8 +217,13 @@ class CreateSkuModal extends Component {
                         message: 'Favor, preencher EAN!',
                         whitespace: true,
                       },
+                      {
+                        min: 5,
+                        max: 30,
+                        message: 'Deve conter de 5 a 30 caracteres',
+                      },
                     ],
-                  })(<Input maxLength={30} minLength={5} />)}
+                  })(<Input />)}
                 </Form.Item>
               </Col>
               <Col span={6}>

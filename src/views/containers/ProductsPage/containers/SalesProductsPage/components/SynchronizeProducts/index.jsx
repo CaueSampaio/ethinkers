@@ -41,7 +41,6 @@ class SynchronizeProducts extends Component {
       synchronizeAllIsLoading: true,
     });
     const params = {
-      status: 4,
       filters: { filterValues },
     };
     const result = await synchronizeChannelProduct(params);
@@ -81,7 +80,6 @@ class SynchronizeProducts extends Component {
     });
 
     const params = {
-      status: 4,
       filters: {
         idsProducts: selectedProducts,
       },
