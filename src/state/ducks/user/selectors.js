@@ -32,6 +32,12 @@ const makeSelectVerifyTokenError = () =>
     ({ verifyError }) => verifyError,
   );
 
+const makeSelectForgotPasswordError = () =>
+  createSelector(
+    selectUser,
+    ({ verifyError }) => verifyError,
+  );
+
 export default {
   selectUser,
   makeSelectUserLoading,
@@ -39,4 +45,5 @@ export default {
   makeSelectUserData,
   makeSelectVerifyTokenLoading,
   makeSelectVerifyTokenError,
+  makeSelectForgotPasswordError,
 };

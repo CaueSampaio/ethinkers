@@ -33,8 +33,16 @@ function verifyToken() {
   };
 }
 
+function forgotPassword() {
+  return {
+    type: types.FORGOT_PASSORD,
+    promise: post(`users/forgotpassword`),
+  };
+}
+
 export default {
   handleLogin,
   handleLogout,
   verifyToken,
+  forgotPassword,
 };

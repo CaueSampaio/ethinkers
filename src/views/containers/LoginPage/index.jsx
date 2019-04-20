@@ -18,6 +18,10 @@ import {
 import './style.less';
 
 class LoginPage extends Component {
+  state = {
+    loading: false,
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     const {
@@ -29,13 +33,23 @@ class LoginPage extends Component {
     const { handleLogin } = actions;
     const { validateFields } = form;
 
+    this.setState({
+      loading: true,
+    });
+
     validateFields(async (err, values) => {
       if (err) return;
 
       const result = await handleLogin(values);
       if (!result.error) {
+        this.setState({
+          loading: false,
+        });
         push('/orders');
       } else {
+        this.setState({
+          loading: false,
+        });
         notification.error({
           message: 'Login falhou',
           description: 'Credenciais incorretas.',
@@ -50,10 +64,9 @@ class LoginPage extends Component {
         getFieldDecorator,
         getFieldsError,
         isFieldTouched,
-        verifyIsLoading,
       },
     } = this.props;
-
+    const { loading } = this.state;
     return (
       <div>
         <Form onSubmit={this.handleSubmit} className="login-form">
@@ -88,7 +101,7 @@ class LoginPage extends Component {
             <Button
               type="primary"
               htmlType="submit"
-              loading={verifyIsLoading}
+              loading={loading}
               disabled={
                 hasErrors(getFieldsError()) ||
                 !isFieldTouched('email') ||
@@ -115,8 +128,6 @@ LoginPage.propTypes = {
 const mapStateToProps = createStructuredSelector({
   userData: userSelectors.makeSelectUserData(),
   error: userSelectors.makeSelectUserError(),
-
-  verifyIsLoading: userSelectors.makeSelectVerifyTokenLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
