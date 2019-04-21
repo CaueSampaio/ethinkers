@@ -33,7 +33,7 @@ const errorRequestHandler = async (err) => {
     const { push } = history;
     const { removeLocalStorageUser } = userUtils;
     await removeLocalStorageUser();
-    await push('/login');
+    await push('/');
     return Promise.reject({
       status,
       message: 'Unauthorized',

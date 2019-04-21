@@ -167,7 +167,7 @@ class OrdersPage extends Component {
       actions: { exportOrders },
     } = this.props;
     const result = await exportOrders();
-    console.log(result);
+
     if (!result.error) {
       const {
         payload: { message: description },
@@ -181,7 +181,6 @@ class OrdersPage extends Component {
         exportOrdersError,
         exportOrdersError: { message, errors },
       } = this.props;
-      console.log(exportOrdersError);
       notification.error({
         message,
         description: <BadRequestNotificationBody errors={errors} />,
@@ -209,7 +208,6 @@ class OrdersPage extends Component {
     const { orders, isLoading, exportIsLoading } = this.props;
     const { pagination, lastId, loadingSubmit } = this.state;
     const { orderStatusEnum } = ordersConstants;
-    console.log(exportIsLoading);
 
     const columns = [
       {

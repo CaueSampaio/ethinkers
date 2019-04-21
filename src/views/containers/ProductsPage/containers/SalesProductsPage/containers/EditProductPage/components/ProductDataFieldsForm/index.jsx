@@ -14,6 +14,8 @@ import {
   Button,
   Spin,
   Checkbox,
+  Card,
+  Avatar,
 } from 'antd';
 
 import {
@@ -29,6 +31,8 @@ import {
   channelCategoriesActions,
   channelCategoriesSelectors,
 } from '../../../../../../../../../state/ducks/channelCategories';
+
+import integrationErrorIc from '../../../../../../../../../assets/images/integration-error.svg';
 
 import './style.less';
 
@@ -156,6 +160,7 @@ class EditProductPage extends Component {
         channelProductAttributes = [],
         channelBrand = {},
         channelCategory = {},
+        integrationErrors = [],
         status,
       },
     } = this.props;
@@ -167,9 +172,29 @@ class EditProductPage extends Component {
 
     return (
       <Fragment>
-        <Divider orientation="left">Dados do Produto</Divider>
+        {product.integrationErrors ? (
+          <Row type="flex" gutter={16} align="middle">
+            <Col span={24}>
+              <span>Erros na Integração:</span>
+            </Col>
+            {integrationErrors.map((error, i) => (
+              // eslint-disable-next-line
+              <Col xs={24} sm={24} md={12} lg={12} xl={8} key={i}>
+                <Card className="card-error-integration">
+                  <Card.Meta
+                    avatar={<Avatar src={integrationErrorIc} size="small" />}
+                    description={error}
+                  />
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          ''
+        )}
+        <Divider orientation="left">Produto</Divider>
         <Row type="flex" gutter={24}>
-          <Col span={8}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={8}>
             <span className="label term">Status</span>
             <span className="detail">
               <span key={product.status}>
@@ -180,7 +205,7 @@ class EditProductPage extends Component {
             </span>
           </Col>
           {product.updateStatus ? (
-            <Col span={8}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={8}>
               <span className="label term">Status Atualização</span>
               <span className="detail">
                 <span key={product.updateStatus}>

@@ -208,6 +208,11 @@ class SkusDataList extends Component {
                               message: `Favor, preencher o campo EAN!`,
                               whitespace: true,
                             },
+                            {
+                              min: 5,
+                              max: 30,
+                              message: 'Deve conter de 5 a 30 caracteres',
+                            },
                           ],
                         })(<Input />)}
                       </StyledFormItem>

@@ -41,7 +41,11 @@ class ShippedBySellersProductDetailsPage extends Component {
     const {
       actions: { listChannelProducts },
     } = this.props;
-    listChannelProducts();
+    const params = {
+      status: 3,
+      updateStatus: 0,
+    };
+    listChannelProducts(params);
   };
 
   componentWillMount() {

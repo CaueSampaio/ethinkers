@@ -190,6 +190,25 @@ const makeSelectListStatusError = () =>
     ({ error }) => error,
   );
 
+// EXPORT CHANNEL PRODUCTS
+const selectExportProducts = ({ channelProducts: { exportProducts } }) =>
+  exportProducts;
+const makeSelectExportProducts = () =>
+  createSelector(
+    selectExportProducts,
+    ({ data }) => data,
+  );
+const makeSelectExportProductsIsLoading = () =>
+  createSelector(
+    selectExportProducts,
+    ({ isLoading }) => isLoading,
+  );
+const makeSelectExportProductsError = () =>
+  createSelector(
+    selectExportProducts,
+    ({ error }) => error,
+  );
+
 export default {
   // LIST PRODUCTS
   selectChannelProducts,
@@ -250,4 +269,10 @@ export default {
   makeSelectListStatus,
   makeSelectListStatusIsLoading,
   makeSelectListStatusError,
+
+  // EXPORT PRODUCTS
+  selectExportProducts,
+  makeSelectExportProducts,
+  makeSelectExportProductsIsLoading,
+  makeSelectExportProductsError,
 };

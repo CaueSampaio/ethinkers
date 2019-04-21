@@ -133,15 +133,14 @@ class ProductList extends Component {
           </Col>
         </Row>
         <Divider orientation="left">Erros na Integração</Divider>
-        <Row gutter={16}>
-          <Col span={12}>
+        <Row type="flex" gutter={16}>
+          <Col span={8}>
             <Card className="card-error-integration">
               <Card.Meta
-                avatar={<Avatar src={integrationErrorIc} />}
+                avatar={<Avatar src={integrationErrorIc} size="small" />}
                 description="This is the description fshdfkj fhskfh"
               />
             </Card>
-            ,
           </Col>
         </Row>
       </Fragment>

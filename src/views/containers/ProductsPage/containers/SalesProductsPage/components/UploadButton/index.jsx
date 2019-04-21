@@ -15,21 +15,23 @@ import {
   Row,
   Col,
   Spin,
+  notification,
 } from 'antd';
 
 import {
   channelsActions,
   channelsSelectors,
 } from '../../../../../../../state/ducks/channels';
-
 import {
-  downloadFile,
-  uploadChannelProduct,
-  getQueryParams,
-} from '../../../../../../../utils/request';
+  channelProductsActions,
+  channelProductsSelectors,
+} from '../../../../../../../state/ducks/channelProducts';
+
+import { uploadChannelProduct } from '../../../../../../../utils/request';
 
 import StyledFormItem from '../../../../../../components/StyledFormItem';
 import DocumentErrorItemsCard from '../../../../../../components/DocumentErrorItemsCard';
+import BadRequestNotificationBody from '../../../../../../components/BadRequestNotificationBody';
 
 class UploadButton extends Component {
   static propTypes = {
@@ -90,12 +92,34 @@ class UploadButton extends Component {
     }
   };
 
-  onDownloadSpreadsheet = () => {
+  onDownloadSpreadsheet = async () => {
+    const {
+      actions: { exportChannelProducts },
+      onCancel,
+    } = this.props;
     const { idChannel } = this.state;
     const params = {
       idChannel,
     };
-    downloadFile(`channelproducst/export${getQueryParams(params)}`);
+    const result = await exportChannelProducts(params);
+    if (!result.error) {
+      const {
+        payload: { message: description },
+      } = result;
+      onCancel();
+      notification.success({
+        message: 'Sucesso',
+        description,
+      });
+    } else {
+      const {
+        exportError: { message: messageError, errors },
+      } = this.props;
+      notification.error({
+        message: messageError,
+        description: <BadRequestNotificationBody errors={errors} />,
+      });
+    }
   };
 
   render() {
@@ -108,6 +132,7 @@ class UploadButton extends Component {
     const {
       channels,
       channelsIsLoading,
+      exportIsLoading,
       textChildren,
       visible,
       onCancel,
@@ -184,7 +209,7 @@ class UploadButton extends Component {
                 borderRadius: 10,
               }}
             >
-              <Icon type="file" />
+              {exportIsLoading ? <Icon type="loading" /> : <Icon type="file" />}
               <span>Exportar Planilha</span>
             </Button>
           </Col>
@@ -216,15 +241,23 @@ UploadButton.propTypes = {
   textChildren: PropTypes.string.isRequired,
   visible: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
+  exportError: PropTypes.object,
+  exportIsLoading: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = createStructuredSelector({
   channels: channelsSelectors.makeSelectChannels(),
   channelsIsLoading: channelsSelectors.makeSelectChannelsIsLoading(),
+
+  exportError: channelProductsSelectors.makeSelectExportProductsError(),
+  exportIsLoading: channelProductsSelectors.makeSelectExportProductsIsLoading(),
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  actions: bindActionCreators({ ...channelsActions }, dispatch),
+  actions: bindActionCreators(
+    { ...channelsActions, ...channelProductsActions },
+    dispatch,
+  ),
 });
 
 const withForm = Form.create();
