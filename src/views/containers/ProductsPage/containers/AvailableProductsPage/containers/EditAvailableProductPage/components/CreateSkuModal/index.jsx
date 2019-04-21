@@ -223,7 +223,7 @@ class CreateSkuModal extends Component {
                         message: 'Deve conter de 5 a 30 caracteres',
                       },
                     ],
-                  })(<Input />)}
+                  })(<Input minLength={5} maxLength={30} />)}
                 </Form.Item>
               </Col>
               <Col span={6}>

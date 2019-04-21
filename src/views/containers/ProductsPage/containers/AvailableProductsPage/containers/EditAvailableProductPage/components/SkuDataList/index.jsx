@@ -107,21 +107,21 @@ class SkusDataList extends Component {
           <Form.Item label="URL da Imagem" required={false}>
             {getFieldDecorator(`images[${k}].url`, {
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input onChange={this.handleChangeImage} />)}
+            })(<Input maxLength={128} onChange={this.handleChangeImage} />)}
           </Form.Item>
         </Col>
         <Col span={6}>
           <Form.Item label="Nome" required={false}>
             {getFieldDecorator(`images[${k}].name`, {
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input />)}
+            })(<Input maxLength={128} />)}
           </Form.Item>
         </Col>
         <Col span={9}>
           <Form.Item label="Descrição" required={false}>
             {getFieldDecorator(`images[${k}].description`, {
               validateTrigger: ['onChange', 'onBlur'],
-            })(<Input.TextArea autosize />)}
+            })(<Input.TextArea maxLength={128} autosize />)}
           </Form.Item>
         </Col>
         <Col span={3}>
@@ -195,7 +195,7 @@ class SkusDataList extends Component {
                               whitespace: true,
                             },
                           ],
-                        })(<Input />)}
+                        })(<Input maxLength={200} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={7}>
@@ -214,7 +214,7 @@ class SkusDataList extends Component {
                               message: 'Deve conter de 5 a 30 caracteres',
                             },
                           ],
-                        })(<Input />)}
+                        })(<Input minLength={5} maxLength={30} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={10}>
@@ -228,7 +228,7 @@ class SkusDataList extends Component {
                               whitespace: true,
                             },
                           ],
-                        })(<Input.TextArea autosize />)}
+                        })(<Input.TextArea maxLength={200} autosize />)}
                       </StyledFormItem>
                     </Col>
                   </Row>
@@ -240,6 +240,7 @@ class SkusDataList extends Component {
                         fieldName="priceOf"
                         label="Preço de"
                         initialValue={sku.priceOf}
+                        min={0}
                       />
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
@@ -249,6 +250,7 @@ class SkusDataList extends Component {
                         fieldName="priceBy"
                         label="Preço por"
                         initialValue={sku.priceBy}
+                        min={0}
                       />
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
@@ -261,7 +263,7 @@ class SkusDataList extends Component {
                               message: `Favor, preencher o campo Peso!`,
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
@@ -281,14 +283,14 @@ class SkusDataList extends Component {
                               message: `Favor, preencher o campo Altura!`,
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Altura real">
                         {getFieldDecorator('realHeight', {
                           initialValue: sku.realHeight,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
@@ -301,14 +303,14 @@ class SkusDataList extends Component {
                               message: `Favor, preencher o campo Largura!`,
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
                       <StyledFormItem label="Largura real">
                         {getFieldDecorator('realWidth', {
                           initialValue: sku.realWidth,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                   </Row>
@@ -323,7 +325,7 @@ class SkusDataList extends Component {
                               message: `Favor, preencher o campo Comprimento!`,
                             },
                           ],
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                     <Col xs={24} sm={24} md={6} lg={6} xl={3}>
@@ -337,7 +339,7 @@ class SkusDataList extends Component {
                       <StyledFormItem label="Peso cúbico">
                         {getFieldDecorator('cubicWeight', {
                           initialValue: sku.cubnicWeight,
-                        })(<InputNumber style={{ width: '100%' }} />)}
+                        })(<InputNumber min={0} style={{ width: '100%' }} />)}
                       </StyledFormItem>
                     </Col>
                   </Row>

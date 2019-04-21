@@ -112,6 +112,7 @@ class SkuModalForm extends Component {
               validateTrigger: ['onChange', 'onBlur'],
             })(
               <Input
+                maxLength={128}
                 onChange={(e) => handleChangeImage(e, k)}
                 // maxLength={128}
               />,
@@ -225,7 +226,7 @@ class SkuModalForm extends Component {
                       message: 'Deve conter de 5 a 30 caracteres',
                     },
                   ],
-                })(<Input />)}
+                })(<Input minLength={5} maxLength={30} />)}
               </Form.Item>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={6}>
@@ -234,6 +235,7 @@ class SkuModalForm extends Component {
                 precision="2"
                 fieldName="priceOf"
                 label="Preço de"
+                min={0}
               />
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={6}>
@@ -242,6 +244,7 @@ class SkuModalForm extends Component {
                 precision="2"
                 fieldName="priceBy"
                 label="Preço por"
+                min={0}
               />
             </Col>
           </Row>
@@ -256,7 +259,7 @@ class SkuModalForm extends Component {
                       whitespace: true,
                     },
                   ],
-                })(<Input />)}
+                })(<Input maxLength={200} />)}
               </Form.Item>
             </Col>
           </Row>

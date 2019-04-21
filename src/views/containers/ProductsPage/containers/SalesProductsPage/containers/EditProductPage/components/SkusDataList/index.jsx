@@ -258,6 +258,7 @@ class SkusDataList extends Component {
                         fieldName="priceOf"
                         label="Preço de"
                         initialValue={sku.priceOf}
+                        min={0}
                       />
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
@@ -267,6 +268,7 @@ class SkusDataList extends Component {
                         fieldName="priceBy"
                         label="Preço por"
                         initialValue={sku.priceBy}
+                        min={0}
                       />
                     </Col>
                     <Col xs={24} sm={12} md={6} lg={6} xl={3}>
