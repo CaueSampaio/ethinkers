@@ -220,7 +220,7 @@ class OrderDetailsPage extends Component {
           <Form.Item label="Key">
             {getFieldDecorator('key', {
               rules: [{ required: true, message: 'Por favor insira key.' }],
-            })(<Input minLength="1" maxLength="2"/>)}
+            })(<Input minLength={1} maxLength={2}/>)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
@@ -251,7 +251,7 @@ class OrderDetailsPage extends Component {
     } = this.props;
     i += 1;
     i %= orders.results.length;
-    findOrder(orders.results[i].idOrder).then((response) => {
+    findOrder(orders.results[i].id).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -267,7 +267,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].idOrder}`);
+    push(`./${orders.results[i].id}`);
     return orders.results[i];
   }
 

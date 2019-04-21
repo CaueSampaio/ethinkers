@@ -79,7 +79,7 @@ class InvoiceProducts extends Component {
               rules: [
                 { required: true, message: 'Keys é um campo obrigatório.' },
               ],
-            })(<Input minLength="1" maxLength="2" />)}
+            })(<Input minLength={1} maxLength={2} />)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
@@ -144,6 +144,7 @@ class InvoiceProducts extends Component {
   };
 
   handleCloseInvoiceProducts = (e) => {
+    debugger
     const { 
       form: {
         resetFields 

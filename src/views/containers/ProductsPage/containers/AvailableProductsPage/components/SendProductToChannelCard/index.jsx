@@ -165,10 +165,18 @@ class SendProductToChannelCard extends Component {
   };
 
   handleCancelSyncSelecteds = () => {
+    const {
+      formSyncSelecteds: { resetFields },
+    } = this;
+    resetFields();
     this.setState({ visibleModalSyncSelecteds: false });
   };
 
   handleCancel = () => {
+    const {
+      formSyncAll: { resetFields },
+    } = this;
+    resetFields();
     this.setState({ visibleModalChannels: false });
   };
 

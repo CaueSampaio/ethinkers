@@ -135,6 +135,12 @@ class InvoiceList extends Component {
   };
 
   handleCancel = (e) => {
+    const {
+      form: {
+        resetFields,
+      },
+    } = this.props;
+    resetFields();
     this.setState({
       invoiceModal: false,
     });
