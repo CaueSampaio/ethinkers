@@ -15,7 +15,7 @@ import {
   Spin,
   Modal,
   notification,
-  DatePicker
+  DatePicker,
 } from 'antd';
 import locale from 'antd/lib/date-picker/locale/pt_BR';
 import { isEmpty } from 'lodash';
@@ -103,7 +103,14 @@ class OrderDetailsPage extends Component {
         <Button key="back" onClick={this.handleCloseInvoiceOrderModal}>
           Cancelar
         </Button>
-        <Button key="submit" type="primary" loading={invoiceLoading} onClick={this.handleInvoiceOrder}>Faturar pedido</Button>
+        <Button
+          key="submit"
+          type="primary"
+          loading={invoiceLoading}
+          onClick={this.handleInvoiceOrder}
+        >
+          Faturar pedido
+        </Button>
       </div>
     );
   };
@@ -144,9 +151,7 @@ class OrderDetailsPage extends Component {
 
   handleCloseInvoiceOrderModal = () => {
     const {
-      form: {
-        resetFields,
-      },
+      form: { resetFields },
     } = this.props;
     resetFields();
     this.setState({
@@ -220,12 +225,16 @@ class OrderDetailsPage extends Component {
           <Form.Item label="Key">
             {getFieldDecorator('key', {
               rules: [{ required: true, message: 'Por favor insira key.' }],
-            })(<Input minLength={1} maxLength={2}/>)}
+            })(<Input minLength={1} maxLength={2} />)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
-              rules: [{ required: true, message: 'Por favor insira uma data.' }],
-            })(<DatePicker placeholder="" format={dateFormat} locale={locale} />)}
+              rules: [
+                { required: true, message: 'Por favor insira uma data.' },
+              ],
+            })(
+              <DatePicker placeholder="" format={dateFormat} locale={locale} />,
+            )}
           </Form.Item>
           <Form.Item label="Código de rastreio">
             {getFieldDecorator('tracking.code', {})(<Input />)}
@@ -324,20 +333,20 @@ class OrderDetailsPage extends Component {
           >
             Faturar
           </PrivatePageHeaderButton>
-          <Modal
-            title="Faturar pedido"
-            visible={orderModal}
-            footer={this.renderFooterFormButtons()}
-            onCancel={this.handleCloseInvoiceOrderModal}
-          >
-            {this.renderInvoiceOrderForm()}
-          </Modal>
           <PrivatePageHeaderButton
             onClick={(e) => this.showConfirmCancelOrder(e, order)}
           >
             Cancelar
           </PrivatePageHeaderButton>
         </Row>
+        <Modal
+          title="Faturar pedido"
+          visible={orderModal}
+          footer={this.renderFooterFormButtons()}
+          onCancel={this.handleCloseInvoiceOrderModal}
+        >
+          {this.renderInvoiceOrderForm()}
+        </Modal>
       </div>
     );
   };
@@ -457,8 +466,7 @@ class OrderDetailsPage extends Component {
                       </Col>
                       <span className="total-label">Valor total: </span>
                       <span className="total-value">
-                        {!isEmpty(order) &&
-                          formatCurrency(order.totalNetValue)}
+                        {!isEmpty(order) && formatCurrency(order.totalNetValue)}
                       </span>
                     </Row>
                   </article>

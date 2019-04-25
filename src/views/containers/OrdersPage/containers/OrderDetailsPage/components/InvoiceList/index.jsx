@@ -136,9 +136,7 @@ class InvoiceList extends Component {
 
   handleCancel = (e) => {
     const {
-      form: {
-        resetFields,
-      },
+      form: { resetFields },
     } = this.props;
     resetFields();
     this.setState({
@@ -214,22 +212,20 @@ class InvoiceList extends Component {
                     </Panel>
                   </Collapse>
                 </div>
-                <Modal
-                  title={`Adicionar tracking ao pedido ${item.number}-${
-                    item.series
-                  }`}
-                  visible={this.state.invoiceModal}
-                  onOk={() => this.handleOk(item)}
-                  onCancel={this.handleCancel}
-                  centered={true}
-                  okText="Enviar tracking"
-                >
-                  {this.renderTrackingForm(item)}
-                </Modal>
               </List.Item>
             )}
           />
         </PrivatePageSection>
+        <Modal
+          title={`Adicionar tracking ao pedido ${item.number}-${item.series}`}
+          visible={this.state.invoiceModal}
+          onOk={() => this.handleOk(item)}
+          onCancel={this.handleCancel}
+          centered={true}
+          okText="Enviar tracking"
+        >
+          {this.renderTrackingForm(item)}
+        </Modal>
       </div>
     );
   }

@@ -143,8 +143,7 @@ class InvoiceProducts extends Component {
     });
   };
 
-  handleCloseInvoiceProducts = (e) => {
-    debugger
+  handleCloseInvoiceProducts = (e) => {    
     const { 
       form: {
         resetFields 
