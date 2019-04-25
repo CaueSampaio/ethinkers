@@ -1,23 +1,15 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { compose } from 'redux';
-import { Form, Input, Card, List, Modal, Collapse, notification } from 'antd';
-import moment from 'moment';
-import PrivatePageHeaderButton from '../../../../../../components/PrivatePageHeaderButton';
+import { List } from 'antd';
 import PrivatePageSection from '../../../../../../components/PrivatePageSection';
-import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
-
+import InvoiceItemComponent from './InvoiceItem';
 import './style.less';
-
-const { Panel } = Collapse;
-
 class InvoiceList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       invoiceList: [],
       orderItems: [],
-      invoiceModal: false,
     };
   }
 
@@ -28,143 +20,6 @@ class InvoiceList extends Component {
       orderItems: products,
     });
   }
-
-  renderTitle = (item) => (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        whiteSpace: 'normal',
-      }}
-    >
-      {item.channelSku.description}
-    </div>
-  );
-
-  renderAvatar = (item) => (
-    <div style={{ display: 'flex' }}>
-      <img
-        alt="Image"
-        src={item.channelSku.images[0].url}
-        style={{ marginLeft: 8 }}
-      />
-    </div>
-  );
-
-  renderNetValue = (item) => (
-    <div style={{ display: 'flex' }}>
-      <span>{item.netValue}}</span>
-    </div>
-  );
-
-  renderDescription = (item) => (
-    <div className="product-description">
-      <h3>
-        Preço: <span>{formatCurrency(item.netValue)}</span>
-      </h3>
-      <h3>
-        SKU: <span>{item.channelSku.refSku}</span>
-      </h3>
-      <h3>
-        Status: <span>{item.status}</span>
-      </h3>
-    </div>
-  );
-
-  renderExtra = (item) => (
-    <PrivatePageHeaderButton
-      onClick={(e) => this.showTrackInvoiceModal(e, item)}
-    >
-      Adicionar tracking
-    </PrivatePageHeaderButton>
-  );
-
-  renderTrackingForm = () => {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <div>
-        <Form>
-          <Form.Item label="Código de rastreio">
-            {getFieldDecorator('code', {
-              rules: [
-                {
-                  required: true,
-                  message: 'O código de rastreio é um campo obrigatório.',
-                },
-              ],
-            })(<Input />)}
-          </Form.Item>
-          <Form.Item label="Url">
-            {getFieldDecorator('url', {
-              rules: [
-                { required: true, message: 'A url é um campo obrigatório.' },
-              ],
-            })(<Input />)}
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
-  handleOk = (invoice) => {
-    const { id } = invoice;
-    const {
-      trackSkus,
-      form: { validateFields, resetFields },
-    } = this.props;
-    validateFields(async (err, value) => {
-      if (err) return;
-      const data = {
-        ...value,
-      };
-      const result = await trackSkus(id, data);
-      if (!result.error) {
-        await notification.success({
-          message: 'Sucesso',
-          description: 'Tracking SKUS enviadas com sucesso',
-        });
-        this.handleCancel();
-        resetFields();
-      }
-    });
-    this.setState({
-      invoiceModal: false,
-    });
-  };
-
-  handleCancel = (e) => {
-    const {
-      form: { resetFields },
-    } = this.props;
-    resetFields();
-    this.setState({
-      invoiceModal: false,
-    });
-  };
-
-  showTrackInvoiceModal = (e, item) => {
-    e.stopPropagation();
-    this.setState({
-      invoiceModal: true,
-    });
-  };
-
-  filterInvoiceProducts = (idOrderItems) => {
-    const orderItems = [...this.state.orderItems];
-    let auxList = [];
-    orderItems.forEach((orderItem) => {
-      if (idOrderItems.some((item) => item == orderItem.id)) {
-        auxList.push(orderItem);
-      }
-    });
-    return auxList;
-  };
-
-  saveFormRef = (formRef) => {
-    this.formRef = formRef;
-  };
 
   render() {
     const { invoiceList } = this.state;
@@ -177,60 +32,16 @@ class InvoiceList extends Component {
             rowKey={'id'}
             grid={{ gutter: 24, lg: 1, md: 1, sm: 1, xs: 1 }}
             dataSource={[...invoiceList]}
-            renderItem={(item) => (
-              <List.Item key={item.id}>
-                <div className="content-collapse-sku">
-                  <Collapse>
-                    <Panel
-                      header={`Invoice ${item.number}-${
-                        item.series
-                      }, Data de emissão: ${moment().format(
-                        'DD/MM/YYYY',
-                        item.issuanceDate,
-                      )}`}
-                      key={item.id}
-                      extra={this.renderExtra(item)}
-                    >
-                      <List
-                        rowKey="id"
-                        grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
-                        dataSource={this.filterInvoiceProducts(
-                          item.idOrderItems,
-                        )}
-                        renderItem={(item) => (
-                          <List.Item key={item.id}>
-                            <Card hoverable className="card">
-                              <Card.Meta
-                                avatar={this.renderAvatar(item)}
-                                title={this.renderTitle(item)}
-                                description={this.renderDescription(item)}
-                              />
-                            </Card>
-                          </List.Item>
-                        )}
-                      />
-                    </Panel>
-                  </Collapse>
-                </div>
+            renderItem={(invoice) => (
+              <List.Item key={invoice.id}>
+                <InvoiceItemComponent invoice={invoice} />
               </List.Item>
             )}
           />
         </PrivatePageSection>
-        <Modal
-          title={`Adicionar tracking ao pedido ${item.number}-${item.series}`}
-          visible={this.state.invoiceModal}
-          onOk={() => this.handleOk(item)}
-          onCancel={this.handleCancel}
-          centered={true}
-          okText="Enviar tracking"
-        >
-          {this.renderTrackingForm(item)}
-        </Modal>
       </div>
     );
   }
 }
 
-const withForm = Form.create({ name: 'tracking_form' });
-
-export default compose(withForm)(InvoiceList);
+export default InvoiceList;

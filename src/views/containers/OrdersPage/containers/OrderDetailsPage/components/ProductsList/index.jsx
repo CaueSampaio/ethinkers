@@ -7,8 +7,9 @@ import InvoiceProducts from './components/InvoiceProducts';
 import CancelProducts from './components/CancelProducts';
 import CheckBox from '../CheckBox';
 import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
-
+import { isEmpty } from 'lodash';
 import './style.less';
+import { isEmptyBindingElement } from 'typescript';
 
 class ProductList extends Component {
   constructor(props) {
@@ -43,11 +44,13 @@ class ProductList extends Component {
         handleCheckChieldElement={this.handleCheckChieldElement}
         {...item}
       />
-      <img
-        alt="Image"
-        src={item.channelSku.images[0].url}
-        style={{ marginLeft: 8 }}
-      />
+      {isEmpty(item.channelSku.images) ? null : (
+        <img
+          alt="Image"
+          src={item.channelSku.images[0].url}
+          style={{ marginLeft: 8 }}
+        />
+      )}
     </div>
   );
 
