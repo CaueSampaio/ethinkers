@@ -98,19 +98,25 @@ class CancelProducts extends Component {
           cancelModal: false,
         });
       } else {
-        const { message: errorMessage, errors } = editStatusError;
         notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
+          message: 'Desculpe, ocorreu um erro. Tente novamente.',
         });
       }
     });
   };
 
   showCancelProductsModal = (e) => {
-    this.setState({
-      cancelModal: true,
-    });
+    const { products } = this.props;
+    const idOrderItems = this.getIdSelectedProducts(products);
+    if(idOrderItems.length < 1) {
+      notification.warning({
+        message: 'Selecione no mínimo um produto para cancelar.',
+      });
+    } else {
+      this.setState({
+        cancelModal: true,
+      });
+    }
   };
 
   handleCloseCancelProducts = (e) => {

@@ -219,13 +219,25 @@ class OrderDetailsPage extends Component {
           </Form.Item>
           <Form.Item label="Series">
             {getFieldDecorator('series', {
-              rules: [{ required: true, message: 'Por favor insira series.' }],
-            })(<Input />)}
+              rules: [
+                {
+                  required: true,
+                  message:
+                    'Series é um campo obrigatório e deve ter de 1 a 2 caracteres.',
+                },
+              ],
+            })(<Input Input minLength={1} maxLength={2} />)}
           </Form.Item>
           <Form.Item label="Key">
             {getFieldDecorator('key', {
-              rules: [{ required: true, message: 'Por favor insira key.' }],
-            })(<Input minLength={1} maxLength={2} />)}
+              rules: [
+                {
+                  required: true,
+                  message:
+                    'Keys é um campo obrigatório e deve ter 44 caracteres.',
+                },
+              ],
+            })(<Input minLength={44} maxLength={44} />)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
@@ -254,10 +266,13 @@ class OrderDetailsPage extends Component {
       },
     });
     const {
+      order,
       orders,
+      orders: { results },
       actions: { findOrder },
       history: { push },
     } = this.props;
+    i = results.findIndex((item) => item.id === order.id);
     i += 1;
     i %= orders.results.length;
     findOrder(orders.results[i].id).then((response) => {
@@ -287,15 +302,18 @@ class OrderDetailsPage extends Component {
       },
     });
     const {
+      order,
       orders,
+      orders: { results },
       actions: { findOrder },
       history: { push },
     } = this.props;
+    i = results.findIndex((item) => item.id === order.id);
     if (i === 0) {
       i = orders.results.length;
     }
     i -= 1;
-    findOrder(orders.results[i].idOrder).then((response) => {
+    findOrder(orders.results[i].id).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -311,7 +329,7 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].idOrder}`);
+    push(`./${orders.results[i].id}`);
     return orders.results[i];
   }
 
@@ -359,17 +377,17 @@ class OrderDetailsPage extends Component {
         channel,
         customer,
         delivery,
-        payment = [],
+        payment,
         orderItems,
         orderNumber,
         status,
         invoices,
+        ...rest
       },
     } = this.state;
     const {
       actions: { trackSkus },
     } = this.props;
-
     return (
       <Fragment>
         {!isEmpty(channel) ? (
@@ -449,11 +467,9 @@ class OrderDetailsPage extends Component {
                     <p className="payment-status">Aprovado</p>
                     <Row className="payment-method">
                       <span>Método de Pagamento</span>
-                      <p>
-                        Cartão de
-                        <span> </span>
-                        {!isEmpty(payment) && payment.paymentType}
-                      </p>
+                      {payment.map((payment) => (
+                        <p>{!isEmpty(payment) && payment.paymentType}</p>
+                      ))}
                     </Row>
                     <Row className="prices">
                       <Col>
@@ -499,12 +515,12 @@ class OrderDetailsPage extends Component {
             {invoices ? (
               <InvoiceList
                 invoiceList={invoices}
-                products={orderItems}
+                orderItems={orderItems}
                 trackSkus={trackSkus}
               />
             ) : null}
             {orderItems ? (
-              <ProductsList props={this.props} products={orderItems} />
+              <ProductsList products={orderItems} {...rest} />
             ) : null}
           </Animated>
         ) : null}

@@ -1,4 +1,4 @@
-export const API = 'http://api.it4360.com.br';
+export const API = 'https://api.it4360.com.br';
 
 export const USER_DISCRIMINATORS = {
   company: 1,

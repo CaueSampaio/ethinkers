@@ -6,6 +6,9 @@ import PropTypes from 'prop-types';
 import actions from '../../../../../../../../state/ducks/orders/actions';
 import PrivatePageHeaderButton from '../../../../../../../components/PrivatePageHeaderButton';
 import { formatCurrency } from '../../../../../../../../utils/masks/formatCurrency';
+import { ordersConstants } from '../../../../../../../../state/ducks/orders';
+
+const { orderStatusEnum } = ordersConstants;
 
 const { Panel } = Collapse;
 
@@ -32,6 +35,7 @@ class InvoiceItem extends Component {
         alt="Imagem"
         src={item.channelSku.images[0].url}
         style={{ marginLeft: 8 }}
+        className="product-image"
       />
     </div>
   );
@@ -45,13 +49,25 @@ class InvoiceItem extends Component {
   renderDescription = (item) => (
     <div className="product-description">
       <h3>
+        Quantidade: <span>{item.quantity}</span>
+      </h3>
+      <h3>
         Preço: <span>{formatCurrency(item.netValue)}</span>
       </h3>
       <h3>
         SKU: <span>{item.channelSku.refSku}</span>
       </h3>
       <h3>
-        Status: <span>{item.status}</span>
+        Status:{' '}
+        <span>
+          {orderStatusEnum.map(
+            (statusEnum) =>
+              statusEnum.value === item.status && statusEnum.status,
+          )}
+        </span>
+      </h3>
+      <h3>
+        Envio: <span>{item.channelShipping.name}</span>
       </h3>
     </div>
   );
@@ -137,7 +153,7 @@ class InvoiceItem extends Component {
   };
 
   filterInvoiceProducts = (idOrderItems) => {
-    const { orderItems } = this.state;
+    const { orderItems } = this.props;
     const orderItemList = [...orderItems];
     const auxList = [];
     orderItemList.forEach((orderItem) => {
@@ -208,6 +224,7 @@ InvoiceItem.defaultProps = {
 };
 
 InvoiceItem.propTypes = {
+  orderItems: PropTypes.array.isRequired,
   invoice: PropTypes.shape({}).isRequired,
   form: PropTypes.shape({}),
 };

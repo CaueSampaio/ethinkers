@@ -9,8 +9,9 @@ import CheckBox from '../CheckBox';
 import { formatCurrency } from '../../../../../../../utils/masks/formatCurrency';
 import { isEmpty } from 'lodash';
 import './style.less';
-import { isEmptyBindingElement } from 'typescript';
+import { ordersConstants } from '../../../../../../../state/ducks/orders';
 
+const { orderStatusEnum } = ordersConstants;
 class ProductList extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +50,7 @@ class ProductList extends Component {
           alt="Image"
           src={item.channelSku.images[0].url}
           style={{ marginLeft: 8 }}
+          className="product-image"
         />
       )}
     </div>
@@ -66,28 +68,31 @@ class ProductList extends Component {
         SKU: <span>{item.channelSku.refSku}</span>
       </h3>
       <h3>
-        Status: <span>{item.status}</span>
+        Status: <span>{orderStatusEnum.map((statusEnum) => statusEnum.value === item.status && statusEnum.status)}</span>
+      </h3>
+      <h3>
+        Envio: <span>{item.channelShipping.name}</span>
       </h3>
     </div>
   );
 
   handleAllChecked = (event) => {
-    let { products } = this.state;
+    let { products } = this.props;
     products.forEach((product) => (product.isChecked = event.target.checked));
-    this.setState({ products: products });
+    this.setState({ products });
   };
 
   handleCheckChieldElement = (event) => {
-    let { products } = this.state;
+    let { products } = this.props;
     products.forEach((product) => {
       if (product.id == event.target.value)
         product.isChecked = event.target.checked;
     });
-    this.setState({ products: products });
+    this.setState({ products });
   };
 
   getIdSelectedProducts = () => {
-    const { products } = this.state;
+    const { products } = this.props;
     const selectedProducts = products.filter((product) => product.isChecked);
     let productsId = [];
     selectedProducts.forEach((item) => productsId.push(item.id));
@@ -95,12 +100,7 @@ class ProductList extends Component {
   };
 
   render() {
-    const { products } = this.state;
-    const {
-      match: {
-        params: { id },
-      },
-    } = this.props.props;
+    const { products, id } = this.props;
     return (
       <div>
         <PrivatePageSection>

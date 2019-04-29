@@ -22,7 +22,7 @@ class InvoiceList extends Component {
   }
 
   render() {
-    const { invoiceList } = this.state;
+    const { invoiceList, orderItems } = this.props;
 
     return (
       <div>
@@ -34,7 +34,7 @@ class InvoiceList extends Component {
             dataSource={[...invoiceList]}
             renderItem={(invoice) => (
               <List.Item key={invoice.id}>
-                <InvoiceItemComponent invoice={invoice} />
+                <InvoiceItemComponent orderItems={orderItems} invoice={invoice} />
               </List.Item>
             )}
           />

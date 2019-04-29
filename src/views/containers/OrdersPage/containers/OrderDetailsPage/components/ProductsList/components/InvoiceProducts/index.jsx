@@ -70,16 +70,16 @@ class InvoiceProducts extends Component {
           <Form.Item label="Series">
             {getFieldDecorator('series', {
               rules: [
-                { required: true, message: 'Series é um campo obrigatório.' },
+                { required: true, message: 'Series é um campo obrigatório e deve ter de 1 a 2 caracteres.' },
               ],
-            })(<Input />)}
+            })(<Input minLength={1} maxLength={2} />)}
           </Form.Item>
           <Form.Item label="Key">
             {getFieldDecorator('key', {
               rules: [
-                { required: true, message: 'Keys é um campo obrigatório.' },
+                { required: true, message: 'Key é um campo obrigatório e deve ter 44 caracteres.' },
               ],
-            })(<Input minLength={1} maxLength={2} />)}
+            })(<Input minLength={44} maxLength={44} />)}
           </Form.Item>
           <Form.Item label="Issuance Date">
             {getFieldDecorator('issuanceDate', {
@@ -127,20 +127,25 @@ class InvoiceProducts extends Component {
           invoiceModal: false,
         });
       } else {
-        const { message: errorMessage, errors } = editStatusError;
         notification.error({
-          message: errorMessage,
-          description: <BadRequestNotificationBody errors={errors} />,
+          message: 'Desculpe ocorreu um erro, tente novamente.',
         });
       }
     });
   };
 
-  showInvoiceProductsModal = (products) => {
-    this.setState({
-      products,
-      invoiceModal: true,
-    });
+  showInvoiceProductsModal = () => {
+    const { products } = this.props;
+    const idOrderItems = this.getIdSelectedProducts(products);
+    if(idOrderItems.length < 1) {
+      notification.warning({
+        message: 'Selecione no mínimo um produto para faturar.',
+      });
+    } else {
+      this.setState({
+        invoiceModal: true,
+      });
+    }
   };
 
   handleCloseInvoiceProducts = (e) => {    
