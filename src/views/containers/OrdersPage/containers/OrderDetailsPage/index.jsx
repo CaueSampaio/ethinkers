@@ -34,8 +34,10 @@ import ProductsList from './components/ProductsList';
 import InvoiceList from './components/InvoiceList';
 
 import './style.less';
+import { forEachChild } from 'typescript';
 
 let i = 0;
+let ordersConcat = [];
 
 const { confirm } = Modal;
 
@@ -87,7 +89,9 @@ class OrderDetailsPage extends Component {
       actions: { listOrders },
     } = this.props;
     // findOrder(id);
-    listOrders();
+    listOrders().then((response) => {
+      ordersConcat = response.payload;
+    });
   }
 
   renderResourceMap = () => {
@@ -259,7 +263,7 @@ class OrderDetailsPage extends Component {
     );
   };
 
-  nextItem() {
+  nextItem = async () => {
     this.setState({
       slide: {
         isLoadingRight: true,
@@ -269,13 +273,22 @@ class OrderDetailsPage extends Component {
       order,
       orders,
       orders: { results },
-      actions: { findOrder },
+      actions: { findOrder, listOrders },
       history: { push },
     } = this.props;
-    i = results.findIndex((item) => item.id === order.id);
+    i = ordersConcat.results.findIndex((item) => item.id === order.id);
+    if (i == results.length - 1) {
+      const params = { lastId: results[i].id };
+      await listOrders(params).then((response) => {
+        const { payload } = response;
+        payload.results.forEach((order) => {
+          ordersConcat.results.push(order);
+        });
+      });
+    }
     i += 1;
     i %= orders.results.length;
-    findOrder(orders.results[i].id).then((response) => {
+    findOrder(ordersConcat.results[i].id).then((response) => {
       this.setState({
         slide: {
           active: false,
@@ -291,8 +304,8 @@ class OrderDetailsPage extends Component {
         order: response.payload,
       });
     });
-    push(`./${orders.results[i].id}`);
-    return orders.results[i];
+    push(`./${ordersConcat.results[i].id}`);
+    return ordersConcat.results[i];
   }
 
   prevItem() {
@@ -311,26 +324,35 @@ class OrderDetailsPage extends Component {
     i = results.findIndex((item) => item.id === order.id);
     if (i === 0) {
       i = orders.results.length;
-    }
-    i -= 1;
-    findOrder(orders.results[i].id).then((response) => {
-      this.setState({
-        slide: {
-          active: false,
-          gettingOut: 'slideOutLeft',
-          gettingIn: 'slideInLeft',
-        },
+      notification.warning({
+        message: 'Este é o primeiro pedido.',
       });
       this.setState({
         slide: {
           isLoadingLeft: false,
-          active: true,
         },
-        order: response.payload,
       });
-    });
-    push(`./${orders.results[i].id}`);
-    return orders.results[i];
+    } else {
+      i -= 1;
+      findOrder(orders.results[i].id).then((response) => {
+        this.setState({
+          slide: {
+            active: false,
+            gettingOut: 'slideOutLeft',
+            gettingIn: 'slideInLeft',
+          },
+        });
+        this.setState({
+          slide: {
+            isLoadingLeft: false,
+            active: true,
+          },
+          order: response.payload,
+        });
+      });
+      push(`./${orders.results[i].id}`);
+      return orders.results[i];
+    }
   }
 
   renderOrderNumberStatus = (orderNumber, status, channel) => {
