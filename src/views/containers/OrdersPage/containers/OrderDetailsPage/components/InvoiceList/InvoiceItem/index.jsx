@@ -31,12 +31,14 @@ class InvoiceItem extends Component {
 
   renderAvatar = (item) => (
     <div style={{ display: 'flex' }}>
-      <img
-        alt="Imagem"
-        src={item.channelSku.images[0].url}
-        style={{ marginLeft: 8 }}
-        className="product-image"
-      />
+      {item.channelSku.images.length ? (
+        <img
+          alt="Imagem"
+          src={item.channelSku.images[0].url}
+          style={{ marginLeft: 8 }}
+          className="product-image"
+        />
+      ) : null}
     </div>
   );
 
