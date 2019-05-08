@@ -287,7 +287,6 @@ class OrderDetailsPage extends Component {
       });
     }
     i += 1;
-    i %= orders.results.length;
     findOrder(ordersConcat.results[i].id).then((response) => {
       this.setState({
         slide: {
@@ -321,9 +320,9 @@ class OrderDetailsPage extends Component {
       actions: { findOrder },
       history: { push },
     } = this.props;
-    i = results.findIndex((item) => item.id === order.id);
+    i = ordersConcat.results.findIndex((item) => item.id === order.id);
     if (i === 0) {
-      i = orders.results.length;
+      i = ordersConcat.results.length;
       notification.warning({
         message: 'Este é o primeiro pedido.',
       });
@@ -334,7 +333,8 @@ class OrderDetailsPage extends Component {
       });
     } else {
       i -= 1;
-      findOrder(orders.results[i].id).then((response) => {
+      console.log(i);
+      findOrder(ordersConcat.results[i].id).then((response) => {
         this.setState({
           slide: {
             active: false,
@@ -350,8 +350,8 @@ class OrderDetailsPage extends Component {
           order: response.payload,
         });
       });
-      push(`./${orders.results[i].id}`);
-      return orders.results[i];
+      push(`./${ordersConcat.results[i].id}`);
+      return ordersConcat.results[i];
     }
   }
 
