@@ -22,12 +22,14 @@ class RegisterPage extends Component {
     loading: false,
   };
 
+  getUserLocalStorage = () => {
+    return JSON.parse(localStorage.getItem('users'));
+  }
+
   handleSubmit = (e) => {
     const userList = [];
-    const localUsers = [];
-    if(!!JSON.parse(localStorage.getItem('users'))) {
-        localUsers.push(JSON.parse(localStorage.getItem('users')));
-        userList = localUsers;
+    if('users' in localStorage) {
+      JSON.parse(localStorage.getItem('users')).forEach(user => {userList.push(user)});
     }
     e.preventDefault();
     const { form } = this.props;
@@ -45,9 +47,9 @@ class RegisterPage extends Component {
         this.setState({
           loading: false,
         });
-        if(!!localUsers) {
-            localUsers.push(values);
-            localStorage.setItem('users', JSON.stringify(localUsers));
+        if(userList.length < 1 || !!userList) {
+            userList.push(values);
+            localStorage.setItem('users', JSON.stringify(userList));
         } else {
             localStorage.setItem('users', JSON.stringify(values));
         }
