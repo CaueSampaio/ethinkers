@@ -1,7 +1,6 @@
 import { isEmpty } from 'lodash';
 
 import routes from '../../../routes';
-import { getAllDiscriminators } from '../../../utils/constants';
 import constants from './constants';
 
 const menuData = routes
@@ -9,14 +8,12 @@ const menuData = routes
     if (!isEmpty(route.menu)) {
       const {
         path,
-        discriminators = getAllDiscriminators(),
         menu: { icon, name },
         children,
       } = route;
 
       return {
         name,
-        discriminators,
         icon,
         path: path.substring(1),
         children: route.children ? [...children] : [],

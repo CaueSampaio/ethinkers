@@ -1,48 +1,17 @@
 import types from './types';
-import { post } from '../../../utils/request';
+import { get } from '../../../utils/request';
 import utils from './utils';
 
-function handleLogin(credentials) {
+function getUsers() {
   return {
-    type: types.HANDLE_LOGIN,
-    promise: post(`users/auth`, credentials),
+    type: types.GET_USERS,
+    promise: get(`/users`),
     meta: {
-      onSuccess: (response) => utils.setLocalStorageUser(response),
+      onSuccess: (response) => utils.setLocalStorageUsers(response),
     },
-  };
-}
-
-function handleLogout() {
-  return {
-    type: types.HANDLE_LOGOUT,
-  };
-}
-
-function verifyToken() {
-  return {
-    type: types.VERIFY_TOKEN,
-    promise: post(`auth/refresh`),
-    meta: {
-      onSuccess: (response) => {
-        utils.setLocalStorageUser(response);
-      },
-      onFailure: () => {
-        utils.removeLocalStorageUser();
-      },
-    },
-  };
-}
-
-function forgotPassword() {
-  return {
-    type: types.FORGOT_PASSORD,
-    promise: post(`users/forgotpassword`),
   };
 }
 
 export default {
-  handleLogin,
-  handleLogout,
-  verifyToken,
-  forgotPassword,
+  getUsers,
 };

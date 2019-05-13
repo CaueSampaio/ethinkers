@@ -1,36 +1,25 @@
-import jwtDecode from 'jwt-decode';
-import { isEmpty } from 'lodash';
-
-function getLocalStorageUser() {
-  return getUserData(localStorage.getItem('token'));
+function getLocalStorageUsers() {
+  return localStorage.getItem('users');
 }
 
-function setLocalStorageUser({ token }) {
-  localStorage.setItem('token', token);
-}
-
-function removeLocalStorageUser() {
-  localStorage.removeItem('token');
-}
-
-function getUserData(token) {
-  if (isEmpty(token)) return null;
-
-  let decodedToken;
-  try {
-    decodedToken = jwtDecode(token);
-  } catch (err) {
-    return null;
+function setLocalStorageUsers(users) {
+  const localUsers = [];
+  localUsers.push(JSON.parse(localStorage.getItem('users')));
+  if (localUsers.length < 1) {
+    users.forEach((item) => localUsers.push(item));
+    localStorage.setItem('users', JSON.stringify(localUsers));
+    debugger; //eslint-disable-line
   }
+}
 
-  const { CompanyBranchId, User, UserType } = decodedToken;
-
-  return { CompanyBranchId, User, token, UserType };
+function removeLocalStorageUser(index) {
+  const localUsers = JSON.parse(localStorage.getItem('users'));
+  localUsers.splice(index, 1);
+  localStorage.setItem('users', JSON.stringify(localUsers));
 }
 
 export default {
-  getLocalStorageUser,
-  setLocalStorageUser,
   removeLocalStorageUser,
-  getUserData,
+  setLocalStorageUsers,
+  getLocalStorageUsers,
 };

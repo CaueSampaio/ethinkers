@@ -1,4 +1,4 @@
-import login from './loginRoutes';
-import forgotPassword from './forgotPasswordRoute';
+import register from './registerRoute';
+import listUser from './listUserRoute';
 
-export default [...login, ...forgotPassword];
+export default [...register, ...listUser];

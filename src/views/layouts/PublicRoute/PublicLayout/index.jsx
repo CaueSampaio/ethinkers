@@ -9,18 +9,12 @@ import { isUndefined } from 'lodash';
 import classNames from 'classnames';
 import { ContainerQuery } from 'react-container-query';
 import { Helmet } from 'react-helmet';
-import { Layout, Form, Row, Col } from 'antd';
-
-// import { getBreadcrumbMap } from '../../../../routes';
-
-// import { getAllDiscriminators } from '../../../../utils/constants';
+import { Layout, Form, Col, Row } from 'antd';
 
 import { layoutActions, layoutSelectors } from '../../../../state/ducks/layout';
 
-// import { userSelectors } from '../../../../state/ducks/user';
-
-import logo from '../../../../assets/img/white-logo.png';
-// import ApplicationFooter from './components/ApplicationFooter';
+import model from '../../../../assets/img/model.png';
+import logo from '../../../../assets/img/logo.png';
 
 import './style.less';
 
@@ -144,51 +138,27 @@ class PublicLayout extends React.Component {
       <ContainerQuery query={query}>
         {(params) => (
           <div className={classNames(params)}>
-            <Helmet titleTemplate="%s | it4solution">
-              <title>Login</title>
+            <Helmet titleTemplate="%s | E-Thinkers">
+              <title>Novo Usuario</title>
             </Helmet>
             <Layout>
-              <Layout>
-                <div className="public-page">
-                  <Layout>
-                    <Content style={{ height: '100vh' }}>
-                      <Row
-                        type="flex"
-                        justify="center"
-                        align="middle"
-                        style={{ width: '100%' }}
-                      >
-                        <Col
-                          xs={24}
-                          sm={24}
-                          md={12}
-                          lg={12}
-                          xxl={14}
-                          className="logo-container"
-                        >
-                          <img className="public-logo" src={logo} alt="logo" />
-                        </Col>
-                        <Col
-                          xs={24}
-                          sm={24}
-                          md={12}
-                          lg={12}
-                          xxl={10}
-                          className="form-container"
-                        >
-                          <Content>
-                            <Component {...rest} />
-                          </Content>
-                        </Col>
-                      </Row>
+              <Content>
+                <Row>
+                  <Col xs={0} sm={0} md={0} lg={12} xxl={12}>
+                    <img src={model} alt="Imagem model" className="model" />
+                  </Col>
+                  <Col xs={24} sm={24} md={24} lg={12} xxl={12}>
+                    <Content className="component-content">
+                      <img src={logo} alt="logo" className="logo" />
+                      <Component {...rest} />
                     </Content>
-                  </Layout>
-                </div>
-                <Footer style={{ padding: 0 }}>
-                  {/*                   <ApplicationFooter />
-                   */}
-                </Footer>
-              </Layout>
+                  </Col>
+                </Row>
+              </Content>
+              <Footer style={{ padding: 0 }}>
+                {/*                   <ApplicationFooter />
+                 */}
+              </Footer>
             </Layout>
           </div>
         )}

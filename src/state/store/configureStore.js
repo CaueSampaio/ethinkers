@@ -2,16 +2,10 @@ import { middleware as reduxPackMiddleware } from 'redux-pack';
 import { routerMiddleware } from 'react-router-redux';
 import { applyMiddleware, compose, createStore } from 'redux';
 
-import { signalrNotificationMiddleware } from '../middlewares';
-
 import { createRootReducer } from '../reducer';
 
 export default function configureStore(history, initialState) {
-  const middleware = [
-    reduxPackMiddleware,
-    routerMiddleware(history),
-    signalrNotificationMiddleware,
-  ];
+  const middleware = [reduxPackMiddleware, routerMiddleware(history)];
 
   // In development, use the browser's Redux dev tools extension if installed
   const enhancers = [];

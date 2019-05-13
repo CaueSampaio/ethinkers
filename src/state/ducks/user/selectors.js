@@ -2,6 +2,12 @@ import { createSelector } from 'reselect';
 
 const selectUser = ({ user }) => user;
 
+const makeSelectUsers = () =>
+  createSelector(
+    selectUser,
+    ({ data }) => data,
+  );
+
 const makeSelectUserLoading = () =>
   createSelector(
     selectUser,
@@ -20,30 +26,10 @@ const makeSelectUserData = () =>
     ({ data }) => data,
   );
 
-const makeSelectVerifyTokenLoading = () =>
-  createSelector(
-    selectUser,
-    ({ verifyIsLoading }) => verifyIsLoading,
-  );
-
-const makeSelectVerifyTokenError = () =>
-  createSelector(
-    selectUser,
-    ({ verifyError }) => verifyError,
-  );
-
-const makeSelectForgotPasswordError = () =>
-  createSelector(
-    selectUser,
-    ({ verifyError }) => verifyError,
-  );
-
 export default {
   selectUser,
+  makeSelectUsers,
   makeSelectUserLoading,
   makeSelectUserError,
   makeSelectUserData,
-  makeSelectVerifyTokenLoading,
-  makeSelectVerifyTokenError,
-  makeSelectForgotPasswordError,
 };

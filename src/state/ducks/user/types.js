@@ -1,11 +1,7 @@
-const HANDLE_LOGIN = 'user/HANDLE_LOGIN';
-const HANDLE_LOGOUT = 'user/HANDLE_LOGOUT';
-const VERIFY_TOKEN = 'user/VERIFY_TOKEN';
-const FORGOT_PASSORD = 'user/FORGOT_PASSORD';
+const GET_USERS = 'user/GET_USERS';
+const SAVE_USER = 'user/SAVE_USER';
 
 export default {
-  HANDLE_LOGIN,
-  HANDLE_LOGOUT,
-  VERIFY_TOKEN,
-  FORGOT_PASSORD,
+  GET_USERS,
+  SAVE_USER,
 };
